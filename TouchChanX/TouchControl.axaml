@@ -1,0 +1,51 @@
+<UserControl
+    x:Class="TestAva.TouchControl"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converter="using:TestAva"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="AssistiveTouchBackground" Color="#262626" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerOneLine" Color="#232323" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerOneBackground" Color="#505050" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerTwoLine" Color="#434343" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerTwoBackground" Color="#939393" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerThreeLine" Color="#686868" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerThreeBackground" Color="#FFFFFF" />
+        <x:Double x:Key="AssistiveTouchCircleThickness">1</x:Double>
+        <converter:TouchLayerMarginConverter x:Key="TouchLayerMarginConverter" />
+    </UserControl.Resources>
+
+    <Border
+        x:Name="Touch"
+        Width="80"
+        Height="{Binding $self.Width}"
+        HorizontalAlignment="Left"
+        VerticalAlignment="Top"
+        Background="{StaticResource AssistiveTouchBackground}"
+        CornerRadius="{Binding $self.Width, Converter={x:Static converter:Converters.RadiusToCircleConverter}}">
+        <Grid>
+            <Ellipse
+                Margin="{Binding #Touch.Width, Converter={StaticResource TouchLayerMarginConverter}, ConverterParameter='2/16'}"
+                Fill="{StaticResource AssistiveTouchLayerOneBackground}"
+                Stroke="{StaticResource AssistiveTouchLayerOneLine}"
+                StrokeThickness="{StaticResource AssistiveTouchCircleThickness}" />
+
+            <Ellipse
+                Margin="{Binding #Touch.Width, Converter={StaticResource TouchLayerMarginConverter}, ConverterParameter='3/16'}"
+                Fill="{StaticResource AssistiveTouchLayerTwoBackground}"
+                Stroke="{StaticResource AssistiveTouchLayerTwoLine}"
+                StrokeThickness="{StaticResource AssistiveTouchCircleThickness}" />
+
+            <Ellipse
+                Margin="{Binding #Touch.Width, Converter={StaticResource TouchLayerMarginConverter}, ConverterParameter='4/16'}"
+                Fill="{StaticResource AssistiveTouchLayerThreeBackground}"
+                Stroke="{StaticResource AssistiveTouchLayerThreeLine}"
+                StrokeThickness="{StaticResource AssistiveTouchCircleThickness}" />
+        </Grid>
+    </Border>
+
+</UserControl>
