@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace TouchChanX;
+namespace TouchChanX.Ava;
 
 public partial class MainWindow : Window
 {

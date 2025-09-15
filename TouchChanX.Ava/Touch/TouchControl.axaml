@@ -1,10 +1,9 @@
-<UserControl
-    x:Class="TestAva.TouchControl"
+<UserControl x:Class="TouchChanX.Ava.Touch.TouchControl"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converter="using:TestAva"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:touch="using:TouchChanX.Ava.Touch"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -16,17 +15,16 @@
         <SolidColorBrush x:Key="AssistiveTouchLayerThreeLine" Color="#686868" />
         <SolidColorBrush x:Key="AssistiveTouchLayerThreeBackground" Color="#FFFFFF" />
         <x:Double x:Key="AssistiveTouchCircleThickness">1</x:Double>
-        <converter:TouchLayerMarginConverter x:Key="TouchLayerMarginConverter" />
+        <touch:TouchLayerMarginConverter x:Key="TouchLayerMarginConverter" />
     </UserControl.Resources>
 
-    <Border
-        x:Name="Touch"
+    <Border x:Name="Touch"
         Width="80"
         Height="{Binding $self.Width}"
         HorizontalAlignment="Left"
         VerticalAlignment="Top"
         Background="{StaticResource AssistiveTouchBackground}"
-        CornerRadius="{Binding $self.Width, Converter={x:Static converter:Converters.RadiusToCircleConverter}}">
+        CornerRadius="{Binding $self.Width, Converter={x:Static touch:Converters.RadiusToCircleConverter}}">
         <Grid>
             <Ellipse
                 Margin="{Binding #Touch.Width, Converter={StaticResource TouchLayerMarginConverter}, ConverterParameter='2/16'}"
@@ -47,5 +45,4 @@
                 StrokeThickness="{StaticResource AssistiveTouchCircleThickness}" />
         </Grid>
     </Border>
-
 </UserControl>

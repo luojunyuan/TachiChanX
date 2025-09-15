@@ -1,7 +1,7 @@
-﻿using Avalonia;
 using System.Diagnostics.Contracts;
+using Avalonia;
 
-namespace TestAva;
+namespace TouchChanX.Ava.Touch;
 
 public static class PositionCalculator
 {
@@ -9,19 +9,15 @@ public static class PositionCalculator
     /// 判断新的移动坐标是否超出规定边界
     /// </summary>
     [Pure]
-    public static bool IsBeyondBoundary(Point newPos, double touchSize, Size container)
+    public static bool IsBeyondBoundary(Size container, Rect touchRect)
     {
-        var oneThirdDistance = touchSize / 3;
+        var oneThirdDistance = touchRect.Width / 3;
         var twoThirdDistance = oneThirdDistance * 2;
 
-        if (newPos.X < -oneThirdDistance ||
-            newPos.Y < -oneThirdDistance ||
-            newPos.X > container.Width - twoThirdDistance ||
-            newPos.Y > container.Height - twoThirdDistance)
-        {
-            return true;
-        }
-        return false;
+        return touchRect.X < -oneThirdDistance ||
+               touchRect.Y < -oneThirdDistance ||
+               touchRect.X > container.Width - twoThirdDistance ||
+               touchRect.Y > container.Height - twoThirdDistance;
     }
 
     /// <summary>
@@ -32,25 +28,16 @@ public static class PositionCalculator
     {
         const int TouchSpace = 2;
 
-        var initPos = new Point(touch.X, touch.Y);
+        var (left, top) = new Point(touch.X, touch.Y);
         var touchSize = touch.Width;
         var xMidline = container.Width / 2;
-        var right = container.Width - initPos.X - touchSize;
-        var bottom = container.Height - initPos.Y - touchSize;
+        var right = container.Width - left - touchSize;
+        var bottom = container.Height - top - touchSize;
 
         var hSnapLimit = touchSize / 2;
         var vSnapLimit = touchSize / 3 * 2;
 
-        var centerToLeft = initPos.X + hSnapLimit;
-
-        bool VCloseTo(double distance) => distance < vSnapLimit;
-        bool HCloseTo(double distance) => distance < hSnapLimit;
-
-        double AlignToRight() => container.Width - touchSize - TouchSpace;
-        double AlignToBottom() => container.Height - touchSize - TouchSpace;
-
-        var left = initPos.X;
-        var top = initPos.Y;
+        var centerToLeft = left + hSnapLimit;
 
         return
             HCloseTo(left) && VCloseTo(top) ? new Point(TouchSpace, TouchSpace) :
@@ -61,5 +48,10 @@ public static class PositionCalculator
                                VCloseTo(bottom) ? new Point(left, AlignToBottom()) :
             centerToLeft < xMidline ? new Point(TouchSpace, top) :
          /* centerToLeft >= xMidline */           new Point(AlignToRight(), top);
+
+        double AlignToBottom() => container.Height - touchSize - TouchSpace;
+        double AlignToRight() => container.Width - touchSize - TouchSpace;
+        bool HCloseTo(double distance) => distance < hSnapLimit;
+        bool VCloseTo(double distance) => distance < vSnapLimit;
     }
 }

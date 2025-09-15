@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="TouchChanX.Ava/App.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
+        <entry key="TouchChanX.Ava/MainWindow.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
+        <entry key="TouchChanX.Ava/Touch/TouchControl.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
+        <entry key="TouchChanX.Ava/TouchControl.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
+        <entry key="TouchChanX.Ava/TouchControl/TouchControl.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
+        <entry key="TouchChanX.Rider/App.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
+        <entry key="TouchChanX.Rider/MainWindow.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
+        <entry key="TouchChanX/MainWindow.axaml" value="TouchChanX/TouchChanX.csproj" />
+        <entry key="TouchChanX/TouchControl.axaml" value="TouchChanX/TouchChanX.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

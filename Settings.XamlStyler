@@ -1,0 +1,56 @@
+// XamlStyler 的默认注释项，⭐ 号标注的表示个性化后的选项，详细说明查看 Visual Studio - 工具 - 选项 - Xaml Styler
+{
+    // 标签格式化
+    "AttributeIndentation": 0,
+    "AttributeIndentationStyle": 1,
+    "AttributesTolerance": 3,
+    "KeepFirstAttributeOnSameLine": false, 
+    "MaxAttributeCharactersPerLine": 0,
+    "MaxAttributesPerLine": 1,
+    "NewlineExemptionElements": "RadialGradientBrush, GradientStop, LinearGradientBrush, ScaleTransform, SkewTransform, RotateTransform, TranslateTransform, Trigger, Condition, Setter",
+    "RemoveDesignTimeReferences":  false,
+    "SeparateByGroups": false,
+
+    // 标签排序
+    "IgnoreDesignTimeReferencePrefix": false,
+    "EnableAttributeReordering": true,
+    "AttributeOrderingRuleGroups": [
+        "x:Class",
+        "xmlns, xmlns:x",
+        "xmlns:*",
+        "x:Key, Key, x:Name, Name, x:Uid, Uid, Title",
+        "Grid.Row, Grid.RowSpan, Grid.Column, Grid.ColumnSpan, Canvas.Left, Canvas.Top, Canvas.Right, Canvas.Bottom",
+        "Width, Height, MinWidth, MinHeight, MaxWidth, MaxHeight",
+        "Margin, Padding, HorizontalAlignment, VerticalAlignment, HorizontalContentAlignment, VerticalContentAlignment, Panel.ZIndex",
+        "*:*, *",
+        "PageSource, PageIndex, Offset, Color, TargetName, Property, Value, StartPoint, EndPoint",
+        "mc:Ignorable, d:IsDataSource, d:LayoutOverrides, d:IsStaticText",
+        "Storyboard.*, From, To, Duration"
+    ],
+    "FirstLineAttributes": "x:Class, x:Name", // ⭐
+    "OrderAttributesByName": true,
+
+    // 元素格式化
+    "PutEndingBracketOnNewLine": false,
+    "RemoveEndingTagOfEmptyElement": true,
+    "SpaceBeforeClosingSlash": true,
+    "RootElementLineBreakRule": 0,
+
+    // 元素排序
+    "ReorderVSM": 2,
+    "ReorderGridChildren": false,
+    "ReorderCanvasChildren": false,
+    "ReorderSetters": 0,
+
+    // Markup Extension
+    "FormatMarkupExtension": true,
+    "NoNewLineMarkupExtensions": "x:Bind, Binding",
+
+    // Thickness 格式化
+    "ThicknessSeparator": 1, // ⭐
+    "ThicknessAttributes": "Margin, Padding, BorderThickness, ThumbnailClipMargin",
+
+    // 杂项 (Misc)
+    "FormatOnSave": true,
+    "CommentPadding": 2,
+}
