@@ -1,10 +1,8 @@
+using System.Diagnostics;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media;
-using Avalonia.Styling;
 using R3;
 using R3.ObservableEvents;
 
@@ -12,7 +10,7 @@ namespace TouchChanX.Ava.Touch;
 
 public partial class TouchControl : UserControl
 {
-    private readonly TranslateTransform _moveTransform = new();
+    private readonly TranslateTransform _moveTransform = new() { X = 2, Y = 2 };
     
     public TouchControl()
     {
@@ -29,9 +27,9 @@ public partial class TouchControl : UserControl
 
         var pointerPressedStream =
             // ReSharper disable once RedundantCast
-            ((Border)Touch).Events().PointerPressed
-            .Where(e => e.GetCurrentPoint(null).Properties.IsLeftButtonPressed)
-            .Share();
+            ((Border)Touch).Events().PointerPressed.Share()
+                .Where(e => e.GetCurrentPoint(null).Properties.IsLeftButtonPressed)
+                .Share();
         var pointerMovedStream =
             Touch.Events().PointerMoved
                 .Where(e => e.GetCurrentPoint(null).Properties.IsLeftButtonPressed)
@@ -41,12 +39,26 @@ public partial class TouchControl : UserControl
                 .Select(releasedEvent => releasedEvent as PointerEventArgs)
                 .Merge(raisePointerReleasedSubject)
                 .Share();
+        
+        var clickStream = 
+            pointerPressedStream
+            .SelectMany(pressEvent =>
+                pointerReleasedStream
+                .Where(releaseEvent =>
+                {
+                    var pressPos = pressEvent.GetPosition(this);
+                    var releasePos = releaseEvent.GetPosition(this);
+                    return pressPos == releasePos;
+                })
+                .Take(1))
+            .Delay(OpacityFadeInDuration)
+            .ThrottleFirst(OpacityFadeInDuration)
+            .Share();
 
         var dragStartedStream =
             pointerPressedStream
                 .SelectMany(pressEvent =>
                     pointerMovedStream
-                        .Skip(1)
                         .Where(moveEvent =>
                         {
                             var pressPos = pressEvent.GetPosition(this);
@@ -83,6 +95,7 @@ public partial class TouchControl : UserControl
                 })
                 .Share();
 
+        // 订阅移动事件
         draggingStream
             .Select(item => item.Delta)
             .Subscribe(newPos =>
@@ -94,12 +107,14 @@ public partial class TouchControl : UserControl
                     container.Bounds.Size, new Rect(item.Delta.X, item.Delta.Y, Touch.Width, Touch.Width)))
                 .Select(item => item.MovedEvent);
 
+        // 订阅边缘释放事件
         boundaryExceededStream
             .Subscribe(raisePointerReleasedSubject.OnNext);
 
-        var moveAnimationStartedStream = dragEndedStream;
+        var translationDockedSubject = new Subject<Unit>();
 
-        moveAnimationStartedStream
+        // 订阅释放动画
+        dragEndedStream
             .Select(pointer =>
             {
                 var distanceToOrigin = pointer.GetPosition(container);
@@ -107,12 +122,34 @@ public partial class TouchControl : UserControl
                 var touchPos = distanceToOrigin - distanceToElement;
                 return (touchPos,
                     PositionCalculator.CalculateTouchFinalPosition(container.Bounds.Size,
-                        new Rect(touchPos, Touch.Bounds.Size)));
+                        new Rect(touchPos, Touch.Bounds.Size), 2));
             })
-            .SubscribeAwait(async (positionPair, _) =>
+            .SubscribeAwait(async (positions, _) =>
             {
-                var (startPos, stopPos) = positionPair;
-                await RunReleaseTranslationAnimationAsync(startPos, stopPos);
+                await RunReleaseTranslationAnimationAsync(positions);
+                translationDockedSubject.OnNext(Unit.Default);
             });
+
+        // 订阅透明恢复动画
+        pointerPressedStream.SubscribeAwait(async (_, _) => await RunFadeInAnimationAsync());
+        
+        var whenWindowReady = 
+            ((UserControl)this).Events().SizeChanged
+            .Where(sizeEvent => sizeEvent.NewSize.Width > Touch.Bounds.Size.Width)
+            .Take(1).Select(_ => Unit.Default);
+        
+        // 订阅变透明动画
+        Observable.Merge(
+            whenWindowReady,
+            translationDockedSubject,
+            clickStream.Select(_ => Unit.Default))
+            .Select(_ =>
+                Observable.Timer(OpacityFadeDelay)
+                    .TakeUntil(pointerPressedStream))
+            .Switch()
+            .SubscribeAwait(async (_, _) => await RunFadeOutAnimationAsync());
+        
+        // 订阅执行任何动画期间都禁止整个页面再次交互
+        _animationRunningSubject.Subscribe(running => this.IsHitTestVisible = !running);
     }
 }

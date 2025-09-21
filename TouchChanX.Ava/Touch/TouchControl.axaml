@@ -4,6 +4,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:touch="using:TouchChanX.Ava.Touch"
+    d:DesignHeight="84"
+    d:DesignWidth="84"
     mc:Ignorable="d">
 
     <UserControl.Resources>

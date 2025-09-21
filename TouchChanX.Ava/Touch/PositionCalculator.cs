@@ -24,10 +24,8 @@ public static class PositionCalculator
     /// 计算 Touch 最终停靠位置
     /// </summary>
     [Pure]
-    public static Point CalculateTouchFinalPosition(Size container, Rect touch)
+    public static Point CalculateTouchFinalPosition(Size container, Rect touch, double spacing)
     {
-        const int TouchSpace = 2;
-
         var (left, top) = new Point(touch.X, touch.Y);
         var touchSize = touch.Width;
         var xMidline = container.Width / 2;
@@ -40,17 +38,17 @@ public static class PositionCalculator
         var centerToLeft = left + hSnapLimit;
 
         return
-            HCloseTo(left) && VCloseTo(top) ? new Point(TouchSpace, TouchSpace) :
-            HCloseTo(right) && VCloseTo(top) ? new Point(AlignToRight(), TouchSpace) :
-            HCloseTo(left) && VCloseTo(bottom) ? new Point(TouchSpace, AlignToBottom()) :
+            HCloseTo(left) && VCloseTo(top) ? new Point(spacing, spacing) :
+            HCloseTo(right) && VCloseTo(top) ? new Point(AlignToRight(), spacing) :
+            HCloseTo(left) && VCloseTo(bottom) ? new Point(spacing, AlignToBottom()) :
             HCloseTo(right) && VCloseTo(bottom) ? new Point(AlignToRight(), AlignToBottom()) :
-                               VCloseTo(top) ? new Point(left, TouchSpace) :
+                               VCloseTo(top) ? new Point(left, spacing) :
                                VCloseTo(bottom) ? new Point(left, AlignToBottom()) :
-            centerToLeft < xMidline ? new Point(TouchSpace, top) :
+            centerToLeft < xMidline ? new Point(spacing, top) :
          /* centerToLeft >= xMidline */           new Point(AlignToRight(), top);
 
-        double AlignToBottom() => container.Height - touchSize - TouchSpace;
-        double AlignToRight() => container.Width - touchSize - TouchSpace;
+        double AlignToBottom() => container.Height - touchSize - spacing;
+        double AlignToRight() => container.Width - touchSize - spacing;
         bool HCloseTo(double distance) => distance < hSnapLimit;
         bool VCloseTo(double distance) => distance < vSnapLimit;
     }
