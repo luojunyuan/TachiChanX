@@ -10,8 +10,9 @@ namespace TouchChanX.Ava.Touch;
 
 public partial class TouchControl : UserControl
 {
-    private readonly TranslateTransform _moveTransform = new() { X = 2, Y = 2 };
-    
+    private const int TouchSpacing = 2;
+    private readonly TranslateTransform _moveTransform = new() { X = TouchSpacing, Y = TouchSpacing };
+
     public TouchControl()
     {
         InitializeComponent();
@@ -46,8 +47,8 @@ public partial class TouchControl : UserControl
                 pointerReleasedStream
                 .Where(releaseEvent =>
                 {
-                    var pressPos = pressEvent.GetPosition(this);
-                    var releasePos = releaseEvent.GetPosition(this);
+                    var pressPos = pressEvent.GetPosition(container);
+                    var releasePos = releaseEvent.GetPosition(container);
                     return pressPos == releasePos;
                 })
                 .Take(1))
@@ -61,8 +62,8 @@ public partial class TouchControl : UserControl
                     pointerMovedStream
                         .Where(moveEvent =>
                         {
-                            var pressPos = pressEvent.GetPosition(this);
-                            var movePos = moveEvent.GetPosition(this);
+                            var pressPos = pressEvent.GetPosition(container);
+                            var movePos = moveEvent.GetPosition(container);
                             return pressPos != movePos;
                         })
                         .Take(1)
@@ -87,24 +88,24 @@ public partial class TouchControl : UserControl
                             .TakeUntil(pointerReleasedStream)
                             .Select(movedEvent =>
                             {
-                                var distanceToOrigin = movedEvent.GetPosition(this);
+                                var distanceToOrigin = movedEvent.GetPosition(container);
                                 var delta = distanceToOrigin - distanceToElement;
 
-                                return new { Delta = delta, MovedEvent = movedEvent };
+                                return new { NewPosition = delta, MovedEvent = movedEvent };
                             });
                 })
                 .Share();
 
         // 订阅移动事件
         draggingStream
-            .Select(item => item.Delta)
+            .Select(item => item.NewPosition)
             .Subscribe(newPos =>
                 (_moveTransform.X, _moveTransform.Y) = (newPos.X, newPos.Y));
 
         var boundaryExceededStream =
             draggingStream
                 .Where(item => PositionCalculator.IsBeyondBoundary(
-                    container.Bounds.Size, new Rect(item.Delta.X, item.Delta.Y, Touch.Width, Touch.Width)))
+                    container.Bounds.Size, new Rect(item.NewPosition.X, item.NewPosition.Y, Touch.Width, Touch.Height)))
                 .Select(item => item.MovedEvent);
 
         // 订阅边缘释放事件
@@ -122,7 +123,7 @@ public partial class TouchControl : UserControl
                 var touchPos = distanceToOrigin - distanceToElement;
                 return (touchPos,
                     PositionCalculator.CalculateTouchFinalPosition(container.Bounds.Size,
-                        new Rect(touchPos, Touch.Bounds.Size), 2));
+                        new Rect(touchPos, Touch.Bounds.Size), TouchSpacing));
             })
             .SubscribeAwait(async (positions, _) =>
             {
@@ -134,7 +135,7 @@ public partial class TouchControl : UserControl
         pointerPressedStream.SubscribeAwait(async (_, _) => await RunFadeInAnimationAsync());
         
         var whenWindowReady = 
-            ((UserControl)this).Events().SizeChanged
+            container.Events().SizeChanged
             .Where(sizeEvent => sizeEvent.NewSize.Width > Touch.Bounds.Size.Width)
             .Take(1).Select(_ => Unit.Default);
         
@@ -151,5 +152,18 @@ public partial class TouchControl : UserControl
         
         // 订阅执行任何动画期间都禁止整个页面再次交互
         _animationRunningSubject.Subscribe(running => this.IsHitTestVisible = !running);
+
+        // TEST: 还需检查拖动的时候窗口大小改变的情景
+        // 订阅窗口大小改变时自动更新停靠的touch位置
+        container.Events().SizeChanged
+            .Select(sizeEvent => PositionCalculator.CalculateNewDockedPosition(
+                sizeEvent.PreviousSize, TouchDockRect, sizeEvent.NewSize, TouchSpacing))
+            .Subscribe(rect => TouchDockRect = rect);
+    }
+    
+    private Rect TouchDockRect
+    {
+        get => new(_moveTransform.X, _moveTransform.Y, Touch.Width, Touch.Height);
+        set => (_moveTransform.X, _moveTransform.Y, Touch.Width) = (value.X, value.Y, value.Width);
     }
 }
