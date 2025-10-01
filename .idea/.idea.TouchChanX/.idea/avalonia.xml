@@ -5,6 +5,16 @@
       <map>
         <entry key="TouchChanX.Ava/App.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
         <entry key="TouchChanX.Ava/MainWindow.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
+        <entry key="TouchChanX.Ava/Menu/DevicePage.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
+        <entry key="TouchChanX.Ava/Menu/MenuControl.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
+        <entry key="TouchChanX.Ava/Menu/MenuItem.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
+        <entry key="TouchChanX.Ava/Menu/Pages/DevicePage.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
+        <entry key="TouchChanX.Ava/Menu/Pages/GamePage.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
+        <entry key="TouchChanX.Ava/Menu/Pages/InnerPageBase.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
+        <entry key="TouchChanX.Ava/Menu/Pages/InnerPageBase2.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
+        <entry key="TouchChanX.Ava/Menu/Pages/MeContentControl.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
+        <entry key="TouchChanX.Ava/Menu/Pages/TemplatedControl1.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
+        <entry key="TouchChanX.Ava/Styles/PathIcon.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
         <entry key="TouchChanX.Ava/Touch/TouchControl.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
         <entry key="TouchChanX.Ava/TouchControl.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
         <entry key="TouchChanX.Ava/TouchControl/TouchControl.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />

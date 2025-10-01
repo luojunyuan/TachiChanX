@@ -27,7 +27,7 @@
         VerticalAlignment="Top"
         Background="{StaticResource AssistiveTouchBackground}"
         CornerRadius="{Binding $self.Width, Converter={x:Static touch:Converters.RadiusToCircleConverter}}">
-        <Grid>
+        <Panel>
             <Ellipse
                 Margin="{Binding #Touch.Width, Converter={StaticResource TouchLayerMarginConverter}, ConverterParameter='2/16'}"
                 Fill="{StaticResource AssistiveTouchLayerOneBackground}"
@@ -45,6 +45,6 @@
                 Fill="{StaticResource AssistiveTouchLayerThreeBackground}"
                 Stroke="{StaticResource AssistiveTouchLayerThreeLine}"
                 StrokeThickness="{StaticResource AssistiveTouchCircleThickness}" />
-        </Grid>
+        </Panel>
     </Border>
 </UserControl>

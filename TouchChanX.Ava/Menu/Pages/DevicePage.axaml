@@ -1,16 +1,14 @@
-<Window x:Class="TouchChanX.Ava.MainWindow"
+<UserControl x:Class="TouchChanX.Ava.Menu.Pages.DevicePage"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:ava="clr-namespace:TouchChanX.Ava"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:menu="using:TouchChanX.Ava.Menu"
-    xmlns:pages="clr-namespace:TouchChanX.Ava.Menu.Pages"
-    xmlns:touch="using:TouchChanX.Ava.Touch"
-    Title="TouchChanX.Rider"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
     mc:Ignorable="d">
 
-    <menu:MenuControl />
-</Window>
+    <Grid x:Name="DeviceGrid" ColumnDefinitions="*, *, *" RowDefinitions="*, *, *">
+        <menu:MenuItem Grid.Column="1" Symbol="Setting" Text="Setting" />
+    </Grid>
+</UserControl>

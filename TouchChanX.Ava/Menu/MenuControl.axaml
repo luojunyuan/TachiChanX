@@ -1,0 +1,44 @@
+<UserControl x:Class="TouchChanX.Ava.Menu.MenuControl"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:menu="using:TouchChanX.Ava.Menu"
+    xmlns:pages="clr-namespace:TouchChanX.Ava.Menu.Pages"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="AssistiveTouchBackground" Color="#262626" />
+    </UserControl.Resources>
+
+    <Border x:Name="Menu"
+        Width="300"
+        Height="{Binding $self.Width}"
+        Padding="12"
+        Background="{StaticResource AssistiveTouchBackground}"
+        CornerRadius="40">
+
+        <Panel>
+            <Grid x:Name="MainPage" ColumnDefinitions="*, *, *" RowDefinitions="*, *, *">
+                <menu:MenuItem
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    PointerPressed="OnGoInnerPage"
+                    Symbol="Tablet"
+                    Tag="Device"
+                    Text="Device" />
+
+                <menu:MenuItem
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    PointerPressed="OnGoInnerPage"
+                    Symbol="Games"
+                    Tag="Game"
+                    Text="Game" />
+            </Grid>
+
+            <ContentControl x:Name="InnerPageHost" />
+        </Panel>
+
+    </Border>
+</UserControl>

@@ -1,4 +1,3 @@
-Pointer Position Test.txt
 1. 鼠标
 * 鼠标精准按下时，不会触发 PointerMoved 事件
 * 触控板按下或 hold 时，容易出现移动，可能会出现 move 也可能不会

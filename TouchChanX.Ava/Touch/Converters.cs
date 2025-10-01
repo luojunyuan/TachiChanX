@@ -7,7 +7,7 @@ namespace TouchChanX.Ava.Touch;
 public static class Converters
 {
     public static FuncValueConverter<double, CornerRadius> RadiusToCircleConverter { get; } =
-        new FuncValueConverter<double, CornerRadius>(num => new CornerRadius(num / 2));
+        new(num => new CornerRadius(num / 2));
 }
 
 /// <summary>
