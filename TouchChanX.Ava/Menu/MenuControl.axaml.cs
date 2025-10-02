@@ -1,7 +1,5 @@
-using Avalonia.Animation;
 using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Styling;
+using R3;
 using TouchChanX.Ava.Menu.Pages;
 
 namespace TouchChanX.Ava.Menu;
@@ -12,84 +10,58 @@ public partial class MenuControl : UserControl
     {
         InitializeComponent();
         
-        IPageBase.BackRequested += async (_, _) => await ReturnToMainPageAsync();
+        PageBase.BackRequested += async (s, _) => await ReturnToMainPageAsync(s);
+        foreach (var items in MainPage.Children)
+        {
+            items.PointerPressed += async (s, _) => await GoToInnerPageAsync(s);
+        }
+        
+        // 订阅执行任何动画期间都禁止整个页面再次交互
+        _animationRunningSubject.Subscribe(running => this.IsHitTestVisible = !running);
     }
     
-    private static readonly TimeSpan PageTransitionInDuration = TimeSpan.FromMilliseconds(400);
-    private static readonly TimeSpan PageTransitionOutDuration = TimeSpan.FromMilliseconds(250);
+    private readonly Subject<bool> _animationRunningSubject = new();
 
-    private void OnGoInnerPage(object? sender, PointerPressedEventArgs e)
+    private async Task GoToInnerPageAsync(object? sender)
     {
-        var (innerPage, entryCell) = ((IPageBase, MenuCell))(sender switch
+        PageBase innerPage = sender switch
         {
-            MenuItem { Tag: "Device" } entryItem => (new DevicePage(), entryItem.Cell),
-            MenuItem { Tag: "Game" } entryItem => (new GamePage(), entryItem.Cell),
+            MenuItem { Tag: "Device" } entryItem => new DevicePage { EntryCell = entryItem.Cell },
+            MenuItem { Tag: "Game" } entryItem => new GamePage { EntryCell = entryItem.Cell },
             _ => throw new NotSupportedException(),
-        });
-        
-        InnerPageHost.Content = innerPage;
-        var innerPageStoryboard = innerPage.BuildPageEnterStoryboard(entryCell, Menu.Width);
+        };
 
+        InnerPageHost.Content = innerPage;
+        
+        var innerPageStoryboard = innerPage.BuildPageTranslateStoryboard(Menu.Width);
         var opacityStoryboard = new Storyboard
         {
             Animations = 
             [
-                (InnerPageHost, CreateOpacityAnimation(PageTransitionInDuration)),
-                (MainPage, CreateOpacityAnimation(PageTransitionInDuration, true)),
+                (InnerPageHost, CreateOpacityAnimation()),
+                (MainPage, CreateOpacityAnimation(true)),
             ]
         };
 
-        innerPageStoryboard.PlayAsync();
-        opacityStoryboard.PlayAsync();
+        _animationRunningSubject.OnNext(true);
+        await Storyboard.PlayMultiAsync(innerPageStoryboard, opacityStoryboard);
+        _animationRunningSubject.OnNext(false);
     }
     
-    private async Task ReturnToMainPageAsync()
+    private async Task ReturnToMainPageAsync(object? sender)
     {
-        var devicePage = InnerPageHost.Content as IPageBase;
-        if (devicePage == null) return;
+        if (sender is not PageBase innerPage) 
+            return;
 
-        var exitStoryboard = devicePage.BuildPageExitStoryboard(Menu.Width, PageTransitionOutDuration);
-        await exitStoryboard.PlayAsync();
+        _animationRunningSubject.OnNext(true);
+        var innerOpacityStoryboard = CreateOpacityAnimation(true).AsStoryboard(InnerPageHost);
+        var innerTranslateStoryboard = innerPage.BuildPageTranslateStoryboard(Menu.Width, true);
+        await Storyboard.PlayMultiAsync(innerTranslateStoryboard, innerOpacityStoryboard);
 
-        var fadeInStoryboard = new Storyboard
-        {
-            Animations =
-            [
-                (MainPage, CreateOpacityAnimation(PageTransitionInDuration, reverse: false))
-            ]
-        };
-        await fadeInStoryboard.PlayAsync();
-
+        var mainPageOpacityStoryboard = CreateOpacityAnimation().AsStoryboard(MainPage);
+        await mainPageOpacityStoryboard.PlayAsync();
+        _animationRunningSubject.OnNext(false);
+        
         InnerPageHost.Content = null;
     }
-
-    private static Animation CreateOpacityAnimation(TimeSpan duration, bool reverse = false) => new()
-    {
-        Duration = duration,
-        FillMode = FillMode.Forward,
-        PlaybackDirection = reverse ? PlaybackDirection.Reverse : PlaybackDirection.Normal,
-        Children =
-        {
-            new KeyFrame
-            {
-                Cue = new Cue(0d),
-                Setters =
-                {
-                    new Setter(OpacityProperty, 0d),
-                    new Setter(IsEnabledProperty, !reverse), // 仅在隐藏时需要设置为 false
-                }
-            },
-            new KeyFrame
-            {
-                Cue = new Cue(1d),
-                Setters =
-                {
-                    new Setter(OpacityProperty, 1d),
-                    new Setter(IsEnabledProperty, true),
-                }
-            }
-        }
-    };
-    
-    
 }

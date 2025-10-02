@@ -2,13 +2,14 @@ using Avalonia.Controls;
 
 namespace TouchChanX.Ava.Menu.Pages;
 
-public partial class DevicePage : UserControl, IPageBase
+public partial class DevicePage : PageBase
 {
-    public Grid ContentGrid => this.DeviceGrid;
-
+    protected override Grid ContentGrid => this.DeviceGrid;
+    
     public DevicePage()
     {
         InitializeComponent();
-        (this as IPageBase).AddBackItemToGrid();
+        
+        this.AddBackItemToGrid();
     }
 }

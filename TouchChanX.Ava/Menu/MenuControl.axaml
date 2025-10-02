@@ -23,7 +23,6 @@
                 <menu:MenuItem
                     Grid.Row="0"
                     Grid.Column="1"
-                    PointerPressed="OnGoInnerPage"
                     Symbol="Tablet"
                     Tag="Device"
                     Text="Device" />
@@ -31,7 +30,6 @@
                 <menu:MenuItem
                     Grid.Row="1"
                     Grid.Column="0"
-                    PointerPressed="OnGoInnerPage"
                     Symbol="Games"
                     Tag="Game"
                     Text="Game" />

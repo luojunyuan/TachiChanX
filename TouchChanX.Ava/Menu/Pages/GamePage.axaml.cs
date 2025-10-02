@@ -4,13 +4,14 @@ using Avalonia.Markup.Xaml;
 
 namespace TouchChanX.Ava.Menu.Pages;
 
-public partial class GamePage : UserControl, IPageBase
+public partial class GamePage : PageBase
 {
-    public Grid ContentGrid => this.GamePageGrid;
+    protected override Grid ContentGrid => this.GamePageGrid;
 
     public GamePage()
     {
         InitializeComponent();
-        (this as IPageBase).AddBackItemToGrid();
+        
+        this.AddBackItemToGrid();
     }
 }

@@ -1,0 +1,4 @@
+优化
+1. 尝试把动画重构为 transitions （理论上只要属性只受动画效果影响便可以替代）
+2. 对比 AssistiveTouch 和 TachiChan，1:1还原缓动效果
+
