@@ -18,7 +18,7 @@
         Background="{StaticResource AssistiveTouchBackground}"
         CornerRadius="40">
 
-        <Panel>
+        <Panel x:Name="PagePanel">
             <Grid x:Name="MainPage" ColumnDefinitions="*, *, *" RowDefinitions="*, *, *">
                 <menu:MenuItem
                     Grid.Row="0"

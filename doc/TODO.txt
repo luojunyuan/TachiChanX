@@ -1,4 +1,10 @@
 优化
-1. 尝试把动画重构为 transitions （理论上只要属性只受动画效果影响便可以替代）
-2. 对比 AssistiveTouch 和 TachiChan，1:1还原缓动效果
+1. 尝试把部分动画重构为 transitions （理论上只要属性只受动画效果影响便可以替代）
+2. 使用视频软件逐帧对比 AssistiveTouch 和 TachiChan 动画变化，1:1还原缓动效果
+3. 今后考虑是否存在 menu touch 大小跟随窗口大小变化的情景
 
+[x] 菜单 Show Close 动画，应该不依赖 touch 完全的独立存在
+[] 菜单 假的小白点
+[] 菜单项 构造 click 以及还原按下松开后的颜色变化处理
+[] win入口点 搬运
+[] 菜单小圆点 Show Close 联动

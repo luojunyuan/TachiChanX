@@ -18,7 +18,7 @@ public abstract partial class PageBase : UserControl
         Grid.SetRow(backItem, 1);
         Grid.SetColumn(backItem, 1);
         ContentGrid.Children.Add(backItem);
-        backItem.Events().PointerPressed
+        backItem.Clicked
             .Select(_ => Unit.Default)
             .Subscribe(_ => BackRequested?.Invoke(this, EventArgs.Empty));
     }

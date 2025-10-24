@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Media;
 using R3;
+using R3.ObservableEvents;
 
 namespace TouchChanX.Ava.Menu;
 
@@ -40,6 +41,8 @@ public static class Extension
 
 public partial class MenuItem : UserControl
 {
+    public Observable<Unit> Clicked { get; }
+    
     public static readonly StyledProperty<string> TextProperty = AvaloniaProperty.Register<MenuItem, string>(nameof(Text), string.Empty);
     public static readonly StyledProperty<Symbol> SymbolProperty = AvaloniaProperty.Register<MenuItem, Symbol>(nameof(Symbol));
 
@@ -61,6 +64,10 @@ public partial class MenuItem : UserControl
     {
         InitializeComponent();
 
+        Clicked = this.Events().PointerPressed
+            .Do(e => e.Handled = true)
+            .Select(_ => Unit.Default);
+
         Icon[!PathIcon.DataProperty] = 
             this.GetObservable(SymbolProperty)
             .Select(static symbol => symbol.ToGeometry())
@@ -68,7 +75,7 @@ public partial class MenuItem : UserControl
         
         if (Design.IsDesignMode)
         {
-            Background = new SolidColorBrush(Color.Parse("#262626"));
+            // Background = new SolidColorBrush(Color.Parse("#262626"));
 
             // Symbol = Symbol.Setting;
             // Text = "d:Setting";

@@ -1,14 +1,21 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 
 namespace TouchChanX.Ava;
 
 public partial class App : Application
 {
+    public static readonly AvaloniaSynchronizationContext UISyncContext = new();
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+        
+#if DEBUG
+        this.AttachDeveloperTools();
+#endif
     }
 
     public override void OnFrameworkInitializationCompleted()

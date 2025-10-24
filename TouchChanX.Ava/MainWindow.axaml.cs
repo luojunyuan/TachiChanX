@@ -1,7 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Interactivity;
-using Avalonia.Media;
 
 namespace TouchChanX.Ava;
 
@@ -10,5 +7,16 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+
+        this.Opened += (_, _) => Menu.IsVisible = false;
+        Menu.Closed += (_, _) => Menu.IsVisible = false;
+    }
+
+    // ReSharper disable once AsyncVoidMethod 不用考虑不会发生的事情
+    private async void TouchControlOnClicked(object? sender, Shared.TouchDockAnchor dockAnchor)
+    {
+        Menu.FakeTouchDockAnchor = dockAnchor;
+        Menu.IsVisible = true;
+        await Menu.ShowMenuAsync();
     }
 }

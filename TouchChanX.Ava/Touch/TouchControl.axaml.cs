@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -8,9 +7,21 @@ using R3.ObservableEvents;
 
 namespace TouchChanX.Ava.Touch;
 
+// net10 extension 
+public static class Extension
+{
+    public static System.Drawing.Size ToSystemSize(this Size size) => new((int)size.Width, (int)size.Height);
+    
+    public static System.Drawing.Rectangle ToSystemRect(this Rect rect) => 
+        new((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height);
+}
+
 public partial class TouchControl : UserControl
 {
-    private const int TouchSpacing = 2;
+    private const int TouchSpacing = Shared.Constants.TouchSpacing;
+    
+    public event EventHandler<Shared.TouchDockAnchor>? Clicked;
+    
     private readonly TranslateTransform _moveTransform = new() { X = TouchSpacing, Y = TouchSpacing };
 
     public TouchControl()
@@ -55,6 +66,13 @@ public partial class TouchControl : UserControl
             .Delay(OpacityFadeInDuration)
             .ThrottleFirst(OpacityFadeInDuration)
             .Share();
+
+        clickStream
+            .ObserveOn(App.UISyncContext)
+            .Subscribe(_ => 
+                Clicked?.Invoke(this, Shared.TouchDockAnchor.FromRect(
+                    container.Bounds.Size.ToSystemSize(), 
+                    TouchDockRect.ToSystemRect())));
 
         var dragStartedStream =
             pointerPressedStream
@@ -153,7 +171,8 @@ public partial class TouchControl : UserControl
         // 订阅执行任何动画期间都禁止整个页面再次交互
         _animationRunningSubject.Subscribe(running => this.IsHitTestVisible = !running);
 
-        // TEST: 还需检查拖动的时候窗口大小改变的情景
+        // TODO: 还需检查拖动的时候窗口大小改变的情景
+        
         // 订阅窗口大小改变时自动更新停靠的touch位置
         container.Events().SizeChanged
             .Select(sizeEvent => PositionCalculator.CalculateNewDockedPosition(
