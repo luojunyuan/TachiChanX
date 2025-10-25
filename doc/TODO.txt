@@ -3,8 +3,12 @@
 2. 使用视频软件逐帧对比 AssistiveTouch 和 TachiChan 动画变化，1:1还原缓动效果
 3. 今后考虑是否存在 menu touch 大小跟随窗口大小变化的情景
 
+TODO
 [x] 菜单 Show Close 动画，应该不依赖 touch 完全的独立存在
 [] 菜单 假的小白点
 [] 菜单项 构造 click 以及还原按下松开后的颜色变化处理
 [] win入口点 搬运
-[] 菜单小圆点 Show Close 联动
+[x] 菜单小圆点 Show Close 联动
+
+Alternative
+- 使用 Opacity + IsHitTestVisible 替代 IsVisible 应该也可以实现完全一样的业务

@@ -17,6 +17,7 @@ public partial class MainWindow : Window
     {
         Menu.FakeTouchDockAnchor = dockAnchor;
         Menu.IsVisible = true;
-        await Menu.ShowMenuAsync();
+        // NOTE: 因为 Menu.IsVisible <> false，一直感知不到窗体的大小变化，所以打开它时基于父容器的 bounds 计算
+        await Menu.ShowMenuAsync(this.Bounds);
     }
 }

@@ -31,10 +31,12 @@ public partial class MenuControl : UserControl
         _animationRunningSubject.Subscribe(running => this.IsHitTestVisible = !running);
     }
     
-    private Point AnchorAtTopLeftPoint(Shared.TouchDockAnchor anchor)
+    private Point AnchorAtTopLeftPoint(Shared.TouchDockAnchor anchor, Rect? bounds = null)
     {
-        var alignRight = this.Bounds.Width - TouchSize - TouchSpacing;
-        var alignBottom = this.Bounds.Height - TouchSize - TouchSpacing;
+        var width = bounds?.Width ?? this.Bounds.Width;
+        var height = bounds?.Height ?? this.Bounds.Height;
+        var alignRight = width - TouchSize - TouchSpacing;
+        var alignBottom = height - TouchSize - TouchSpacing;
 
         return anchor switch
         {
@@ -43,23 +45,23 @@ public partial class MenuControl : UserControl
             { IsBottomLeft: true } => ConvertToCenterCoord(new Point(TouchSpacing, alignBottom)),
             { IsBottomRight: true } => ConvertToCenterCoord(new Point(alignRight, alignBottom)),
             Shared.TouchDockAnchor.Left x => 
-                ConvertToCenterCoord(new Point(TouchSpacing, x.Scale * this.Bounds.Height - TouchSize / 2)),
+                ConvertToCenterCoord(new Point(TouchSpacing, x.Scale * height - TouchSize / 2)),
             Shared.TouchDockAnchor.Top x => 
-                ConvertToCenterCoord(new Point(x.Scale * this.Bounds.Width - TouchSize / 2, TouchSpacing)),
+                ConvertToCenterCoord(new Point(x.Scale * width - TouchSize / 2, TouchSpacing)),
             Shared.TouchDockAnchor.Right x => 
-                ConvertToCenterCoord(new Point(alignRight, x.Scale * this.Bounds.Height - TouchSize / 2)),
+                ConvertToCenterCoord(new Point(alignRight, x.Scale * height - TouchSize / 2)),
             Shared.TouchDockAnchor.Bottom x => 
-                ConvertToCenterCoord(new Point(x.Scale * this.Bounds.Width - TouchSize / 2, alignBottom)),
+                ConvertToCenterCoord(new Point(x.Scale * width - TouchSize / 2, alignBottom)),
             _ => default,
         };
         
         Point ConvertToCenterCoord(Point point) => 
-            new(point.X - this.Bounds.Width / 2 + TouchSize / 2, point.Y- this.Bounds.Height / 2 + TouchSize / 2);
+            new(point.X - width / 2 + TouchSize / 2, point.Y- height / 2 + TouchSize / 2);
     }
     
-    public async Task ShowMenuAsync()
+    public async Task ShowMenuAsync(Rect bounds)
     {
-        var pos = AnchorAtTopLeftPoint(FakeTouchDockAnchor);
+        var pos = AnchorAtTopLeftPoint(FakeTouchDockAnchor, bounds);
         await PlayShowMenuStoryboardAsync(pos);
     }
 
