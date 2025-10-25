@@ -3,6 +3,8 @@ using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Media;
 using Avalonia.Styling;
+using R3;
+using TouchChanX.Ava.Menu.Pages;
 
 namespace TouchChanX.Ava.Menu;
 
@@ -11,6 +13,73 @@ public partial class MenuControl
     private static readonly TimeSpan PageTransitionInDuration = TimeSpan.FromMilliseconds(400);
     private static readonly TimeSpan PageTransitionOutDuration = TimeSpan.FromMilliseconds(250);
 
+    private readonly Subject<bool> _animationRunningSubject = new();
+
+    private async Task PlayTransitionMainPageStoryboardAsync(PageBase innerPage)
+    {
+        var innerOpacityStoryboard = CreateOpacityAnimation(true).AsStoryboard(InnerPageHost);
+        var innerTranslateStoryboard = innerPage.BuildPageTranslateStoryboard(Menu.Width, true);
+        var mainPageOpacityStoryboard = CreateOpacityAnimation().AsStoryboard(MainPage);
+
+        _animationRunningSubject.OnNext(true);
+        await Storyboard.PlayMultiAsync(innerTranslateStoryboard, innerOpacityStoryboard);
+        await mainPageOpacityStoryboard.PlayAsync();
+        _animationRunningSubject.OnNext(false);
+    }
+    
+    private async Task PlayTransitionInnerPageStoryboardAsync(PageBase innerPage)
+    {
+        var innerPageStoryboard = innerPage.BuildPageTranslateStoryboard(Menu.Width);
+        var opacityStoryboard = new Storyboard
+        {
+            Animations = 
+            [
+                (InnerPageHost, CreateOpacityAnimation()),
+                (MainPage, CreateOpacityAnimation(true)),
+            ]
+        };
+
+        _animationRunningSubject.OnNext(true);
+        await Storyboard.PlayMultiAsync(innerPageStoryboard, opacityStoryboard);
+        _animationRunningSubject.OnNext(false);
+    }
+    
+    private async Task PlayCloseMenuStoryboardAsync(Point pos)
+    {
+        var menuTransitionAnimation = BuildMenuTransitionAnimation(pos, true);
+        var opacityAnimation = CreateOpacityAnimation(true);
+        var transitionStoryboard = new Storyboard()
+        {
+            Animations =
+            [
+                (Menu, menuTransitionAnimation),
+                (PagePanel, opacityAnimation),
+            ]
+        };
+        
+        _animationRunningSubject.OnNext(true);
+        await transitionStoryboard.PlayAsync();
+        _animationRunningSubject.OnNext(false);
+    }
+    
+    private async Task PlayShowMenuStoryboardAsync(Point pos)
+    {
+        var menuTransitionAnimation = BuildMenuTransitionAnimation(pos);
+        var opacityAnimation = CreateOpacityAnimation();
+        var transitionStoryboard = new Storyboard
+        {
+            Animations =
+            [
+                (Menu, menuTransitionAnimation),
+                (PagePanel, opacityAnimation),
+            ]
+        };
+        
+        _animationRunningSubject.OnNext(true);
+        await transitionStoryboard.PlayAsync();
+        _animationRunningSubject.OnNext(false);
+    }
+    
     private static Animation BuildMenuTransitionAnimation(Point startOffset, bool reverse = false) => new()
     {
         Duration = reverse ? PageTransitionOutDuration : PageTransitionInDuration,

@@ -60,6 +60,7 @@ public partial class TouchControl : UserControl
 
         clickStream
             .ObserveOn(App.UISyncContext)
+            .Where(_ => container.IsVisible)
             .Subscribe(_ => 
                 Clicked?.Invoke(this, Shared.TouchDockAnchor.FromRect(
                     container.Bounds.Size.ToSystemSize(), 
@@ -141,18 +142,27 @@ public partial class TouchControl : UserControl
             });
 
         // 订阅透明恢复动画
-        pointerPressedStream.SubscribeAwait(async (_, _) => await RunFadeInAnimationAsync());
+        pointerPressedStream
+            .Where(_ => Math.Abs(Touch.Opacity - OpacityFull) >= 0.01)
+            .SubscribeAwait(async (_, _) => await RunFadeInAnimationAsync());
         
         var whenWindowReady = 
             container.Events().SizeChanged
             .Where(sizeEvent => sizeEvent.NewSize.Width > Touch.Bounds.Size.Width)
             .Take(1).Select(_ => Unit.Default);
         
+        var touchVisible = 
+            container.Events().Loaded
+                .SelectMany(_ => container.GetObservable(IsVisibleProperty).ToObservable())
+                .Skip(1)
+                .Where(isVisible => isVisible)
+                .Select(_ => Unit.Default);
+        
         // 订阅变透明动画
         Observable.Merge(
             whenWindowReady,
             translationDockedSubject,
-            clickStream.Select(_ => Unit.Default))
+            touchVisible)
             .Select(_ =>
                 Observable.Timer(OpacityFadeDelay)
                     .TakeUntil(pointerPressedStream))

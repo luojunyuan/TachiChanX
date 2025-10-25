@@ -8,7 +8,9 @@ namespace TouchChanX.Ava.Menu;
 
 public partial class MenuControl : UserControl
 {
-    private const int TouchSpacing = 2;
+    private const int TouchSpacing = Shared.Constants.TouchSpacing;
+    
+    private const double TouchSize = 80;
 
     public event EventHandler? Closed;
     
@@ -28,10 +30,6 @@ public partial class MenuControl : UserControl
         // 订阅执行任何动画期间都禁止整个页面再次交互
         _animationRunningSubject.Subscribe(running => this.IsHitTestVisible = !running);
     }
-    
-    private readonly Subject<bool> _animationRunningSubject = new();
-
-    private const double TouchSize = 80;
     
     private Point AnchorAtTopLeftPoint(Shared.TouchDockAnchor anchor)
     {
@@ -62,42 +60,16 @@ public partial class MenuControl : UserControl
     public async Task ShowMenuAsync()
     {
         var pos = AnchorAtTopLeftPoint(FakeTouchDockAnchor);
-        var menuTransitionAnimation = BuildMenuTransitionAnimation(pos);
-        var opacityAnimation = CreateOpacityAnimation();
-        var transitionStoryboard = new Storyboard
-        {
-            Animations =
-            [
-                (Menu, menuTransitionAnimation),
-                (PagePanel, opacityAnimation),
-            ]
-        };
-        
-        _animationRunningSubject.OnNext(true);
-        await transitionStoryboard.PlayAsync();
-        _animationRunningSubject.OnNext(false);
+        await PlayShowMenuStoryboardAsync(pos);
     }
-    
+
     private async Task CloseMenuAsync()
     {
         var pos = AnchorAtTopLeftPoint(FakeTouchDockAnchor);
-        var menuTransitionAnimation = BuildMenuTransitionAnimation(pos, true);
-        var opacityAnimation = CreateOpacityAnimation(true);
-        var transitionStoryboard = new Storyboard()
-        {
-            Animations =
-            [
-                (Menu, menuTransitionAnimation),
-                (PagePanel, opacityAnimation),
-            ]
-        };
-        
-        _animationRunningSubject.OnNext(true);
-        await transitionStoryboard.PlayAsync();
-        _animationRunningSubject.OnNext(false);
+        await PlayCloseMenuStoryboardAsync(pos);
         Closed?.Invoke(this, EventArgs.Empty);
     }
-    
+
     private async Task GoToInnerPageAsync(object? sender)
     {
         PageBase innerPage = sender switch
@@ -111,35 +83,16 @@ public partial class MenuControl : UserControl
 
         InnerPageHost.Content = innerPage;
         
-        var innerPageStoryboard = innerPage.BuildPageTranslateStoryboard(Menu.Width);
-        var opacityStoryboard = new Storyboard
-        {
-            Animations = 
-            [
-                (InnerPageHost, CreateOpacityAnimation()),
-                (MainPage, CreateOpacityAnimation(true)),
-            ]
-        };
-
-        _animationRunningSubject.OnNext(true);
-        await Storyboard.PlayMultiAsync(innerPageStoryboard, opacityStoryboard);
-        _animationRunningSubject.OnNext(false);
+        await PlayTransitionInnerPageStoryboardAsync(innerPage);
     }
-    
+
     private async Task ReturnToMainPageAsync(object? sender)
     {
         if (sender is not PageBase innerPage) 
             return;
 
-        _animationRunningSubject.OnNext(true);
-        var innerOpacityStoryboard = CreateOpacityAnimation(true).AsStoryboard(InnerPageHost);
-        var innerTranslateStoryboard = innerPage.BuildPageTranslateStoryboard(Menu.Width, true);
-        await Storyboard.PlayMultiAsync(innerTranslateStoryboard, innerOpacityStoryboard);
+        await PlayTransitionMainPageStoryboardAsync(innerPage);
 
-        var mainPageOpacityStoryboard = CreateOpacityAnimation().AsStoryboard(MainPage);
-        await mainPageOpacityStoryboard.PlayAsync();
-        _animationRunningSubject.OnNext(false);
-        
         InnerPageHost.Content = null;
     }
 }

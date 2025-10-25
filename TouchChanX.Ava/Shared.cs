@@ -8,7 +8,7 @@ public static class Shared
     {
         public const int TouchSpacing = 2;
     }
-    
+
     public abstract record TouchDockAnchor(TouchDockAnchor.Tags Tag)
     {
         public enum Tags
@@ -60,13 +60,11 @@ public static class Shared
         
             return (x, y) switch
             {
-                // Corners
                 (spacing, spacing) => NewTopLeft(),
                 (spacing, var py) when py == bottom => NewBottomLeft(),
                 var (px, py) when px == right && py == spacing => NewTopRight(),
                 var (px, py) when px == right && py == bottom => NewBottomRight(),
             
-                // Edges
                 (spacing, var py) => 
                     NewLeft((py + spacing + touchRect.Height / 2.0) / containerSize.Height),
                 (var px, spacing) => 
