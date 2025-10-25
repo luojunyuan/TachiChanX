@@ -4,6 +4,7 @@ using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Styling;
+using TouchChanX.Ava.Menu.Pages.Components;
 
 namespace TouchChanX.Ava.Menu.Pages;
 
@@ -52,11 +53,11 @@ public partial class PageBase
         return new Storyboard { Animations = animations };
     }
     
-    private IEnumerable<MenuItem> GetGridItems()
+    private IEnumerable<MenuButton> GetGridItems()
     {
         foreach (var child in ContentGrid.Children)
         {
-            if (child is MenuItem ctrl)
+            if (child is MenuButton ctrl)
                 yield return ctrl;
         }
     }

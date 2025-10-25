@@ -19,21 +19,7 @@
         CornerRadius="40">
 
         <Panel x:Name="PagePanel">
-            <Grid x:Name="MainPage" ColumnDefinitions="*, *, *" RowDefinitions="*, *, *">
-                <menu:MenuItem
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    Symbol="Tablet"
-                    Tag="Device"
-                    Text="Device" />
-
-                <menu:MenuItem
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Symbol="Games"
-                    Tag="Game"
-                    Text="Game" />
-            </Grid>
+            <pages:MainPage x:Name="MainPage" />
 
             <ContentControl x:Name="InnerPageHost" />
         </Panel>

@@ -5,9 +5,8 @@ using Avalonia.Media;
 using R3;
 using R3.ObservableEvents;
 
-namespace TouchChanX.Ava.Menu;
+namespace TouchChanX.Ava.Menu.Pages.Components;
 
-public record MenuCell(int Row, int Col);
 
 public enum Symbol
 {
@@ -39,7 +38,7 @@ public static class Extension
     public static IBinding ToBinding<T>(this Observable<T> source) => source.AsSystemObservable().ToBinding();
 }
 
-public partial class MenuItem : UserControl
+public partial class MenuButton : UserControl
 {
     public Observable<Unit> Clicked { get; }
     
@@ -60,13 +59,14 @@ public partial class MenuItem : UserControl
 
     public MenuCell Cell => new (Grid.GetRow(this), Grid.GetColumn(this));
 
-    public MenuItem()
+    public MenuButton()
     {
         InitializeComponent();
 
         Clicked = this.Events().PointerPressed
             .Do(e => e.Handled = true)
-            .Select(_ => Unit.Default);
+            .Select(_ => Unit.Default)
+            .Share();
 
         Icon[!PathIcon.DataProperty] = 
             this.GetObservable(SymbolProperty)

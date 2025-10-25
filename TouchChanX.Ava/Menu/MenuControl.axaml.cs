@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using R3;
 using TouchChanX.Ava.Menu.Pages;
+using TouchChanX.Ava.Menu.Pages.Components;
 
 namespace TouchChanX.Ava.Menu;
 
@@ -17,10 +18,7 @@ public partial class MenuControl : UserControl
     {
         InitializeComponent();
 
-        // Code smell
-        PageBase.BackRequested += async (s, _) => await ReturnToMainPageAsync(s);
-
-        MainPage.Children.Cast<MenuItem>()
+        MainPage.MenuButtons
             .Select(item => item.Clicked.Select(_ => item))
             .Merge()
             .SubscribeAwait(async (item, _) => await GoToInnerPageAsync(item));
@@ -104,10 +102,12 @@ public partial class MenuControl : UserControl
     {
         PageBase innerPage = sender switch
         {
-            MenuItem { Tag: "Device" } entryItem => new DevicePage { EntryCell = entryItem.Cell },
-            MenuItem { Tag: "Game" } entryItem => new GamePage { EntryCell = entryItem.Cell },
+            MenuButton { Tag: "Device" } entryItem => new DevicePage { EntryCell = entryItem.Cell },
+            MenuButton { Tag: "Game" } entryItem => new GamePage { EntryCell = entryItem.Cell },
             _ => throw new NotSupportedException(),
         };
+
+        innerPage.BackRequested.SubscribeAwait(async (_, _) => await ReturnToMainPageAsync(innerPage));
 
         InnerPageHost.Content = innerPage;
         
