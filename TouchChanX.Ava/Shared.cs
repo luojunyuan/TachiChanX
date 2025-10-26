@@ -1,4 +1,6 @@
-using System.Drawing;
+using System.Globalization;
+using Avalonia;
+using Avalonia.Data.Converters;
 
 namespace TouchChanX.Ava;
 
@@ -8,6 +10,9 @@ public static class Shared
     {
         public const int TouchSpacing = 2;
     }
+    
+    public static FuncValueConverter<double, CornerRadius> RadiusToCircleConverter { get; } =
+        new(num => new CornerRadius(num / 2));
 
     public abstract record TouchDockAnchor(TouchDockAnchor.Tags Tag)
     {
@@ -48,7 +53,7 @@ public static class Shared
 
         public static TouchDockAnchor Default { get; } = new Left(0.5);
         
-        public static TouchDockAnchor FromRect(Size containerSize, Rectangle touchRect)
+        public static TouchDockAnchor FromRect(Size containerSize, Rect touchRect)
         {
             const int spacing = Constants.TouchSpacing;
         
@@ -61,21 +66,59 @@ public static class Shared
             return (x, y) switch
             {
                 (spacing, spacing) => NewTopLeft(),
-                (spacing, var py) when py == bottom => NewBottomLeft(),
-                var (px, py) when px == right && py == spacing => NewTopRight(),
-                var (px, py) when px == right && py == bottom => NewBottomRight(),
-            
+                (spacing, var py) when IsSnapped(py, bottom) => NewBottomLeft(),
+                var (px, py) when IsSnapped(px, right) && IsSnapped(py, spacing) => NewTopRight(),
+                var (px, py) when IsSnapped(px, right) && IsSnapped(py, bottom) => NewBottomRight(),
+
                 (spacing, var py) => 
                     NewLeft((py + spacing + touchRect.Height / 2.0) / containerSize.Height),
                 (var px, spacing) => 
                     NewTop((px + spacing + touchRect.Width / 2.0) / containerSize.Width),
-                var (px, py) when px == right => 
+                var (px, py) when IsSnapped(px, right) => 
                     NewRight((py + spacing + touchRect.Height / 2.0) / containerSize.Height),
-                var (px, py) when py == bottom => 
+                var (px, py) when IsSnapped(py, bottom) => 
                     NewBottom((px + spacing + touchRect.Width / 2.0) / containerSize.Width),
-            
+
                 _ => Default
             };
+            
+            static bool IsSnapped(double value, double target, double tolerance = 0.01d) => 
+                Math.Abs(value - target) <= tolerance;
         }
+    }
+}
+
+/// <summary>
+/// 自动计算 Touch 每层圆点所占据宽度
+/// </summary>
+public class TouchLayerMarginConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        // parameter 指示该层应缩放宽度的倍率因子
+        if (value is double number && parameter is string factorString && TryParseFraction(factorString, out var factor))
+        {
+            return new Thickness(number * factor);
+        }
+
+        throw new InvalidOperationException();
+    }
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>
+        throw new InvalidOperationException();
+
+    private static bool TryParseFraction(string fraction, out double factor)
+    {
+        var parts = fraction.Split('/');
+        if (parts.Length == 2 &&
+            double.TryParse(parts[0], out var numerator) &&
+            double.TryParse(parts[1], out var denominator))
+        {
+            factor = numerator / denominator;
+            return true;
+        }
+
+        factor = 0;
+        return false;
     }
 }

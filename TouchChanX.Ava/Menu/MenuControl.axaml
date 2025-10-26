@@ -2,13 +2,21 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:TouchChanX.Ava"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:menu="using:TouchChanX.Ava.Menu"
-    xmlns:pages="clr-namespace:TouchChanX.Ava.Menu.Pages"
+    xmlns:pages="using:TouchChanX.Ava.Menu.Pages"
     mc:Ignorable="d">
 
     <UserControl.Resources>
         <SolidColorBrush x:Key="AssistiveTouchBackground" Color="#262626" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerOneLine" Color="#232323" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerOneBackground" Color="#505050" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerTwoLine" Color="#434343" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerTwoBackground" Color="#939393" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerThreeLine" Color="#686868" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerThreeBackground" Color="#FFFFFF" />
+        <x:Double x:Key="AssistiveTouchCircleThickness">1</x:Double>
+        <local:TouchLayerMarginConverter x:Key="TouchLayerMarginConverter" />
     </UserControl.Resources>
 
     <Border x:Name="Menu"
@@ -18,11 +26,35 @@
         Background="{StaticResource AssistiveTouchBackground}"
         CornerRadius="40">
 
-        <Panel x:Name="PagePanel">
-            <pages:MainPage x:Name="MainPage" />
+        <Panel>
+            <Panel x:Name="PagePanel">
+                <Border x:Name="BackgroundLayer" Background="Transparent" />
+                
+                <pages:MainPage x:Name="MainPage" />
 
-            <ContentControl x:Name="InnerPageHost" />
+                <ContentControl x:Name="InnerPageHost" />
+            </Panel>
+
+            <Panel x:Name="FakeTouch"
+                Width="80"
+                Height="{Binding $self.Width}"
+                Opacity="0">
+                <Ellipse
+                    Margin="{Binding #FakeTouch.Width, Converter={StaticResource TouchLayerMarginConverter}, ConverterParameter='2/16'}"
+                    Fill="{StaticResource AssistiveTouchLayerOneBackground}"
+                    Stroke="{StaticResource AssistiveTouchLayerOneLine}"
+                    StrokeThickness="{StaticResource AssistiveTouchCircleThickness}" />
+                <Ellipse
+                    Margin="{Binding #FakeTouch.Width, Converter={StaticResource TouchLayerMarginConverter}, ConverterParameter='3/16'}"
+                    Fill="{StaticResource AssistiveTouchLayerTwoBackground}"
+                    Stroke="{StaticResource AssistiveTouchLayerTwoLine}"
+                    StrokeThickness="{StaticResource AssistiveTouchCircleThickness}" />
+                <Ellipse
+                    Margin="{Binding #FakeTouch.Width, Converter={StaticResource TouchLayerMarginConverter}, ConverterParameter='4/16'}"
+                    Fill="{StaticResource AssistiveTouchLayerThreeBackground}"
+                    Stroke="{StaticResource AssistiveTouchLayerThreeLine}"
+                    StrokeThickness="{StaticResource AssistiveTouchCircleThickness}" />
+            </Panel>
         </Panel>
-
     </Border>
 </UserControl>

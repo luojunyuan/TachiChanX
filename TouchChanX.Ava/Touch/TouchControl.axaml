@@ -2,8 +2,8 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:TouchChanX.Ava"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:touch="using:TouchChanX.Ava.Touch"
     d:DesignHeight="84"
     d:DesignWidth="84"
     mc:Ignorable="d">
@@ -17,7 +17,7 @@
         <SolidColorBrush x:Key="AssistiveTouchLayerThreeLine" Color="#686868" />
         <SolidColorBrush x:Key="AssistiveTouchLayerThreeBackground" Color="#FFFFFF" />
         <x:Double x:Key="AssistiveTouchCircleThickness">1</x:Double>
-        <touch:TouchLayerMarginConverter x:Key="TouchLayerMarginConverter" />
+        <local:TouchLayerMarginConverter x:Key="TouchLayerMarginConverter" />
     </UserControl.Resources>
 
     <Border x:Name="Touch"
@@ -26,7 +26,7 @@
         HorizontalAlignment="Left"
         VerticalAlignment="Top"
         Background="{StaticResource AssistiveTouchBackground}"
-        CornerRadius="{Binding $self.Width, Converter={x:Static touch:Converters.RadiusToCircleConverter}}">
+        CornerRadius="{Binding $self.Width, Converter={x:Static local:Shared.RadiusToCircleConverter}}">
         <Panel>
             <Ellipse
                 Margin="{Binding #Touch.Width, Converter={StaticResource TouchLayerMarginConverter}, ConverterParameter='2/16'}"

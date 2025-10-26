@@ -100,7 +100,7 @@ public static class PositionCalculator
             _ => default,
         };
         
-        static bool IsSnapped(double value, double target, double tolerance = 0.1d) => 
+        static bool IsSnapped(double value, double target, double tolerance = 0.01d) => 
             Math.Abs(value - target) <= tolerance;
     }
 }

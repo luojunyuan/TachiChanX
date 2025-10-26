@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using R3;
+using R3.ObservableEvents;
 using TouchChanX.Ava.Menu.Pages;
 using TouchChanX.Ava.Menu.Pages.Components;
 
@@ -24,8 +25,9 @@ public partial class MenuControl : UserControl
             .Select(item => item.Clicked.Select(_ => item))
             .Merge()
             .SubscribeAwait(async (item, _) => await GoToInnerPageAsync(item));
-        
-        this.PointerPressed += async (_, _) => await CloseMenuAsync();
+
+        BackgroundLayer.Events().Tapped
+            .SubscribeAwait(async (_, _) => await CloseMenuAsync());
         
         // 订阅执行任何动画期间都禁止整个页面再次交互
         _animationRunningSubject.Subscribe(running => this.IsHitTestVisible = !running);
@@ -45,13 +47,13 @@ public partial class MenuControl : UserControl
             { IsBottomLeft: true } => ConvertToCenterCoord(new Point(TouchSpacing, alignBottom)),
             { IsBottomRight: true } => ConvertToCenterCoord(new Point(alignRight, alignBottom)),
             Shared.TouchDockAnchor.Left x => 
-                ConvertToCenterCoord(new Point(TouchSpacing, x.Scale * height - TouchSize / 2)),
+                ConvertToCenterCoord(new Point(TouchSpacing, x.Scale * height - TouchSize / 2 - TouchSpacing)),
             Shared.TouchDockAnchor.Top x => 
-                ConvertToCenterCoord(new Point(x.Scale * width - TouchSize / 2, TouchSpacing)),
+                ConvertToCenterCoord(new Point(x.Scale * width - TouchSize / 2 - TouchSpacing, TouchSpacing)),
             Shared.TouchDockAnchor.Right x => 
-                ConvertToCenterCoord(new Point(alignRight, x.Scale * height - TouchSize / 2)),
+                ConvertToCenterCoord(new Point(alignRight, x.Scale * height - TouchSize / 2 - TouchSpacing)),
             Shared.TouchDockAnchor.Bottom x => 
-                ConvertToCenterCoord(new Point(x.Scale * width - TouchSize / 2, alignBottom)),
+                ConvertToCenterCoord(new Point(x.Scale * width - TouchSize / 2 - TouchSpacing, alignBottom)),
             _ => default,
         };
         
@@ -69,6 +71,8 @@ public partial class MenuControl : UserControl
     {
         var pos = AnchorAtTopLeftPoint(FakeTouchDockAnchor);
         await PlayCloseMenuStoryboardAsync(pos);
+        if (InnerPageHost.Content is PageBase innerPage)
+            _ = ReturnToMainPageAsync(innerPage);
         Closed?.Invoke(this, EventArgs.Empty);
     }
 

@@ -42,29 +42,6 @@ public partial class TouchControl : UserControl
                 .Select(releasedEvent => releasedEvent as PointerEventArgs)
                 .Merge(raisePointerReleasedSubject)
                 .Share();
-        
-        var clickStream = 
-            pointerPressedStream
-            .SelectMany(pressEvent =>
-                pointerReleasedStream
-                .Where(releaseEvent =>
-                {
-                    var pressPos = pressEvent.GetPosition(container);
-                    var releasePos = releaseEvent.GetPosition(container);
-                    return pressPos == releasePos;
-                })
-                .Take(1))
-            .Delay(OpacityFadeInDuration)
-            .ThrottleFirst(OpacityFadeInDuration)
-            .Share();
-
-        clickStream
-            .ObserveOn(App.UISyncContext)
-            .Where(_ => container.IsVisible)
-            .Subscribe(_ => 
-                Clicked?.Invoke(this, Shared.TouchDockAnchor.FromRect(
-                    container.Bounds.Size.ToSystemSize(), 
-                    TouchDockRect.ToSystemRect())));
 
         var dragStartedStream =
             pointerPressedStream
@@ -79,6 +56,24 @@ public partial class TouchControl : UserControl
                         .Take(1)
                         .TakeUntil(pointerReleasedStream))
                 .Share();
+
+        var clickStream = 
+            pointerPressedStream
+            .SelectMany(_ =>
+                pointerReleasedStream
+                .Take(1)
+                .TakeUntil(dragStartedStream))
+            .Delay(OpacityFadeInDuration)
+            .ThrottleFirst(OpacityFadeInDuration)
+            .Share();
+
+        // 订阅点击事件
+        clickStream
+            .ObserveOn(App.UISyncContext)
+            .Where(_ => container.IsVisible)
+            .Subscribe(_ => 
+                Clicked?.Invoke(this, Shared.TouchDockAnchor.FromRect(
+                    container.Bounds.Size, TouchDockRect)));
 
         var dragEndedStream =
             dragStartedStream

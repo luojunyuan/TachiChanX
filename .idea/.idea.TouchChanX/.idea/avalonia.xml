@@ -8,6 +8,7 @@
         <entry key="TouchChanX.Ava/Menu/DevicePage.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
         <entry key="TouchChanX.Ava/Menu/MenuControl.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
         <entry key="TouchChanX.Ava/Menu/MenuItem.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
+        <entry key="TouchChanX.Ava/Menu/Pages/Components/MenuButton.axaml" value="TouchChanX/TouchChanX.csproj" />
         <entry key="TouchChanX.Ava/Menu/Pages/Components/MenuItem.axaml" value="TouchChanX/TouchChanX.csproj" />
         <entry key="TouchChanX.Ava/Menu/Pages/DevicePage.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />
         <entry key="TouchChanX.Ava/Menu/Pages/GamePage.axaml" value="TouchChanX.Rider/TouchChanX.Rider.csproj" />

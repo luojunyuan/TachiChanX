@@ -48,12 +48,14 @@ public partial class MenuControl
     {
         var menuTransitionAnimation = BuildMenuTransitionAnimation(pos, true);
         var opacityAnimation = CreateOpacityAnimation(true);
+        var touchOpacityAnimation = CreateOpacityAnimation();
         var transitionStoryboard = new Storyboard()
         {
             Animations =
             [
                 (Menu, menuTransitionAnimation),
                 (PagePanel, opacityAnimation),
+                (FakeTouch, touchOpacityAnimation),
             ]
         };
         
@@ -66,12 +68,14 @@ public partial class MenuControl
     {
         var menuTransitionAnimation = BuildMenuTransitionAnimation(pos);
         var opacityAnimation = CreateOpacityAnimation();
+        var touchOpacityAnimation = CreateOpacityAnimation(true);
         var transitionStoryboard = new Storyboard
         {
             Animations =
             [
                 (Menu, menuTransitionAnimation),
                 (PagePanel, opacityAnimation),
+                (FakeTouch, touchOpacityAnimation),
             ]
         };
         
@@ -115,7 +119,7 @@ public partial class MenuControl
     {
         Duration = reverse ? PageTransitionOutDuration : PageTransitionInDuration,
         FillMode = FillMode.Forward,
-        Easing = reverse ? new LinearEasing() : new CubicEaseOut(),
+        Easing = reverse ? new CubicEaseIn() : new CubicEaseOut(),
         PlaybackDirection = reverse ? PlaybackDirection.Reverse : PlaybackDirection.Normal,
         Children =
         {

@@ -4,10 +4,20 @@
     xmlns:c="using:TouchChanX.Ava.Menu.Pages.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d" Background="Transparent">
+
+    <UserControl.Styles>
+        <Style Selector="c|MenuButton">
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <Style Selector="c|MenuButton:pressed">
+            <Setter Property="Foreground" Value="#6FC4F1" />
+        </Style>
+    </UserControl.Styles>
 
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
-        <PathIcon x:Name="Icon" Width="50" Foreground="White" />
-        <TextBlock HorizontalAlignment="Center" Foreground="White" Text="{Binding $parent[c:MenuButton].Text}" />
+        <PathIcon x:Name="Icon" Width="50" Foreground="{Binding $parent[UserControl].Foreground}" />
+        <TextBlock HorizontalAlignment="Center" Foreground="{Binding $parent[UserControl].Foreground}" Text="{Binding $parent[c:MenuButton].Text}" />
     </StackPanel>
 </UserControl>

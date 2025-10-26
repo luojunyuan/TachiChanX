@@ -1,6 +1,8 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Media;
 using R3;
 using R3.ObservableEvents;
@@ -38,6 +40,7 @@ public static class Extension
     public static IBinding ToBinding<T>(this Observable<T> source) => source.AsSystemObservable().ToBinding();
 }
 
+[PseudoClasses(":pressed")]
 public partial class MenuButton : UserControl
 {
     public Observable<Unit> Clicked { get; }
@@ -63,8 +66,9 @@ public partial class MenuButton : UserControl
     {
         InitializeComponent();
 
-        Clicked = this.Events().PointerPressed
-            .Do(e => e.Handled = true)
+        InitializePseudoclasses();
+
+        Clicked = this.Events().Tapped
             .Select(_ => Unit.Default)
             .Share();
 
@@ -80,5 +84,18 @@ public partial class MenuButton : UserControl
             // Symbol = Symbol.Setting;
             // Text = "d:Setting";
         }
+    }
+
+    private void InitializePseudoclasses()
+    {
+        this.Events().PointerPressed
+            .Subscribe(_ => PseudoClasses.Add(":pressed"));
+
+        this.Events().PointerReleased
+            .Subscribe(_ => PseudoClasses.Remove(":pressed"));
+
+        this.Events().PointerExited
+            .Where(e => e.Source == this)
+            .Subscribe(_ => PseudoClasses.Remove(":pressed"));
     }
 }
