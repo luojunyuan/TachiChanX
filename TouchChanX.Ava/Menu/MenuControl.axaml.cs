@@ -28,51 +28,52 @@ public partial class MenuControl : UserControl
 
         BackgroundLayer.Events().Tapped
             .SubscribeAwait(async (_, _) => await CloseMenuAsync());
-        
-        // 订阅执行任何动画期间都禁止整个页面再次交互
-        _animationRunningSubject.Subscribe(running => this.IsHitTestVisible = !running);
     }
     
-    private Point AnchorAtTopLeftPoint(Shared.TouchDockAnchor anchor, Rect? bounds = null)
+    private Point AnchorPoint(Shared.TouchDockAnchor anchor, Size? window = null)
     {
-        var width = bounds?.Width ?? this.Bounds.Width;
-        var height = bounds?.Height ?? this.Bounds.Height;
+        var width = window?.Width ?? this.Bounds.Width;
+        var height = window?.Height ?? this.Bounds.Height;
         var alignRight = width - TouchSize - TouchSpacing;
         var alignBottom = height - TouchSize - TouchSpacing;
 
         return anchor switch
         {
-            { IsTopLeft: true } => ConvertToCenterCoord(new Point(TouchSpacing, TouchSpacing)),
-            { IsTopRight: true } => ConvertToCenterCoord(new Point(alignRight, TouchSpacing)),
-            { IsBottomLeft: true } => ConvertToCenterCoord(new Point(TouchSpacing, alignBottom)),
-            { IsBottomRight: true } => ConvertToCenterCoord(new Point(alignRight, alignBottom)),
-            Shared.TouchDockAnchor.Left x => 
-                ConvertToCenterCoord(new Point(TouchSpacing, x.Scale * height - TouchSize / 2 - TouchSpacing)),
-            Shared.TouchDockAnchor.Top x => 
-                ConvertToCenterCoord(new Point(x.Scale * width - TouchSize / 2 - TouchSpacing, TouchSpacing)),
-            Shared.TouchDockAnchor.Right x => 
-                ConvertToCenterCoord(new Point(alignRight, x.Scale * height - TouchSize / 2 - TouchSpacing)),
-            Shared.TouchDockAnchor.Bottom x => 
-                ConvertToCenterCoord(new Point(x.Scale * width - TouchSize / 2 - TouchSpacing, alignBottom)),
+            { IsTopLeft: true } => new Point(TouchSpacing, TouchSpacing),
+            { IsTopRight: true } => new Point(alignRight, TouchSpacing),
+            { IsBottomLeft: true } => new Point(TouchSpacing, alignBottom),
+            { IsBottomRight: true } => new Point(alignRight, alignBottom),
+            Shared.TouchDockAnchor.Left x => new Point(TouchSpacing, x.Scale * height - TouchSize / 2 - TouchSpacing),
+            Shared.TouchDockAnchor.Top x => new Point(x.Scale * width - TouchSize / 2 - TouchSpacing, TouchSpacing),
+            Shared.TouchDockAnchor.Right x => new Point(alignRight, x.Scale * height - TouchSize / 2 - TouchSpacing),
+            Shared.TouchDockAnchor.Bottom x => new Point(x.Scale * width - TouchSize / 2 - TouchSpacing, alignBottom),
             _ => default,
         };
-        
-        Point ConvertToCenterCoord(Point point) => 
-            new(point.X - width / 2 + TouchSize / 2, point.Y- height / 2 + TouchSize / 2);
     }
     
-    public async Task ShowMenuAsync(Rect bounds)
+    public async Task ShowMenuAsync(Size window)
     {
-        var pos = AnchorAtTopLeftPoint(FakeTouchDockAnchor, bounds);
-        await PlayShowMenuStoryboardAsync(pos);
+        var pos = AnchorPoint(FakeTouchDockAnchor, window);
+        await PlayShowMenuStoryboardAsync(pos, window);
+        
+        Menu.Classes.Add("expanded");
+        Menu.RenderTransform = null;
     }
 
-    private async Task CloseMenuAsync()
+    public async Task CloseMenuAsync()
     {
-        var pos = AnchorAtTopLeftPoint(FakeTouchDockAnchor);
+        Menu.Classes.Remove("expanded");
+
+        var pos = AnchorPoint(FakeTouchDockAnchor);
         await PlayCloseMenuStoryboardAsync(pos);
-        if (InnerPageHost.Content is PageBase innerPage)
-            _ = ReturnToMainPageAsync(innerPage);
+
+        if (InnerPageHost.Content is not null)
+        {
+            InnerPageHost.Content = null;
+            MainPage.Opacity = 1d;
+            MainPage.IsEnabled =  true;
+        }
+    
         Closed?.Invoke(this, EventArgs.Empty);
     }
 

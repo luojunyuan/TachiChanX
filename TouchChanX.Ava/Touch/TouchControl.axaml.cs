@@ -10,9 +10,10 @@ namespace TouchChanX.Ava.Touch;
 public partial class TouchControl : UserControl
 {
     private const int TouchSpacing = Shared.Constants.TouchSpacing;
-    
-    public event EventHandler<Shared.TouchDockAnchor>? Clicked;
-    
+
+    private readonly Observable<Shared.TouchDockAnchor> _clicked;
+    public Observable<Shared.TouchDockAnchor> Clicked => _clicked;
+
     private readonly TranslateTransform _moveTransform = new() { X = TouchSpacing, Y = TouchSpacing };
 
     public TouchControl()
@@ -20,10 +21,10 @@ public partial class TouchControl : UserControl
         InitializeComponent();
         Touch.RenderTransform = _moveTransform;
 
-        TouchSubscribe();
+        TouchSubscribe(out _clicked);
     }
 
-    private void TouchSubscribe()
+    private void TouchSubscribe(out Observable<Shared.TouchDockAnchor> onClicked)
     {
         var container = this;
         var raisePointerReleasedSubject = new Subject<PointerEventArgs>();
@@ -68,12 +69,10 @@ public partial class TouchControl : UserControl
             .Share();
 
         // 订阅点击事件
-        clickStream
+        onClicked = clickStream
             .ObserveOn(App.UISyncContext)
             .Where(_ => container.IsVisible)
-            .Subscribe(_ => 
-                Clicked?.Invoke(this, Shared.TouchDockAnchor.FromRect(
-                    container.Bounds.Size, TouchDockRect)));
+            .Select(_ => Shared.TouchDockAnchor.FromRect(container.Bounds.Size, TouchDockRect));
 
         var dragEndedStream =
             dragStartedStream
@@ -164,9 +163,6 @@ public partial class TouchControl : UserControl
             .Switch()
             .SubscribeAwait(async (_, _) => await RunFadeOutAnimationAsync());
         
-        // 订阅执行任何动画期间都禁止整个页面再次交互
-        _animationRunningSubject.Subscribe(running => this.IsHitTestVisible = !running);
-
         // TODO: 还需检查拖动的时候窗口大小改变的情景
         
         // 订阅窗口大小改变时自动更新停靠的touch位置

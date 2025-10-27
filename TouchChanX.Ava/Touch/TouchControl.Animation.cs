@@ -8,14 +8,15 @@ namespace TouchChanX.Ava.Touch;
 
 public partial class TouchControl // Animation
 {
-    private readonly Subject<bool> _animationRunningSubject = new();
-
     private static readonly TimeSpan ReleaseToEdgeDuration = TimeSpan.FromMilliseconds(200);
     private static readonly TimeSpan OpacityFadeOutDuration = TimeSpan.FromMilliseconds(400);
     private static readonly TimeSpan OpacityFadeInDuration = TimeSpan.FromMilliseconds(100);
     private static readonly TimeSpan OpacityFadeDelay = TimeSpan.FromMilliseconds(4000);
     private const double OpacityHalf = 0.4;
     private const double OpacityFull = 1d;
+    
+    private readonly Subject<bool> _animationRunningSubject = new();
+    public Observable<bool> AnimationRunning => _animationRunningSubject;
     
     private async Task RunReleaseTranslationAnimationAsync((Point StartPos, Point StopPos) pair)
     {

@@ -1,4 +1,6 @@
 using Avalonia.Controls;
+using R3;
+using R3.ObservableEvents;
 
 namespace TouchChanX.Ava;
 
@@ -10,14 +12,21 @@ public partial class MainWindow : Window
 
         this.Opened += (_, _) => Menu.IsVisible = false;
         Menu.Closed += (_, _) => Menu.IsVisible = false;
-    }
 
-    // ReSharper disable once AsyncVoidMethod 不用考虑不会发生的事情
-    private async void TouchControlOnClicked(object? sender, Shared.TouchDockAnchor dockAnchor)
-    {
-        Menu.FakeTouchDockAnchor = dockAnchor;
-        Menu.IsVisible = true;
-        // NOTE: 因为 Menu.IsVisible <> false，一直感知不到窗体的大小变化，所以打开它时基于父容器的 bounds 计算
-        await Menu.ShowMenuAsync(this.Bounds);
+        BackgroundLayer.Events().Tapped
+            .Where(_ => Menu.IsVisible)
+            .SubscribeAwait(async (_, _) => await Menu.CloseMenuAsync());
+
+        // 订阅执行任何动画期间都禁止整个页面再次交互
+        Observable.Merge(Touch.AnimationRunning, Menu.AnimationRunning)
+            .Subscribe(running => this.IsHitTestVisible = !running);
+
+        Touch.Clicked.SubscribeAwait(async (dockAnchor, _) =>
+        {
+            Menu.FakeTouchDockAnchor = dockAnchor;
+            Menu.IsVisible = true;
+            // NOTE: 因为 Menu.IsVisible <> false，一直感知不到窗体的大小变化，所以打开它时基于父容器的 bounds 计算
+            await Menu.ShowMenuAsync(this.Bounds.Size);
+        });
     }
 }

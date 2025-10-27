@@ -11,7 +11,8 @@
     mc:Ignorable="d">
 
     <Panel>
-        <touch:TouchControl Clicked="TouchControlOnClicked" IsVisible="{Binding !#Menu.IsVisible}" />
+        <Border x:Name="BackgroundLayer" Background="Transparent" />
+        <touch:TouchControl x:Name="Touch" IsVisible="{Binding !#Menu.IsVisible}" />
         <menu:MenuControl x:Name="Menu" />
     </Panel>
 </Window>

@@ -19,6 +19,18 @@
         <local:TouchLayerMarginConverter x:Key="TouchLayerMarginConverter" />
     </UserControl.Resources>
 
+    <UserControl.Styles>
+        <Style Selector="Border#Menu">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+
+        <Style Selector="Border#Menu.expanded">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+    </UserControl.Styles>
+
     <Border x:Name="Menu"
         Width="300"
         Height="{Binding $self.Width}"
@@ -29,7 +41,7 @@
         <Panel>
             <Panel x:Name="PagePanel">
                 <Border x:Name="BackgroundLayer" Background="Transparent" />
-                
+
                 <pages:MainPage x:Name="MainPage" />
 
                 <ContentControl x:Name="InnerPageHost" />

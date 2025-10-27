@@ -8,12 +8,13 @@ using TouchChanX.Ava.Menu.Pages;
 
 namespace TouchChanX.Ava.Menu;
 
-public partial class MenuControl
+public partial class MenuControl // Animation
 {
     private static readonly TimeSpan PageTransitionInDuration = TimeSpan.FromMilliseconds(400);
     private static readonly TimeSpan PageTransitionOutDuration = TimeSpan.FromMilliseconds(250);
 
     private readonly Subject<bool> _animationRunningSubject = new();
+    public Observable<bool> AnimationRunning => _animationRunningSubject;
 
     private async Task PlayTransitionMainPageStoryboardAsync(PageBase innerPage)
     {
@@ -46,7 +47,11 @@ public partial class MenuControl
     
     private async Task PlayCloseMenuStoryboardAsync(Point pos)
     {
-        var menuTransitionAnimation = BuildMenuTransitionAnimation(pos, true);
+        var endOffset =  new Point(
+            this.Bounds.Size.Width - new Size(300, 300).Width, 
+            this.Bounds.Size.Height - new Size(300, 300).Height) / 2d;
+
+        var menuTransitionAnimation = BuildMenuTransitionAnimation(pos, endOffset, true);
         var opacityAnimation = CreateOpacityAnimation(true);
         var touchOpacityAnimation = CreateOpacityAnimation();
         var transitionStoryboard = new Storyboard()
@@ -64,9 +69,13 @@ public partial class MenuControl
         _animationRunningSubject.OnNext(false);
     }
     
-    private async Task PlayShowMenuStoryboardAsync(Point pos)
+    private async Task PlayShowMenuStoryboardAsync(Point pos, Size windowSize)
     {
-        var menuTransitionAnimation = BuildMenuTransitionAnimation(pos);
+        var endOffset =  new Point(
+            windowSize.Width - new Size(300, 300).Width, 
+            windowSize.Height - new Size(300, 300).Height) / 2;
+
+        var menuTransitionAnimation = BuildMenuTransitionAnimation(pos, endOffset);
         var opacityAnimation = CreateOpacityAnimation();
         var touchOpacityAnimation = CreateOpacityAnimation(true);
         var transitionStoryboard = new Storyboard
@@ -84,7 +93,7 @@ public partial class MenuControl
         _animationRunningSubject.OnNext(false);
     }
     
-    private static Animation BuildMenuTransitionAnimation(Point startOffset, bool reverse = false) => new()
+    private static Animation BuildMenuTransitionAnimation(Point startOffset, Point endOffset, bool reverse = false) => new()
     {
         Duration = reverse ? PageTransitionOutDuration : PageTransitionInDuration,
         FillMode = FillMode.Forward,
@@ -107,8 +116,9 @@ public partial class MenuControl
                 Cue = new Cue(1d),
                 Setters =
                 {
-                    new Setter(TranslateTransform.XProperty, 0d),
-                    new Setter(TranslateTransform.YProperty, 0d),
+                    // bounds 还是需要传入
+                    new Setter(TranslateTransform.XProperty, endOffset.X),
+                    new Setter(TranslateTransform.YProperty, endOffset.Y),
                     new Setter(WidthProperty, 300d),
                 }
             }
