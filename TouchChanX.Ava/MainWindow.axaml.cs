@@ -13,7 +13,7 @@ public partial class MainWindow : Window
         this.Opened += (_, _) => Menu.IsVisible = false;
         Menu.Closed += (_, _) => Menu.IsVisible = false;
 
-        BackgroundLayer.Events().Tapped
+        BackgroundLayer.Events().PointerReleased
             .Where(_ => Menu.IsVisible)
             .SubscribeAwait(async (_, _) => await Menu.CloseMenuAsync());
 

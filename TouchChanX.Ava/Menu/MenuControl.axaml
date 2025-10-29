@@ -49,8 +49,7 @@
 
             <Panel x:Name="FakeTouch"
                 Width="80"
-                Height="{Binding $self.Width}"
-                Opacity="0">
+                Height="{Binding $self.Width}">
                 <Ellipse
                     Margin="{Binding #FakeTouch.Width, Converter={StaticResource TouchLayerMarginConverter}, ConverterParameter='2/16'}"
                     Fill="{StaticResource AssistiveTouchLayerOneBackground}"

@@ -20,13 +20,15 @@ public partial class MenuControl : UserControl
     public MenuControl()
     {
         InitializeComponent();
+        
+        Menu.PointerPressed += (_, e) => e.Pointer.Capture(null);
 
         MainPage.MenuButtons
             .Select(item => item.Clicked.Select(_ => item))
             .Merge()
             .SubscribeAwait(async (item, _) => await GoToInnerPageAsync(item));
 
-        BackgroundLayer.Events().Tapped
+        BackgroundLayer.Events().PointerReleased
             .SubscribeAwait(async (_, _) => await CloseMenuAsync());
     }
     
@@ -39,10 +41,10 @@ public partial class MenuControl : UserControl
 
         return anchor switch
         {
-            { IsTopLeft: true } => new Point(TouchSpacing, TouchSpacing),
-            { IsTopRight: true } => new Point(alignRight, TouchSpacing),
-            { IsBottomLeft: true } => new Point(TouchSpacing, alignBottom),
-            { IsBottomRight: true } => new Point(alignRight, alignBottom),
+            Shared.TouchDockAnchor.TopLeft => new Point(TouchSpacing, TouchSpacing),
+            Shared.TouchDockAnchor.TopRight => new Point(alignRight, TouchSpacing),
+            Shared.TouchDockAnchor.BottomLeft => new Point(TouchSpacing, alignBottom),
+            Shared.TouchDockAnchor.BottomRight => new Point(alignRight, alignBottom),
             Shared.TouchDockAnchor.Left x => new Point(TouchSpacing, x.Scale * height - TouchSize / 2 - TouchSpacing),
             Shared.TouchDockAnchor.Top x => new Point(x.Scale * width - TouchSize / 2 - TouchSpacing, TouchSpacing),
             Shared.TouchDockAnchor.Right x => new Point(alignRight, x.Scale * height - TouchSize / 2 - TouchSpacing),
@@ -58,11 +60,13 @@ public partial class MenuControl : UserControl
         
         Menu.Classes.Add("expanded");
         Menu.RenderTransform = null;
+        FakeTouch.IsVisible = false;
     }
 
     public async Task CloseMenuAsync()
     {
         Menu.Classes.Remove("expanded");
+        FakeTouch.IsVisible = true;
 
         var pos = AnchorPoint(FakeTouchDockAnchor);
         await PlayCloseMenuStoryboardAsync(pos);

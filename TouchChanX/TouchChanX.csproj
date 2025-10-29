@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TouchChanX.Ava\TouchChanX.Ava.csproj" />
+    <ProjectReference Include="..\TouchChanX.SplashScreenGdiPlus\TouchChanX.SplashScreenGdiPlus.csproj" />
   </ItemGroup>
   
 </Project>

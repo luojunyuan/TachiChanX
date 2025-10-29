@@ -1,0 +1,24 @@
+﻿// Basic
+DefWindowProc
+RegisterClassEx
+CreateWindowEx
+DestroyWindow
+
+// Position
+SystemParametersInfo
+
+// Dpi
+MonitorFromPoint
+GetDpiForMonitor
+
+// Interop between System.Drawing.Common and GDI+
+GetDC
+ReleaseDC
+
+// Layered style
+WINDOW_EX_STYLE
+SetWindowLong
+GetWindowLong
+
+// Transparency color key
+SetLayeredWindowAttributes

@@ -68,7 +68,7 @@ public partial class MenuButton : UserControl
 
         InitializePseudoclasses();
 
-        Clicked = this.Events().Tapped
+        Clicked = this.Events().PointerReleased
             .Select(_ => Unit.Default)
             .Share();
 
@@ -94,8 +94,12 @@ public partial class MenuButton : UserControl
         this.Events().PointerReleased
             .Subscribe(_ => PseudoClasses.Remove(":pressed"));
 
+        this.Events().PointerEntered
+            .Where(e => e.Properties.IsLeftButtonPressed)
+            .Subscribe(_ => PseudoClasses.Add(":pressed"));
+        
         this.Events().PointerExited
-            .Where(e => e.Source == this)
+            .Where(e => e.Properties.IsLeftButtonPressed)
             .Subscribe(_ => PseudoClasses.Remove(":pressed"));
     }
 }

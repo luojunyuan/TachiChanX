@@ -28,15 +28,6 @@ public static class Shared
             BottomRight,
         }
 
-        public static TouchDockAnchor NewLeft(double scale) => new Left(scale);
-        public static TouchDockAnchor NewTop(double scale) => new Top(scale);
-        public static TouchDockAnchor NewRight(double scale) => new Right(scale);
-        public static TouchDockAnchor NewBottom(double scale) => new Bottom(scale);
-        public static TouchDockAnchor NewTopLeft() => new TopLeft();
-        public static TouchDockAnchor NewTopRight() => new TopRight();
-        public static TouchDockAnchor NewBottomLeft() => new BottomLeft();
-        public static TouchDockAnchor NewBottomRight() => new BottomRight();
-
         public record Left(double Scale) : TouchDockAnchor(Tags.Left);
         public record Top(double Scale) : TouchDockAnchor(Tags.Top);
         public record Right(double Scale) : TouchDockAnchor(Tags.Right);
@@ -46,10 +37,14 @@ public static class Shared
         public record BottomLeft() : TouchDockAnchor(Tags.BottomLeft);
         public record BottomRight() : TouchDockAnchor(Tags.BottomRight);
 
-        public bool IsTopLeft => Tag == Tags.TopLeft;
-        public bool IsTopRight => Tag == Tags.TopRight;
-        public bool IsBottomLeft => Tag == Tags.BottomLeft;
-        public bool IsBottomRight => Tag == Tags.BottomRight;
+        public static TouchDockAnchor NewLeft(double scale) => new Left(scale);
+        public static TouchDockAnchor NewTop(double scale) => new Top(scale);
+        public static TouchDockAnchor NewRight(double scale) => new Right(scale);
+        public static TouchDockAnchor NewBottom(double scale) => new Bottom(scale);
+        public static TouchDockAnchor NewTopLeft() => new TopLeft();
+        public static TouchDockAnchor NewTopRight() => new TopRight();
+        public static TouchDockAnchor NewBottomLeft() => new BottomLeft();
+        public static TouchDockAnchor NewBottomRight() => new BottomRight();
 
         public static TouchDockAnchor Default { get; } = new Left(0.5);
         

@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/SolutionFolder/" />
-  <Project Path="TouchChanX.Ava\TouchChanX.Ava.csproj" Type="Classic C#" />
+  <Project Path="TouchChanX.Ava\TouchChanX.Ava.csproj" />
   <Project Path="TouchChanX.Rider/TouchChanX.Rider.csproj" />
+  <Project Path="TouchChanX.SplashScreenGdiPlus/TouchChanX.SplashScreenGdiPlus.csproj" />
   <Project Path="TouchChanX/TouchChanX.csproj" />
 </Solution>
