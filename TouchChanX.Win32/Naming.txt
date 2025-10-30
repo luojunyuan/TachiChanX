@@ -1,0 +1,6 @@
+﻿- Win32 项目命名空间
+- Interop 文件夹命名空间
+- NativeMethods cswin32 文件
+- PInvoke cswin32 生成类名
+
+备选 Os Platform System Managed Bridge Api Impl Marshal

@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Desktop" Version="11.3.6" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.8" />
     <PackageReference Include="R3" Version="1.3.0" />
     <PackageReference Include="R3Extensions.ObservableEvents.SourceGenerator" Version="1.3.3" />
   </ItemGroup>

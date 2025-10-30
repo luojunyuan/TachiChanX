@@ -9,3 +9,4 @@ var app = AppBuilder.Configure<App>()
     .LogToTrace();
 
 app.StartWithClassicDesktopLifetime(args);
+
