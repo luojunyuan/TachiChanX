@@ -1,10 +1,10 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using R3;
 using TouchChanX.Ava;
 using TouchChanX.Win32;
 using TouchChanX.Win32.Interop;
-using R3;
 
 if (args.Length == 0)
 {
@@ -40,14 +40,24 @@ if (handleResult.IsFailure(out var error, out var gameWindowHandle))
     }
 }
 
-Thread.CurrentThread.SetApartmentState(ApartmentState.Unknown);
-Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
+// 用于挂载程序意外退出的情景
+process.EnableRaisingEvents = true;
+process.Exited += (_, _) => Environment.Exit(0);
 
-var app = AppBuilder.Configure<App>()
-    .UsePlatformDetect()
-    .LogToTrace();
+var uiThread = new Thread(() =>
+{
+    Thread.CurrentThread.Name = "UI Thread";
 
-app.Start(AppMain, args);
+    var app = AppBuilder.Configure<App>()
+        .UsePlatformDetect()
+        .LogToTrace();
+
+    app.Start(AppMain, args);
+});
+uiThread.SetApartmentState(ApartmentState.STA);
+uiThread.Start();
+
+return;
 
 void AppMain(Application app, string[] args)
 {
@@ -56,13 +66,14 @@ void AppMain(Application app, string[] args)
         Background = Brushes.Transparent,
         SystemDecorations = SystemDecorations.None,
         Position = default,
+        ShowActivated = false,
     };
 
     var handle = TopLevel.GetTopLevel(window)?.TryGetPlatformHandle()?.Handle ?? throw new InvalidOperationException();
 
-    window.Loaded += async (_, _) =>
+    window.Opened += async (_, _) =>
     {
-        // Note: Ava 必须在 Loaded 事件后，Child Style 子窗口才可以和游戏窗口共享焦点，并且样式才能被正常应用或者移除
+        // NOTE: 仅在 Opened 事件后能够有效调整 win32 样式，并且子窗口才可与游戏窗口共享焦点
         OsPlatformApi.ToggleWindowStyle(handle, true, WindowStyle.Child);
         OsPlatformApi.ToggleWindowExStyle(handle, true, ExtendedWindowStyle.Layered);
         // 可选移除的其他样式
@@ -81,6 +92,19 @@ void AppMain(Application app, string[] args)
             window.Width = size.Width / window.DesktopScaling;
             window.Height = size.Height / window.DesktopScaling;
         });
+
+    window.Touch.ResetWindowObservableRegion = avaSize =>
+    {
+        OsPlatformApi.ResetWindowOriginalObservableRegion(handle, new((int)(window.Width * window.DesktopScaling), (int)(window.Height * window.DesktopScaling)));
+    };
+    window.Touch.SetWindowObservableRegion = avaRect =>
+    {
+        OsPlatformApi.SetWindowObservableRegion(handle, new(
+            (int)(avaRect.X * window.DesktopScaling),
+            (int)(avaRect.Y * window.DesktopScaling),
+            (int)(avaRect.Width * window.DesktopScaling),
+            (int)(avaRect.Height * window.DesktopScaling)));
+    };
 
     app.Run(window);
 }

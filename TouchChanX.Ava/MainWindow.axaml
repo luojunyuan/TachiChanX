@@ -12,7 +12,7 @@
 
     <Panel>
         <Border x:Name="BackgroundLayer" Background="Transparent" />
-        <touch:TouchControl x:Name="Touch" IsVisible="{Binding !#Menu.IsVisible}" />
+        <touch:TouchControl x:Name="Touch" x:FieldModifier="public" IsVisible="{Binding !#Menu.IsVisible}" />
         <menu:MenuControl x:Name="Menu" />
     </Panel>
 </Window>

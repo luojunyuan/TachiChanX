@@ -31,7 +31,7 @@ public partial class TouchControl : UserControl
 
         var pointerPressedStream =
             // ReSharper disable once RedundantCast
-            ((Border)Touch).Events().PointerPressed.Share()
+            ((Border)Touch).Events().PointerPressed
                 .Where(e => e.GetCurrentPoint(null).Properties.IsLeftButtonPressed)
                 .Share();
         var pointerMovedStream =
@@ -116,7 +116,8 @@ public partial class TouchControl : UserControl
         boundaryExceededStream
             .Subscribe(raisePointerReleasedSubject.OnNext);
 
-        var translationDockedSubject = new Subject<Unit>();
+        var touchDockedSubject = new Subject<Unit>();
+        var whenTouchDocked = touchDockedSubject.Share();
 
         // 订阅释放动画
         dragEndedStream
@@ -132,7 +133,9 @@ public partial class TouchControl : UserControl
             .SubscribeAwait(async (positions, _) =>
             {
                 await RunReleaseTranslationAnimationAsync(positions);
-                translationDockedSubject.OnNext(Unit.Default);
+                // HACK: 缓解动画完成渲染不精确造成的明显错误视觉效果
+                await Task.Delay(50, _);
+                touchDockedSubject.OnNext(Unit.Default);
             });
 
         // 订阅透明恢复动画
@@ -143,20 +146,23 @@ public partial class TouchControl : UserControl
         var whenWindowReady = 
             container.Events().SizeChanged
             .Where(sizeEvent => sizeEvent.NewSize.Width > Touch.Bounds.Size.Width)
-            .Take(1).Select(_ => Unit.Default);
+            .Take(1)
+            .Select(_ => Unit.Default)
+            .Share();
         
-        var touchVisible = 
+        var whenTouchVisible = 
             container.Events().Loaded
                 .SelectMany(_ => container.GetObservable(IsVisibleProperty).ToObservable())
                 .Skip(1)
                 .Where(isVisible => isVisible)
-                .Select(_ => Unit.Default);
+                .Select(_ => Unit.Default)
+                .Share();
         
         // 订阅变透明动画
         Observable.Merge(
             whenWindowReady,
-            translationDockedSubject,
-            touchVisible)
+            whenTouchDocked,
+            whenTouchVisible)
             .Select(_ =>
                 Observable.Timer(OpacityFadeDelay)
                     .TakeUntil(pointerPressedStream))
@@ -170,8 +176,22 @@ public partial class TouchControl : UserControl
             .Select(sizeEvent => PositionCalculator.CalculateNewDockedPosition(
                 sizeEvent.PreviousSize, TouchDockRect, sizeEvent.NewSize, TouchSpacing))
             .Subscribe(rect => TouchDockRect = rect);
+
+        // 订阅回调设置容器窗口的可观察区域
+        clickStream
+            .Merge(dragStartedStream)
+            .ObserveOn(App.UISyncContext)
+            .Subscribe(_ => ResetWindowObservableRegion?.Invoke(this.Bounds.Size));
+        whenTouchDocked
+            .Merge(whenTouchVisible)
+            .Merge(whenWindowReady)
+            .Subscribe(_ => SetWindowObservableRegion?.Invoke(TouchDockRect));
+        // FIXME: 窗口最小化时，可能会导致 Touch 重新定位到左上角，导致 Touch 不可见
     }
-    
+
+    public Action<Size>? ResetWindowObservableRegion { get; set; }
+    public Action<Rect>? SetWindowObservableRegion { get; set; }
+
     private Rect TouchDockRect
     {
         get => new(_moveTransform.X, _moveTransform.Y, Touch.Width, Touch.Height);
