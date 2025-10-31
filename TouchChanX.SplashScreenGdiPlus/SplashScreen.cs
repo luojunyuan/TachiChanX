@@ -9,23 +9,60 @@ using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace TouchChanX.SplashScreenGdiPlus;
 
-public sealed class SplashScreen(Stream resource, SynchronizationContext synchronization) : IDisposable
+public interface ISplashScreen : IDisposable
+{
+    void Show();
+}
+
+public static class SplashScreen
+{
+    public static ISplashScreen Create(Stream resource, SynchronizationContext? ctx = null)
+        => ctx is null
+            ? new ThreadSplashScreen(resource)
+            : new SyncContextSplashScreen(resource, ctx);
+}
+
+public sealed class ThreadSplashScreen(Stream resource) : SplashScreenBase(resource), ISplashScreen
+{
+    private readonly ManualResetEvent _disposeEvent = new(false);
+
+    public void Show()
+    {
+        using var showCompletedEvent = new ManualResetEvent(false);
+        new Thread(() =>
+        {
+            DisplaySplash();
+            showCompletedEvent.Set();
+
+            _disposeEvent.WaitOne();
+
+            ReleaseResources();
+
+            _disposeEvent.Dispose();
+        }).Start();
+        showCompletedEvent.WaitOne();
+    }
+
+    public void Dispose() => _disposeEvent.Set();
+}
+
+public sealed class SyncContextSplashScreen(Stream resource, SynchronizationContext synchronization) : SplashScreenBase(resource), ISplashScreen
+{
+    public void Show() => synchronization.Send(_ => DisplaySplash(), null);
+
+    public void Dispose() => synchronization.Send(p => ReleaseResources(), null);
+}
+
+public abstract class SplashScreenBase(Stream resource)
 {
     private readonly Image _image = Image.FromStream(resource);
     private HWND _hWndSplash;
     private HDC _hdc;
 
-    public void Show() => synchronization.Send(_ => DisplaySplash(_image), null);
-
-    public void Dispose() => synchronization.Send(p =>
+    protected unsafe void DisplaySplash()
     {
-        _image.Dispose();
-        _ = PInvoke.ReleaseDC(_hWndSplash, _hdc);
-        PInvoke.DestroyWindow(_hWndSplash);
-    }, null);
+        var image = _image;
 
-    private unsafe void DisplaySplash(Image image)
-    {
         const string className = "SplashScreen";
         const string windowTitle = "Splash Screen";
         fixed (char* lpClassName = className)
@@ -75,6 +112,13 @@ public sealed class SplashScreen(Stream resource, SynchronizationContext synchro
             originalStyle | (int)WINDOW_EX_STYLE.WS_EX_LAYERED);
 
         PInvoke.SetLayeredWindowAttributes(_hWndSplash, new COLORREF((uint)Color.Green.ToArgb()), 0, LAYERED_WINDOW_ATTRIBUTES_FLAGS.LWA_COLORKEY);
+    }
+
+    protected void ReleaseResources()
+    {
+        _image.Dispose();
+        _ = PInvoke.ReleaseDC(_hWndSplash, _hdc);
+        PInvoke.DestroyWindow(_hWndSplash);
     }
 
     private static unsafe (int X, int Y) CenterToPrimaryScreen(int width, int height)
