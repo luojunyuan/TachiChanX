@@ -1,5 +1,4 @@
 ﻿using Avalonia;
-using System;
 using TouchChanX.Ava;
 
 namespace TouchChanX.Rider;

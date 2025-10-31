@@ -28,7 +28,7 @@ public sealed class ThreadSplashScreen(Stream resource) : SplashScreenBase(resou
 
     public void Show()
     {
-        using var showCompletedEvent = new ManualResetEvent(false);
+        var showCompletedEvent = new ManualResetEvent(false);
         new Thread(() =>
         {
             DisplaySplash();
@@ -39,6 +39,7 @@ public sealed class ThreadSplashScreen(Stream resource) : SplashScreenBase(resou
             ReleaseResources();
 
             _disposeEvent.Dispose();
+            showCompletedEvent.Dispose();
         }).Start();
         showCompletedEvent.WaitOne();
     }
@@ -50,7 +51,7 @@ public sealed class SyncContextSplashScreen(Stream resource, SynchronizationCont
 {
     public void Show() => synchronization.Send(_ => DisplaySplash(), null);
 
-    public void Dispose() => synchronization.Send(p => ReleaseResources(), null);
+    public void Dispose() => synchronization.Send(_ => ReleaseResources(), null);
 }
 
 public abstract class SplashScreenBase(Stream resource)

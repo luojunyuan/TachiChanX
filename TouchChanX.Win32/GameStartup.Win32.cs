@@ -74,5 +74,5 @@ public static partial class GameStartup // Win32
     }
 
     private static bool IsGoodWindow(RECT rect) =>
-        rect.bottom > GoodWindowHeight && rect.right > GoodWindowWidth;
+        rect is { bottom: > GoodWindowHeight, right: > GoodWindowWidth };
 }

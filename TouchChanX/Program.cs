@@ -5,6 +5,7 @@ using R3;
 using TouchChanX.Ava;
 using TouchChanX.Win32;
 using TouchChanX.Win32.Interop;
+using Size = System.Drawing.Size;
 
 if (args.Length == 0)
 {
@@ -80,7 +81,7 @@ void AppMain(Application app, string[] args)
         OsPlatformApi.ToggleWindowExStyle(handle, false, ExtendedWindowStyle.AppWindow);
         OsPlatformApi.ToggleWindowStyle(handle, false, WindowStyle.ClipChildren);
         OsPlatformApi.ToggleWindowStyle(handle, false, WindowStyle.MinimizeBox);
-        OsPlatformApi.ToggleWindowStyle(handle, false, WindowStyle.MaxmizeBox);
+        OsPlatformApi.ToggleWindowStyle(handle, false, WindowStyle.MaximizeBox);
         // LJY: Avalonia#19923 三天前的 PR 针对 SystemDecorations.None 窗口自动移除了 WS_SYSMENU
 
         await OsPlatformApi.SetParentWindowAsync(handle, gameWindowHandle);
@@ -93,9 +94,11 @@ void AppMain(Application app, string[] args)
             window.Height = size.Height / window.DesktopScaling;
         });
 
-    window.Touch.ResetWindowObservableRegion = avaSize =>
+    window.Touch.ResetWindowObservableRegion = _ =>
     {
-        OsPlatformApi.ResetWindowOriginalObservableRegion(handle, new((int)(window.Width * window.DesktopScaling), (int)(window.Height * window.DesktopScaling)));
+        OsPlatformApi.ResetWindowOriginalObservableRegion(handle, new Size(
+            (int)(window.Width * window.DesktopScaling), 
+            (int)(window.Height * window.DesktopScaling)));
     };
     window.Touch.SetWindowObservableRegion = avaRect =>
     {

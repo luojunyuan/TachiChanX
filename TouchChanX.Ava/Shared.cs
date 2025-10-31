@@ -14,28 +14,16 @@ public static class Shared
     public static FuncValueConverter<double, CornerRadius> RadiusToCircleConverter { get; } =
         new(num => new CornerRadius(num / 2));
 
-    public abstract record TouchDockAnchor(TouchDockAnchor.Tags Tag)
+    public abstract record TouchDockAnchor
     {
-        public enum Tags
-        {
-            Left,
-            Top,
-            Right,
-            Bottom,
-            TopLeft,
-            TopRight,
-            BottomLeft,
-            BottomRight,
-        }
-
-        public record Left(double Scale) : TouchDockAnchor(Tags.Left);
-        public record Top(double Scale) : TouchDockAnchor(Tags.Top);
-        public record Right(double Scale) : TouchDockAnchor(Tags.Right);
-        public record Bottom(double Scale) : TouchDockAnchor(Tags.Bottom);
-        public record TopLeft() : TouchDockAnchor(Tags.TopLeft);
-        public record TopRight() : TouchDockAnchor(Tags.TopRight);
-        public record BottomLeft() : TouchDockAnchor(Tags.BottomLeft);
-        public record BottomRight() : TouchDockAnchor(Tags.BottomRight);
+        public record Left(double Scale) : TouchDockAnchor;
+        public record Top(double Scale) : TouchDockAnchor;
+        public record Right(double Scale) : TouchDockAnchor;
+        public record Bottom(double Scale) : TouchDockAnchor;
+        public record TopLeft : TouchDockAnchor;
+        public record TopRight : TouchDockAnchor;
+        public record BottomLeft : TouchDockAnchor;
+        public record BottomRight : TouchDockAnchor;
 
         public static TouchDockAnchor NewLeft(double scale) => new Left(scale);
         public static TouchDockAnchor NewTop(double scale) => new Top(scale);

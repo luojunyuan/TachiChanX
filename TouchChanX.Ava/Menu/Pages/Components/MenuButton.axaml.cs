@@ -2,7 +2,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Data;
-using Avalonia.Input;
 using Avalonia.Media;
 using R3;
 using R3.ObservableEvents;

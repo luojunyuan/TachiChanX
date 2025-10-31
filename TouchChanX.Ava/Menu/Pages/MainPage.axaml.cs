@@ -1,6 +1,4 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using TouchChanX.Ava.Menu.Pages.Components;
 
 namespace TouchChanX.Ava.Menu.Pages;

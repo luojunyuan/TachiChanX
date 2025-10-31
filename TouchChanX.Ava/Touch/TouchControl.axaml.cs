@@ -134,7 +134,7 @@ public partial class TouchControl : UserControl
             {
                 await RunReleaseTranslationAnimationAsync(positions);
                 // HACK: 缓解动画完成渲染不精确造成的明显错误视觉效果
-                await Task.Delay(50, _);
+                await Task.Delay(50, CancellationToken.None);
                 touchDockedSubject.OnNext(Unit.Default);
             });
 

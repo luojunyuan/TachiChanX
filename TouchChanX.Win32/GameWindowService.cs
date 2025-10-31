@@ -32,7 +32,7 @@ public static class GameWindowService
             var lastGameWindowSize = initRect.Size;
             observer.OnNext(lastGameWindowSize);
 
-            var winEventDelegate = new WINEVENTPROC((hWinEventHook, eventId, hWnd, idObject, idChild, dwEventThread, dwmsEventTime) =>
+            var winEventDelegate = new WINEVENTPROC((_, eventId, hWnd, idObject, idChild, _, _) =>
             {
                 if (eventId == EventObjectLocationChange &&
                     hWnd == windowHandle &&
@@ -71,7 +71,7 @@ public static class GameWindowService
     public static Observable<Unit> WindowDestroyed(nint windowHandle) =>
         Observable.Create<Unit>(observer =>
         {
-            var winEventDelegate = new WINEVENTPROC((hWinEventHook, eventId, hWnd, idObject, idChild, dwEventThread, dwmsEventTime) =>
+            var winEventDelegate = new WINEVENTPROC((_, eventId, hWnd, idObject, idChild, _, _) =>
             {
                 if (eventId == EventObjectDestroy &&
                     hWnd == windowHandle &&

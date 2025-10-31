@@ -99,6 +99,7 @@ public static partial class OsPlatformApi // Window
     }
 }
 
+[Flags]
 public enum WindowStyle : uint
 {
     ClipChildren = WINDOW_STYLE.WS_CLIPCHILDREN,
@@ -106,9 +107,10 @@ public enum WindowStyle : uint
     Popup = WINDOW_STYLE.WS_POPUP,
     Child = WINDOW_STYLE.WS_CHILD,
     MinimizeBox = WINDOW_STYLE.WS_MINIMIZEBOX,
-    MaxmizeBox = WINDOW_STYLE.WS_MAXIMIZEBOX,
+    MaximizeBox = WINDOW_STYLE.WS_MAXIMIZEBOX,
 }
 
+[Flags]
 public enum ExtendedWindowStyle : uint
 {
     Layered = WINDOW_EX_STYLE.WS_EX_LAYERED,

@@ -8,10 +8,10 @@ namespace Windows.Win32
 {
     internal partial class PInvoke
     {
-        internal unsafe static uint GetWindowThreadProcessId(HWND hwnd, out uint lpdwProcessId)
+        internal static unsafe uint GetWindowThreadProcessId(HWND hwnd, out uint lpdwProcessId)
         {
-            fixed (uint* _lpdwProcessId = &lpdwProcessId)
-                return GetWindowThreadProcessId(hwnd, _lpdwProcessId);
+            fixed (uint* lpdwProcessIdPointer = &lpdwProcessId)
+                return GetWindowThreadProcessId(hwnd, lpdwProcessIdPointer);
         }
     }
 }

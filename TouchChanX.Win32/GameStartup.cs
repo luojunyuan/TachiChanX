@@ -45,7 +45,7 @@ public static partial class GameStartup
             return process;
         }
 
-        using var fileStream = EmbeddedResource.KleeGreen;
+        await using var fileStream = EmbeddedResource.KleeGreen;
 
         using var splash = SplashScreen.Create(fileStream);
         splash.Show();
@@ -90,7 +90,7 @@ public static partial class GameStartup
                 return gameProcess;
             }
 
-            await Task.Delay(UIMinimumResponseTime);
+            await Task.Delay(UIMinimumResponseTime, CancellationToken.None);
         }
 
         return Result.Failure<Process>("Failed to start game within the timeout period.");
