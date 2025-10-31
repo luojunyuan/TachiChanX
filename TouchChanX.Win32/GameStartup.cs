@@ -47,7 +47,7 @@ public static partial class GameStartup
 
         using var fileStream = EmbeddedResource.KleeGreen;
 
-        using var splash = new SplashScreen(fileStream, syncContext);
+        using var splash = SplashScreen.Create(fileStream);
         splash.Show();
         return await LaunchGameAsync(path);
     }

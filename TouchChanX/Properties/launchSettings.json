@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TouchChanX": {
+      "commandName": "Project",
+      "commandLineArgs": "\"C:\\ROOT\\顔のない月-待宵の双椿- 体験版\\NSM_MYST_trial.exe\""
+    }
+  }
+}

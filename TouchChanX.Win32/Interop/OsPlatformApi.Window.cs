@@ -105,6 +105,8 @@ public enum WindowStyle : uint
     TiledWindow = WINDOW_STYLE.WS_TILEDWINDOW,
     Popup = WINDOW_STYLE.WS_POPUP,
     Child = WINDOW_STYLE.WS_CHILD,
+    MinimizeBox = WINDOW_STYLE.WS_MINIMIZEBOX,
+    MaxmizeBox = WINDOW_STYLE.WS_MAXIMIZEBOX,
 }
 
 public enum ExtendedWindowStyle : uint
