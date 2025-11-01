@@ -10,8 +10,8 @@ namespace Windows.Win32
     {
         internal static unsafe uint GetWindowThreadProcessId(HWND hwnd, out uint lpdwProcessId)
         {
-            fixed (uint* lpdwProcessIdPointer = &lpdwProcessId)
-                return GetWindowThreadProcessId(hwnd, lpdwProcessIdPointer);
+            fixed (uint* lpdwProcessIdRef = &lpdwProcessId)
+                return GetWindowThreadProcessId(hwnd, lpdwProcessIdRef);
         }
     }
 }

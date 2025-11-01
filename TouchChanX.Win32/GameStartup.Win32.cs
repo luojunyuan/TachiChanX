@@ -40,7 +40,7 @@ public static partial class GameStartup // Win32
             if (proc.HasExited)
                 return Result.Failure<nint>(new ProcessExitedError());
 
-            var windows = GetWindowsOfProcess(proc);
+            var windows = GetWindowsOfProcess(proc.Id);
             foreach (var handle in windows)
             {
                 PInvoke.GetClientRect(handle, out var rect);
@@ -49,28 +49,57 @@ public static partial class GameStartup // Win32
                     return (nint)handle;
             }
 
-            await Task.Delay(CheckResponse);
+            await Task.Delay(CheckResponse, CancellationToken.None);
         }
 
         return Result.Failure<nint>(new WindowHandleNotFoundError());
     }
-
-    private static List<HWND> GetWindowsOfProcess(Process proc)
+    private unsafe struct EnumState
     {
-        var list = new List<HWND>();
+        public int TargetPid;
+        public HWND* ResultsPtr;
+        public int Count;
+        public int Capacity;
+    }
 
-        BOOL ChildProc(HWND handle, LPARAM pointer)
+    private static unsafe HWND[] GetWindowsOfProcess(int pid)
+    {
+        var buffer = new HWND[512];
+    
+        fixed (HWND* pBuffer = buffer)
         {
-            _ = PInvoke.GetWindowThreadProcessId(handle, out var relativeProcessId);
-            if (relativeProcessId != proc.Id)
-                return true;
-
-            list.Add(handle);
+            var state = new EnumState
+            {
+                TargetPid = pid,
+                ResultsPtr = pBuffer,
+                Count = 0,
+                Capacity = buffer.Length
+            };
+        
+            PInvoke.EnumChildWindows(HWND.Null, EnumProc, (nint)(&state));
+        
+            if (state.Count == 0)
+                return [];
+        
+            if (state.Count < buffer.Length)
+                Array.Resize(ref buffer, state.Count);
+        }
+    
+        return buffer;
+        
+        static BOOL EnumProc(HWND hwnd, LPARAM lParam)
+        {
+            var state = (EnumState*)(nint)lParam;
+    
+            _ = PInvoke.GetWindowThreadProcessId(hwnd, out var currentPid);
+    
+            if (currentPid == state->TargetPid && state->Count < state->Capacity)
+            {
+                state->ResultsPtr[state->Count++] = hwnd;
+            }
+    
             return true;
         }
-        PInvoke.EnumChildWindows(HWND.Null, ChildProc, default);
-
-        return list;
     }
 
     private static bool IsGoodWindow(RECT rect) =>
