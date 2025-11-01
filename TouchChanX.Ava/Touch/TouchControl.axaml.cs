@@ -32,31 +32,31 @@ public partial class TouchControl : UserControl
         var pointerPressedStream =
             // ReSharper disable once RedundantCast
             ((Border)Touch).Events().PointerPressed
-                .Where(e => e.GetCurrentPoint(null).Properties.IsLeftButtonPressed)
-                .Share();
+            .Where(e => e.GetCurrentPoint(null).Properties.IsLeftButtonPressed)
+            .Share();
         var pointerMovedStream =
             Touch.Events().PointerMoved
-                .Where(e => e.GetCurrentPoint(null).Properties.IsLeftButtonPressed)
-                .Share();
+            .Where(e => e.GetCurrentPoint(null).Properties.IsLeftButtonPressed)
+            .Share();
         var pointerReleasedStream =
             Touch.Events().PointerReleased
-                .Select(releasedEvent => releasedEvent as PointerEventArgs)
-                .Merge(raisePointerReleasedSubject)
-                .Share();
+            .Select(releasedEvent => releasedEvent as PointerEventArgs)
+            .Merge(raisePointerReleasedSubject)
+            .Share();
 
         var dragStartedStream =
             pointerPressedStream
-                .SelectMany(pressEvent =>
-                    pointerMovedStream
-                        .Where(moveEvent =>
-                        {
-                            var pressPos = pressEvent.GetPosition(container);
-                            var movePos = moveEvent.GetPosition(container);
-                            return pressPos != movePos;
-                        })
-                        .Take(1)
-                        .TakeUntil(pointerReleasedStream))
-                .Share();
+            .SelectMany(pressEvent =>
+                pointerMovedStream
+                .Where(moveEvent =>
+                {
+                    var pressPos = pressEvent.GetPosition(container);
+                    var movePos = moveEvent.GetPosition(container);
+                    return pressPos != movePos;
+                })
+                .Take(1)
+                .TakeUntil(pointerReleasedStream))
+            .Share();
 
         var clickStream = 
             pointerPressedStream
@@ -69,36 +69,37 @@ public partial class TouchControl : UserControl
             .Share();
 
         // 订阅点击事件
-        onClicked = clickStream
+        onClicked =
+            clickStream
             .ObserveOn(App.UISyncContext)
             .Where(_ => container.IsVisible)
             .Select(_ => Shared.TouchDockAnchor.FromRect(container.Bounds.Size, TouchDockRect));
 
         var dragEndedStream =
             dragStartedStream
-                .SelectMany(_ =>
-                    pointerReleasedStream
-                        .Take(1))
-                .Share();
+            .SelectMany(_ =>
+                pointerReleasedStream
+                .Take(1))
+            .Share();
 
         var draggingStream =
             dragStartedStream
-                .SelectMany(pressedEvent =>
-                {
-                    var distanceToElement = pressedEvent.GetPosition(Touch);
+            .SelectMany(pressedEvent =>
+            {
+                var distanceToElement = pressedEvent.GetPosition(Touch);
 
-                    return
-                        pointerMovedStream
-                            .TakeUntil(pointerReleasedStream)
-                            .Select(movedEvent =>
-                            {
-                                var distanceToOrigin = movedEvent.GetPosition(container);
-                                var delta = distanceToOrigin - distanceToElement;
+                return
+                    pointerMovedStream
+                    .TakeUntil(pointerReleasedStream)
+                    .Select(movedEvent =>
+                    {
+                        var distanceToOrigin = movedEvent.GetPosition(container);
+                        var delta = distanceToOrigin - distanceToElement;
 
-                                return new { NewPosition = delta, MovedEvent = movedEvent };
-                            });
-                })
-                .Share();
+                        return new { NewPosition = delta, MovedEvent = movedEvent };
+                    });
+            })
+            .Share();
 
         // 订阅移动事件
         draggingStream
@@ -108,9 +109,9 @@ public partial class TouchControl : UserControl
 
         var boundaryExceededStream =
             draggingStream
-                .Where(item => PositionCalculator.IsBeyondBoundary(
-                    container.Bounds.Size, new Rect(item.NewPosition.X, item.NewPosition.Y, Touch.Width, Touch.Height)))
-                .Select(item => item.MovedEvent);
+            .Where(item => PositionCalculator.IsBeyondBoundary(
+                container.Bounds.Size, new Rect(item.NewPosition.X, item.NewPosition.Y, Touch.Width, Touch.Height)))
+            .Select(item => item.MovedEvent);
 
         // 订阅边缘释放事件
         boundaryExceededStream
@@ -133,7 +134,7 @@ public partial class TouchControl : UserControl
             .SubscribeAwait(async (positions, _) =>
             {
                 await RunReleaseTranslationAnimationAsync(positions);
-                // HACK: 缓解动画完成渲染不精确造成的明显错误视觉效果
+                // HACK: 缓解动画完成渲染不精确造成的明显错误视觉效果（ps.这一行工作得极好）
                 await Task.Delay(50, CancellationToken.None);
                 touchDockedSubject.OnNext(Unit.Default);
             });
@@ -143,21 +144,22 @@ public partial class TouchControl : UserControl
             .Where(_ => Math.Abs(Touch.Opacity - OpacityFull) >= 0.01)
             .SubscribeAwait(async (_, _) => await RunFadeInAnimationAsync());
         
+        var whenWindowSizeChanged = container.Events().SizeChanged.Share();
+
         var whenWindowReady = 
-            container.Events().SizeChanged
+            whenWindowSizeChanged
             .Where(sizeEvent => sizeEvent.NewSize.Width > Touch.Bounds.Size.Width)
             .Take(1)
-            .Select(_ => Unit.Default)
-            .Share();
+            .Select(_ => Unit.Default);
         
         var whenTouchVisible = 
             container.Events().Loaded
-                .SelectMany(_ => container.GetObservable(IsVisibleProperty).ToObservable())
-                .Skip(1)
-                .Where(isVisible => isVisible)
-                .Select(_ => Unit.Default)
-                .Share();
-        
+            .SelectMany(_ => container.GetObservable(IsVisibleProperty).ToObservable())
+            .Skip(1)
+            .Where(isVisible => isVisible)
+            .Select(_ => Unit.Default)
+            .Share();
+
         // 订阅变透明动画
         Observable.Merge(
             whenWindowReady,
@@ -168,11 +170,11 @@ public partial class TouchControl : UserControl
                     .TakeUntil(pointerPressedStream))
             .Switch()
             .SubscribeAwait(async (_, _) => await RunFadeOutAnimationAsync());
-        
-        // TODO: 还需检查拖动的时候窗口大小改变的情景
-        
+
+        // TODO: 测试 Touch 一边拖动窗口大小一边改变的边缘场景
+
         // 订阅窗口大小改变时自动更新停靠的touch位置
-        container.Events().SizeChanged
+        whenWindowSizeChanged
             .Select(sizeEvent => PositionCalculator.CalculateNewDockedPosition(
                 sizeEvent.PreviousSize, TouchDockRect, sizeEvent.NewSize, TouchSpacing))
             .Subscribe(rect => TouchDockRect = rect);
@@ -184,9 +186,8 @@ public partial class TouchControl : UserControl
             .Subscribe(_ => ResetWindowObservableRegion?.Invoke(this.Bounds.Size));
         whenTouchDocked
             .Merge(whenTouchVisible)
-            .Merge(whenWindowReady)
+            .Merge(whenWindowSizeChanged.Select(_ => Unit.Default))
             .Subscribe(_ => SetWindowObservableRegion?.Invoke(TouchDockRect));
-        // FIXME: 窗口最小化时，可能会导致 Touch 重新定位到左上角，导致 Touch 不可见
     }
 
     public Action<Size>? ResetWindowObservableRegion { get; set; }

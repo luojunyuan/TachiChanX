@@ -5,7 +5,6 @@ using R3;
 using TouchChanX.Ava;
 using TouchChanX.Win32;
 using TouchChanX.Win32.Interop;
-using Size = System.Drawing.Size;
 
 if (args.Length == 0)
 {
@@ -41,6 +40,8 @@ if (handleResult.IsFailure(out var error, out var gameWindowHandle))
     }
 }
 
+// TODO: 测试真实环境下是否需要强制将游戏窗口提前
+
 // 用于挂载程序意外退出的情景
 process.EnableRaisingEvents = true;
 process.Exited += (_, _) => Environment.Exit(0);
@@ -50,7 +51,8 @@ var uiThread = new Thread(() =>
     Thread.CurrentThread.Name = "UI Thread";
 
     var app = AppBuilder.Configure<App>()
-        .UsePlatformDetect()
+        .UseWin32()
+        .UseSkia()
         .LogToTrace();
 
     app.Start(AppMain, args);
@@ -74,7 +76,8 @@ void AppMain(Application app, string[] args)
 
     window.Opened += async (_, _) =>
     {
-        // NOTE: 仅在 Opened 事件后能够有效调整 win32 样式，并且子窗口才可与游戏窗口共享焦点
+        // 只针对 Win32RenderingMode.AngleEgl 渲染后端有效
+        // NOTE: 仅在 Opened 事件后能够有效调整 Win32 样式，并且此时子窗口方可与游戏窗口正常实现焦点共享
         OsPlatformApi.ToggleWindowStyle(handle, true, WindowStyle.Child);
         OsPlatformApi.ToggleWindowExStyle(handle, true, ExtendedWindowStyle.Layered);
         // 可选移除的其他样式
@@ -88,6 +91,7 @@ void AppMain(Application app, string[] args)
     };
 
     GameWindowService.ClientSizeChanged(gameWindowHandle)
+        .Where(size => size is { Width: > 320, Height: > 240 })
         .Subscribe(size =>
         {
             window.Width = size.Width / window.DesktopScaling;
@@ -96,7 +100,7 @@ void AppMain(Application app, string[] args)
 
     window.Touch.ResetWindowObservableRegion = _ =>
     {
-        OsPlatformApi.ResetWindowOriginalObservableRegion(handle, new Size(
+        OsPlatformApi.ResetWindowOriginalObservableRegion(handle, new (
             (int)(window.Width * window.DesktopScaling), 
             (int)(window.Height * window.DesktopScaling)));
     };
@@ -109,5 +113,13 @@ void AppMain(Application app, string[] args)
             (int)(avaRect.Height * window.DesktopScaling)));
     };
 
+#if DevMode
+    app.AttachDeveloperTools();
+    window.RendererDiagnostics.DebugOverlays = 
+        Avalonia.Rendering.RendererDebugOverlays.Fps |
+        Avalonia.Rendering.RendererDebugOverlays.DirtyRects |
+        Avalonia.Rendering.RendererDebugOverlays.LayoutTimeGraph |
+        Avalonia.Rendering.RendererDebugOverlays.RenderTimeGraph;
+#endif
     app.Run(window);
 }
