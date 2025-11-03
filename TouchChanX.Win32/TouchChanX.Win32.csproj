@@ -11,13 +11,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LightResults" Version="9.0.5" />
-    <PackageReference Include="R3" Version="1.3.0" />
-    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.235">
+    <PackageReference Include="LightResults" />
+    <PackageReference Include="R3" />
+    <PackageReference Include="Microsoft.Windows.CsWin32">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="WindowsShortcutFactory" Version="1.2.0" />
+    <PackageReference Include="WindowsShortcutFactory" />
   </ItemGroup>
 
   <ItemGroup>

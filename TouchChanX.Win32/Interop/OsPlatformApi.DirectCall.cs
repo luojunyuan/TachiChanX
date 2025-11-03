@@ -3,19 +3,6 @@ using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
 
-// CSWin32 的包装代码，本来应该是 CSWin32 负责生成的工作
-namespace Windows.Win32
-{
-    internal partial class PInvoke
-    {
-        internal static unsafe uint GetWindowThreadProcessId(HWND hwnd, out uint lpdwProcessId)
-        {
-            fixed (uint* lpdwProcessIdRef = &lpdwProcessId)
-                return GetWindowThreadProcessId(hwnd, lpdwProcessIdRef);
-        }
-    }
-}
-
 namespace TouchChanX.Win32.Interop
 {
     /// <summary>
