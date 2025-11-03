@@ -24,10 +24,4 @@
     <ProjectReference Include="..\TouchChanX.SplashScreenGdiPlus\TouchChanX.SplashScreenGdiPlus.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="EmbeddedResource.resx">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-
 </Project>

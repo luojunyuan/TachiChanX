@@ -19,7 +19,9 @@ if (gamePathResult.IsFailure(out var pathError, out var gamePath))
     return;
 }
 
-var processResult = await GameStartup.GetOrLaunchGameWithSplashAsync(gamePath, new());
+await using var fileStream = TouchChanX.EmbeddedResource.KleeGreen;
+
+var processResult = await GameStartup.GetOrLaunchGameWithSplashAsync(gamePath, fileStream);
 if (processResult.IsFailure(out var processError, out var process))
 {
     OsPlatformApi.MessageBox.Show(processError.Message);

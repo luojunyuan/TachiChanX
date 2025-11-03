@@ -56,9 +56,15 @@ public sealed class SyncContextSplashScreen(Stream resource, SynchronizationCont
 
 public abstract class SplashScreenBase(Stream resource)
 {
-    private readonly Image _image = Image.FromStream(resource);
+    private readonly Bitmap _image = LoadBitmap(resource);
     private HWND _hWndSplash;
     private HDC _hdc;
+
+    private static Bitmap LoadBitmap(Stream s)
+    {
+        using var img = Image.FromStream(s);
+        return new Bitmap(img);
+    }
 
     protected unsafe void DisplaySplash()
     {

@@ -36,7 +36,7 @@ public static partial class GameStartup
         return resolvedPath;
     }
 
-    public static async Task<Result<Process>> GetOrLaunchGameWithSplashAsync(string path, SynchronizationContext syncContext)
+    public static async Task<Result<Process>> GetOrLaunchGameWithSplashAsync(string path, Stream fileStream)
     {
         var process = await GetWindowProcessByPathAsync(path);
         if (process is not null)
@@ -44,8 +44,6 @@ public static partial class GameStartup
             await Interop.OsPlatformApi.TryRestoreWindowAsync(process.MainWindowHandle);
             return process;
         }
-
-        await using var fileStream = EmbeddedResource.KleeGreen;
 
         using var splash = SplashScreen.Create(fileStream);
         splash.Show();

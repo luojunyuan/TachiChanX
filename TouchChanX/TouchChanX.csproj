@@ -15,5 +15,11 @@
     <ProjectReference Include="..\TouchChanX.Win32\TouchChanX.Win32.csproj" />
     <PackageReference Condition="'$(DevMode)' == 'true'" Include="AvaloniaUI.DiagnosticsSupport" Version="2.1.0" />
   </ItemGroup>
-  
+
+  <ItemGroup>
+    <EmbeddedResource Update="EmbeddedResource.resx">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>
