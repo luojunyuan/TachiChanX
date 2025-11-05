@@ -1,0 +1,5 @@
+portable version 
+AOT x86 x64 arm64 最低支持到 win8 （由 Layered window 和 Child window 特性决定）
+
+store version
+AOT x86 x64 arm64 最低支持到 1809 (不知道UWP和Store Package可以最低到多少)

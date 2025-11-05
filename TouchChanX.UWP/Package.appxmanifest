@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+  xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
+  IgnorableNamespaces="uap mp uap5">
+
+  <Identity
+    Name="fed72a42-aef4-42eb-8903-22c4506f593d"
+    Publisher="CN=CYCY"
+    Version="1.0.27.0" />
+
+  <mp:PhoneIdentity PhoneProductId="b8be68fa-cd68-4b1e-9b1c-843497b926d2" PhonePublisherId="fe1aeb97-ebca-4c58-9f85-d105a885dbfa"/>
+
+  <Properties>
+    <DisplayName>Net9UwpSample</DisplayName>
+    <PublisherDisplayName>driver1998</PublisherDisplayName>
+    <Logo>Images\StoreLogo.png</Logo>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.22621.0" />    
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="x-generate"/>
+  </Resources>
+
+  <Applications>
+    <Application Id="App"
+      Executable="$targetnametoken$.exe"
+      EntryPoint="TouchChanX.UWP.App">
+      <uap:VisualElements
+        DisplayName="TouchChanX.UWP"
+        Description="TouchChanX.UWP"
+        BackgroundColor="transparent"
+        Square150x150Logo="Images\Square150x150Logo.png"
+        Square44x44Logo="Images\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png" />
+        <uap:SplashScreen Image="Images\SplashScreen.png" uap5:Optional="true"/>
+      </uap:VisualElements>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <Capability Name="internetClient" />
+  </Capabilities>
+</Package>

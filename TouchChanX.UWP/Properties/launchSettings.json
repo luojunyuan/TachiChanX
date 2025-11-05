@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TouchChanX.UWP": {
+      "commandName": "MsixPackage",
+      "nativeDebugging": true
+    }
+  }
+}

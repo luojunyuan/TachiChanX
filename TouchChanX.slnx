@@ -1,4 +1,11 @@
 <Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="ARM" />
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
   <Folder Name="/SolutionFolder/">
     <File Path="Directory.Build.targets" />
     <File Path="Directory.Packages.props" />
@@ -8,11 +15,23 @@
     <File Path="doc/AssistiveTouch properties.txt" />
     <File Path="doc/Avalonia pointer test.txt" />
     <File Path="doc/Win32 naming.txt" />
+    <File Path="doc/版本发行.txt" />
     <File Path="README.md" />
   </Folder>
   <Project Path="TouchChanX.Ava\TouchChanX.Ava.csproj" />
+  <Project Path="TouchChanX.Package/TouchChanX.Package.wapproj" Type="c7167f0d-bc9f-4e6e-afe1-012c56b48db5" Id="4f5131af-eb0a-4a7e-9b8f-d318ea0a2ae4">
+    <Deploy />
+  </Project>
   <Project Path="TouchChanX.Rider/TouchChanX.Rider.csproj" />
   <Project Path="TouchChanX.SplashScreenGdiPlus/TouchChanX.SplashScreenGdiPlus.csproj" />
+  <Project Path="TouchChanX.UWP/TouchChanX.UWP.csproj">
+    <Platform Solution="*|Any CPU" Project="x64" />
+    <Platform Solution="*|ARM" Project="x64" />
+    <Platform Solution="*|ARM64" Project="ARM64" />
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="*|x86" Project="x86" />
+    <Deploy />
+  </Project>
   <Project Path="TouchChanX.Win32/TouchChanX.Win32.csproj" />
   <Project Path="TouchChanX/TouchChanX.csproj" />
 </Solution>
