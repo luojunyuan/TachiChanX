@@ -1,7 +1,5 @@
 <Solution>
   <Configurations>
-    <Platform Name="Any CPU" />
-    <Platform Name="ARM" />
     <Platform Name="ARM64" />
     <Platform Name="x64" />
     <Platform Name="x86" />
@@ -19,14 +17,12 @@
     <File Path="README.md" />
   </Folder>
   <Project Path="TouchChanX.Ava\TouchChanX.Ava.csproj" />
-  <Project Path="TouchChanX.Package/TouchChanX.Package.wapproj" Type="c7167f0d-bc9f-4e6e-afe1-012c56b48db5" Id="4f5131af-eb0a-4a7e-9b8f-d318ea0a2ae4">
+  <Project Path="TouchChanX.MSIX/TouchChanX.MSIX.wapproj" Type="c7167f0d-bc9f-4e6e-afe1-012c56b48db5" Id="1264a89a-ccaa-4823-89c3-f7be97b5229d">
     <Deploy />
   </Project>
   <Project Path="TouchChanX.Rider/TouchChanX.Rider.csproj" />
   <Project Path="TouchChanX.SplashScreenGdiPlus/TouchChanX.SplashScreenGdiPlus.csproj" />
   <Project Path="TouchChanX.UWP/TouchChanX.UWP.csproj">
-    <Platform Solution="*|Any CPU" Project="x64" />
-    <Platform Solution="*|ARM" Project="x64" />
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="*|x64" Project="x64" />
     <Platform Solution="*|x86" Project="x86" />
