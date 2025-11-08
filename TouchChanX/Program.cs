@@ -28,6 +28,10 @@ if (processResult.IsFailure(out var processError, out var process))
     return;
 }
 
+// 用于挂载程序意外退出的情景
+process.EnableRaisingEvents = true;
+process.Exited += (_, _) => Environment.Exit(0);
+
 var handleResult = await GameStartup.FindGoodWindowHandleAsync(process);
 if (handleResult.IsFailure(out var error, out var gameWindowHandle))
 {
@@ -43,10 +47,6 @@ if (handleResult.IsFailure(out var error, out var gameWindowHandle))
 }
 
 // TODO: 测试真实环境下是否需要强制将游戏窗口提前
-
-// 用于挂载程序意外退出的情景
-process.EnableRaisingEvents = true;
-process.Exited += (_, _) => Environment.Exit(0);
 
 var uiThread = new Thread(() =>
 {
@@ -116,7 +116,6 @@ void AppMain(Application app, string[] args)
     };
 
 #if DevMode
-    app.AttachDeveloperTools();
     window.RendererDiagnostics.DebugOverlays = 
         Avalonia.Rendering.RendererDebugOverlays.Fps |
         Avalonia.Rendering.RendererDebugOverlays.DirtyRects |

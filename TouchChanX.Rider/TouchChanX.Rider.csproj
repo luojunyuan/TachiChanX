@@ -2,13 +2,14 @@
   
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AvaloniaUI.DiagnosticsSupport" />
+    <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.1.0" />
     <ProjectReference Include="..\TouchChanX.Ava\TouchChanX.Ava.csproj" />
   </ItemGroup>
   
