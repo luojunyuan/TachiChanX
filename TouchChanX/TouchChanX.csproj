@@ -2,12 +2,11 @@
   
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net10.0-windows8.0</TargetFramework>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <TargetFramework>net10.0-windows7.0</TargetFramework>
+    <ApplicationManifest>../app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TouchChanX.Ava\TouchChanX.Ava.csproj" />
     <ProjectReference Include="..\TouchChanX.Win32\TouchChanX.Win32.csproj" />
   </ItemGroup>
 

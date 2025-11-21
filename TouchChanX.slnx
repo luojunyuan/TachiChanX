@@ -13,6 +13,7 @@
     <Project Path="TouchChanX.Rider/TouchChanX.Rider.csproj" />
   </Folder>
   <Folder Name="/SolutionFolder/">
+    <File Path="app.manifest" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Build.targets" />
     <File Path="Directory.Packages.props" />
