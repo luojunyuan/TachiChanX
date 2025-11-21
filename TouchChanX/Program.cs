@@ -115,12 +115,5 @@ void AppMain(Application app, string[] args)
             (int)(avaRect.Height * window.DesktopScaling)));
     };
 
-#if DevMode
-    window.RendererDiagnostics.DebugOverlays = 
-        Avalonia.Rendering.RendererDebugOverlays.Fps |
-        Avalonia.Rendering.RendererDebugOverlays.DirtyRects |
-        Avalonia.Rendering.RendererDebugOverlays.LayoutTimeGraph |
-        Avalonia.Rendering.RendererDebugOverlays.RenderTimeGraph;
-#endif
     app.Run(window);
 }
