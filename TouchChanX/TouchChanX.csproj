@@ -5,6 +5,13 @@
     <TargetFramework>net10.0-windows7.0</TargetFramework>
     <ApplicationManifest>../app.manifest</ApplicationManifest>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="DotnetRuntimeBootstrapper">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TouchChanX.Win32\TouchChanX.Win32.csproj" />

@@ -1,24 +1,20 @@
-﻿using System.Text;
+﻿using R3;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using TouchChanX.WPF.Touch;
 
-namespace TouchChanX.WPF
+namespace TouchChanX.WPF;
+
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
+public partial class MainWindow : Window
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    public MainWindow()
     {
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+
+        // 订阅执行任何动画期间都禁止整个页面再次交互
+        Observable.Merge(TouchControl.AnimationRunning)
+            .Subscribe(running => this.IsHitTestVisible = !running);
     }
 }

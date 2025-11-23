@@ -1,6 +1,7 @@
-﻿using System.Configuration;
-using System.Data;
+﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Input;
 
 namespace TouchChanX.WPF
 {
@@ -10,5 +11,4 @@ namespace TouchChanX.WPF
     public partial class App : Application
     {
     }
-
 }

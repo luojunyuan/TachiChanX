@@ -6,6 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="R3" />
+    <PackageReference Include="R3Extensions.ObservableEvents.SourceGenerator" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ApplicationDefinition Remove="App.xaml" />
     <Page Include="App.xaml" />
   </ItemGroup>

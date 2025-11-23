@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="TouchChanX.WPF.Touch.TouchControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cvt="clr-namespace:TouchChanX.WPF.Converter"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TouchChanX.WPF.Touch"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="AssistiveTouchBackground" Color="#262626" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerOneLine" Color="#232323" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerOneBackground" Color="#505050" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerTwoLine" Color="#434343" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerTwoBackground" Color="#939393" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerThreeLine" Color="#686868" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerThreeBackground" Color="#FFFFFF" />
+    </UserControl.Resources>
+
+    <Border x:Name="Touch"
+        Width="80"
+        Height="{Binding Width, ElementName=Touch}"
+        HorizontalAlignment="Left"
+        VerticalAlignment="Top"
+        Background="{StaticResource AssistiveTouchBackground}"
+        CornerRadius="{Binding Width, ElementName=Touch, Converter={cvt:CornerRadiusToCircleConverter}}">
+        <Grid>
+            <Ellipse
+                Margin="{Binding Width, ElementName=Touch, Converter={cvt:TouchLayerMarginConverter Numerator=2, Denominator=16}}"
+                Fill="{StaticResource AssistiveTouchLayerOneBackground}"
+                Stroke="{StaticResource AssistiveTouchLayerOneLine}"
+                StrokeThickness="{x:Static local:TouchControl.AssistiveTouchCircleThickness}" />
+
+            <Ellipse
+                Margin="{Binding Width, ElementName=Touch, Converter={cvt:TouchLayerMarginConverter Numerator=3, Denominator=16}}"
+                Fill="{StaticResource AssistiveTouchLayerTwoBackground}"
+                Stroke="{StaticResource AssistiveTouchLayerTwoLine}"
+                StrokeThickness="{x:Static local:TouchControl.AssistiveTouchCircleThickness}" />
+
+            <Ellipse
+                Margin="{Binding Width, ElementName=Touch, Converter={cvt:TouchLayerMarginConverter Numerator=4, Denominator=16}}"
+                Fill="{StaticResource AssistiveTouchLayerThreeBackground}"
+                Stroke="{StaticResource AssistiveTouchLayerThreeLine}"
+                StrokeThickness="{x:Static local:TouchControl.AssistiveTouchCircleThickness}" />
+        </Grid>
+
+        <Border.RenderTransform>
+            <TranslateTransform x:Name="MoveTransform" />
+        </Border.RenderTransform>
+    </Border>
+</UserControl>
