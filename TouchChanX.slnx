@@ -8,6 +8,7 @@
     <Project Path="TouchChanX.Entry.WinUI/TouchChanX.Entry.WinUI.csproj" Id="bd4a868c-4aa1-453d-9450-3c811e50e93a">
       <Platform Solution="*|ARM64" Project="ARM64" />
       <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
     </Project>
     <Project Path="TouchChanX.Entry.Wpf/TouchChanX.Entry.Wpf.csproj" Id="9cfbef3f-446c-40d5-b0dc-3d1f9f2a5d8d" />
     <Project Path="TouchChanX.Rider/TouchChanX.Rider.csproj" />
@@ -18,12 +19,9 @@
     <File Path="Directory.Build.targets" />
     <File Path="Directory.Packages.props" />
     <File Path="Settings.XamlStyler" />
-    <Project Path="TouchChanX/TouchChanX.csproj" />
-  </Folder>
-  <Folder Name="/SolutionFolder/doc/">
-    <File Path="doc/AssistiveTouch properties.txt" />
     <File Path="README.md" />
   </Folder>
+  <Project Path="TouchChanX/TouchChanX.csproj" />
   <Project Path="TouchChanX.Ava\TouchChanX.Ava.csproj" />
   <Project Path="TouchChanX.MSIX/TouchChanX.MSIX.wapproj" Type="c7167f0d-bc9f-4e6e-afe1-012c56b48db5" Id="1264a89a-ccaa-4823-89c3-f7be97b5229d">
     <Deploy />
@@ -40,7 +38,6 @@
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="*|x64" Project="x64" />
     <Platform Solution="*|x86" Project="x86" />
-    <Deploy />
   </Project>
   <Project Path="TouchChanX.WPF/TouchChanX.WPF.csproj" Id="aaad1b9d-b262-4536-9442-6641c00e91f9" />
 </Solution>
