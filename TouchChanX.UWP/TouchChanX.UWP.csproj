@@ -1,40 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<OutputType>WinExe</OutputType>
-		<TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
-		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
-		<UseUwp>true</UseUwp>
-		<EnableMsixTooling>true</EnableMsixTooling>
-		<Platforms>x86;x64;ARM64</Platforms>
-		<!--  These are optional -->
-		<DefaultLanguage>en-US</DefaultLanguage>
-		<!--<PublishProfile>win-$(Platform).pubxml</PublishProfile>-->
-		<LangVersion>preview</LangVersion>
-		<ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
-	</PropertyGroup>
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <UseUwp>true</UseUwp>
+    <Platforms>x86;x64;ARM64</Platforms>
+    <!--  UseUwp 隐式继承了 BuildTools 俩个包但仅用于 Debug 独立部署调试，所以独立于中央管理包  -->
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+    <!--  提供以 MsixPackage 指令调试下启动应用的能力  -->
+    <!--  WAS issues#3718: 拷贝 resources.pri 到生成目录  -->
+    <EnableMsixTooling>true</EnableMsixTooling>
+  </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
-		<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
-		<PackageCertificateKeyFile>Net9UwpSample_TemporaryKey.pfx</PackageCertificateKeyFile>
-		<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
-		<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
-		<GenerateTestArtifacts>True</GenerateTestArtifacts>
-		<AppxBundle>Never</AppxBundle>
-		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-	</PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.UI.Xaml" Version="2.8.7" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.UI.Xaml" Version="2.8.7" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<AppxManifest Include="Package.appxmanifest">
-		  <SubType>Designer</SubType>
-		</AppxManifest>
-		<Content Include="Images\**">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-	</ItemGroup>
+  <!--  仅用于 Debug 独立部署调试用  -->
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <Content Include="Images\**">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
 </Project>
