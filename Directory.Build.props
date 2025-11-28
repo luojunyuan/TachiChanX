@@ -2,8 +2,9 @@
   <PropertyGroup>
     <ImplicitUsings>true</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <IsAotCompatible>true</IsAotCompatible>
 
-	<!--  https://github.com/Sergio0694/ComputeSharp/blob/c3e9ad/samples/Directory.Build.props#L19  -->
+    <!--  https://github.com/Sergio0694/ComputeSharp/blob/c3e9ad/samples/Directory.Build.props#L19  -->
     <NoWarn>$(NoWarn);WMC1006</NoWarn>
   </PropertyGroup>
 </Project>
