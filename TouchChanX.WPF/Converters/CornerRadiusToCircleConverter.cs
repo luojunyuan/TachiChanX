@@ -1,24 +1,18 @@
 ﻿using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace TouchChanX.WPF.Converter;
+namespace TouchChanX.WPF.Converters;
 
-/// <summary>
-/// 自动计算 Touch 每层圆点所占据宽度
-/// </summary>
-public class TouchLayerMarginConverter : MarkupExtension, IValueConverter
+public class CornerRadiusToCircleConverter : MarkupExtension, IValueConverter
 {
-    public double Numerator { get; init; }
-
-    public double Denominator { get; init; }
-
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is not double d)
+        if (value is not double width)
             throw new InvalidOperationException();
 
-        return d * Numerator / Denominator;
+        return new CornerRadius(width / 2.0);
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

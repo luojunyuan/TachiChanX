@@ -1,7 +1,5 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Windows;
-using System.Windows.Input;
+﻿using System.Windows;
+using System.Windows.Threading;
 
 namespace TouchChanX.WPF
 {
@@ -10,5 +8,6 @@ namespace TouchChanX.WPF
     /// </summary>
     public partial class App : Application
     {
+        public static readonly SynchronizationContext UISyncContext = new DispatcherSynchronizationContext(Current.Dispatcher);
     }
 }
