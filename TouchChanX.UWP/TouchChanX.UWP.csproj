@@ -5,22 +5,17 @@
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <UseUwp>true</UseUwp>
     <Platforms>x86;x64;ARM64</Platforms>
-    <!--  UseUwp 隐式继承了 BuildTools 俩个包但仅用于 Debug 独立部署调试，所以独立于中央管理包  -->
+    <DefaultLanguage>zh-CN</DefaultLanguage>
+    <PublishAot>true</PublishAot>
+    <PublishProfile>win-$(Platform).pubxml</PublishProfile>
+    <DisableRuntimeMarshalling>true</DisableRuntimeMarshalling>
+    <!--  UseUwp 隐式继承了 BuildTools 俩个包，所以独立于中央管理包  -->
     <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
-    <!--  提供以 MsixPackage 指令调试下启动应用的能力  -->
-    <!--  WAS issues#3718: 拷贝 resources.pri 到生成目录  -->
-    <EnableMsixTooling>true</EnableMsixTooling>
   </PropertyGroup>
 
   <ItemGroup>
+    <!--  仅 UWP 项目需要引用该 WinUI 包  -->
     <PackageReference Include="Microsoft.UI.Xaml" Version="2.8.7" />
-  </ItemGroup>
-
-  <!--  仅用于 Debug 独立部署调试用  -->
-  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <Content Include="Images\**">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
 </Project>

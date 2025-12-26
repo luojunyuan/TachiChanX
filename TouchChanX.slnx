@@ -14,6 +14,7 @@
     <Project Path="TouchChanX.Rider/TouchChanX.Rider.csproj" />
   </Folder>
   <Folder Name="/SolutionFolder/">
+    <File Path=".gitignore" />
     <File Path="app.manifest" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Build.targets" />
@@ -21,7 +22,6 @@
     <File Path="Settings.XamlStyler" />
     <File Path="README.md" />
   </Folder>
-  <Project Path="TouchChanX/TouchChanX.csproj" />
   <Project Path="TouchChanX.Ava\TouchChanX.Ava.csproj" />
   <Project Path="TouchChanX.MSIX/TouchChanX.MSIX.wapproj" Type="c7167f0d-bc9f-4e6e-afe1-012c56b48db5" Id="1264a89a-ccaa-4823-89c3-f7be97b5229d">
     <Deploy />
@@ -40,4 +40,5 @@
     <Platform Solution="*|x86" Project="x86" />
   </Project>
   <Project Path="TouchChanX.WPF/TouchChanX.WPF.csproj" Id="aaad1b9d-b262-4536-9442-6641c00e91f9" />
+  <Project Path="TouchChanX/TouchChanX.csproj" />
 </Solution>
