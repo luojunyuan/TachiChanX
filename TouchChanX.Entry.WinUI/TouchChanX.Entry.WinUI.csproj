@@ -7,6 +7,8 @@
     <Platforms>x86;x64;ARM64</Platforms>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+	<!-- https://github.com/Sergio0694/ComputeSharp/blob/c3e9ad/samples/Directory.Build.props#L19 -->
+    <NoWarn>$(NoWarn);WMC1006</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
