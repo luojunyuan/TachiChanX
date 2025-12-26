@@ -7,7 +7,6 @@
     <Platforms>x86;x64;ARM64</Platforms>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants>
-	  <WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
