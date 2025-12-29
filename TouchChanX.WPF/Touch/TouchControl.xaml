@@ -2,7 +2,6 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:control="clr-namespace:TouchChanX.WPF.Controls"
-    xmlns:cvt="clr-namespace:TouchChanX.WPF.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:TouchChanX.WPF.Touch"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -14,8 +13,8 @@
         Height="{Binding ActualWidth, ElementName=Touch}"
         HorizontalAlignment="Left"
         VerticalAlignment="Top"
-        Background="{StaticResource AssistiveTouchBackground}"
-        CornerRadius="{Binding Width, ElementName=Touch, Converter={cvt:CornerRadiusToCircleConverter}}">
+        d:CornerRadius="{Binding ActualWidth, ElementName=Touch, Converter={local:CornerRadiusToCircleConverter}}"
+        Background="{StaticResource AssistiveTouchBackground}">
 
         <control:TouchComposite />
 

@@ -1,7 +1,6 @@
 ﻿<Grid x:Class="TouchChanX.WPF.Controls.TouchComposite" x:Name="PART_Root"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:cvt="clr-namespace:TouchChanX.WPF.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:TouchChanX.WPF.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -19,20 +18,20 @@
         <SolidColorBrush x:Key="AssistiveTouchLayerThreeBackground" Color="#FFFFFF" />
     </Grid.Resources>
 
-    <Ellipse
-        Margin="{Binding ActualWidth, ElementName=PART_Root, Converter={cvt:TouchLayerMarginConverter Numerator=2, Denominator=16}}"
+    <Ellipse x:Name="LayerOne"
+        d:Margin="{Binding ActualWidth, ElementName=PART_Root, Converter={local:TouchLayerMarginConverter LayerIndex=0}}"
         Fill="{StaticResource AssistiveTouchLayerOneBackground}"
         Stroke="{StaticResource AssistiveTouchLayerOneLine}"
         StrokeThickness="{x:Static root:Shared.AssistiveTouchCircleThickness}" />
 
-    <Ellipse
-        Margin="{Binding ActualWidth, ElementName=PART_Root, Converter={cvt:TouchLayerMarginConverter Numerator=3, Denominator=16}}"
+    <Ellipse x:Name="LayerTwo"
+        d:Margin="{Binding ActualWidth, ElementName=PART_Root, Converter={local:TouchLayerMarginConverter LayerIndex=1}}"
         Fill="{StaticResource AssistiveTouchLayerTwoBackground}"
         Stroke="{StaticResource AssistiveTouchLayerTwoLine}"
         StrokeThickness="{x:Static root:Shared.AssistiveTouchCircleThickness}" />
 
-    <Ellipse
-        Margin="{Binding ActualWidth, ElementName=PART_Root, Converter={cvt:TouchLayerMarginConverter Numerator=4, Denominator=16}}"
+    <Ellipse x:Name="LayerThree"
+        d:Margin="{Binding ActualWidth, ElementName=PART_Root, Converter={local:TouchLayerMarginConverter LayerIndex=2}}"
         Fill="{StaticResource AssistiveTouchLayerThreeBackground}"
         Stroke="{StaticResource AssistiveTouchLayerThreeLine}"
         StrokeThickness="{x:Static root:Shared.AssistiveTouchCircleThickness}" />

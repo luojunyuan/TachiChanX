@@ -1,9 +1,12 @@
 ﻿using R3;
 using R3.ObservableEvents;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Markup;
 
 namespace TouchChanX.WPF.Touch;
 
@@ -30,6 +33,12 @@ public partial class TouchControl : UserControl
 
     private void TouchSubscribe()
     {
+        // 订阅 Touch 自身大小变化保持圆形
+        Touch.Events().SizeChanged
+            .Select(size => size.NewSize.Width)
+            .DistinctUntilChanged()
+            .Subscribe(width => Touch.CornerRadius = new(width / 2.0));
+
         var raiseMouseReleasedSubject = new Subject<MouseEventArgs>();
 
         var pointerPressedStream =
@@ -183,4 +192,20 @@ public partial class TouchControl : UserControl
         //    .Merge(whenWindowSizeChanged.Select(_ => Unit.Default))
         //    .Subscribe(_ => SetWindowObservableRegion?.Invoke(TouchDockRect));
     }
+}
+
+/// <summary>
+/// 将宽度转换为圆形的 CornerRadius，仅用于设计时
+/// </summary>
+public class CornerRadiusToCircleConverter : MarkupExtension, IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture) 
+        => value is not double width 
+            ? DependencyProperty.UnsetValue 
+            : new CornerRadius(width / 2.0);
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        => Binding.DoNothing;
+
+    public override object ProvideValue(IServiceProvider serviceProvider) => this;
 }
