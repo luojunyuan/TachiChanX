@@ -31,7 +31,6 @@
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="*|x64" Project="x64" />
     <Platform Solution="*|x86" Project="x86" />
-    <Deploy />
   </Project>
   <Project Path="TouchChanX.Win32/TouchChanX.Win32.csproj" />
   <Project Path="TouchChanX.WinUI/TouchChanX.WinUI.csproj" Id="a1dcf582-d571-4e03-af3f-791f4121bcf6">
