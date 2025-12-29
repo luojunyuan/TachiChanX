@@ -26,27 +26,27 @@ public partial class TouchControl
         if (control.RenderTransform is not TranslateTransform moveTransform)
             return Task.CompletedTask;
 
-        var xAnimation = new DoubleAnimation() { Duration = ReleaseToEdgeDuration, To = targetPos.X };
-        var yAnimation = new DoubleAnimation() { Duration = ReleaseToEdgeDuration, To = targetPos.Y };
+        var xAnimation = new DoubleAnimation() 
+        { Duration = ReleaseToEdgeDuration, To = targetPos.X, FillBehavior = FillBehavior.Stop };
+        var yAnimation = new DoubleAnimation() 
+        { Duration = ReleaseToEdgeDuration, To = targetPos.Y, FillBehavior = FillBehavior.Stop };
         var moveStoryboard = new Storyboard();
 
         Storyboard.SetTarget(xAnimation, control);
         Storyboard.SetTarget(yAnimation, control);
         Storyboard.SetTargetProperty(xAnimation, TranslateXPropertyChain);
         Storyboard.SetTargetProperty(yAnimation, TranslateYPropertyChain);
-        xAnimation.Freeze();
-        yAnimation.Freeze();
         moveStoryboard.Children.Add(xAnimation);
         moveStoryboard.Children.Add(yAnimation);
 
         var tcs = new TaskCompletionSource();
-
         moveStoryboard.Events().Completed
-            .Take(1)
             .Do(_ => (moveTransform.X, moveTransform.Y) = (targetPos.X, targetPos.Y))
             .Do(_ => AnimationRunningSubject.OnNext(false))
-            .Do(_ => moveStoryboard.Remove())
             .Subscribe(_ => tcs.SetResult());
+        // TIP: Do 没有严肃的先后顺序，副作用也不应该相互依赖
+
+        moveStoryboard.Freeze();
 
         AnimationRunningSubject.OnNext(true);
         moveStoryboard.Begin();
