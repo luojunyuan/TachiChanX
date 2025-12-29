@@ -217,4 +217,12 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+
+  <Target Name="CopyToMsix" AfterTargets="Build" Condition="'$(Configuration)'=='Release'">
+    <Message Text="正在复制 $(TargetFileName) 到 TouchChanX.MSIX 目录..." Importance="high" />
+
+    <Copy SourceFiles="$(TargetPath)" 
+          DestinationFiles="$(SolutionDir)TouchChanX.MSIX\$(TargetFileName)" 
+          SkipUnchangedFiles="False" />
+  </Target>
 </Project>

@@ -24,6 +24,7 @@
   </Folder>
   <Project Path="TouchChanX.Ava\TouchChanX.Ava.csproj" />
   <Project Path="TouchChanX.MSIX/TouchChanX.MSIX.wapproj" Type="c7167f0d-bc9f-4e6e-afe1-012c56b48db5" Id="1264a89a-ccaa-4823-89c3-f7be97b5229d">
+    <BuildDependency Project="TouchChanX.ShellMenuHandler/TouchChanX.ShellMenuHandler.vcxproj" />
     <Deploy />
   </Project>
   <Project Path="TouchChanX.ShellMenuHandler/TouchChanX.ShellMenuHandler.vcxproj" Id="1ff295e9-0faa-4c68-9440-9c30bed120ba" />
