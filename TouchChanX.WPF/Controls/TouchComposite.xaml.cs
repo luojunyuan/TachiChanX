@@ -7,20 +7,8 @@ using System.Windows.Markup;
 
 namespace TouchChanX.WPF.Controls;
 
-public record LayerConfig(double Numerator, double Denominator)
-{
-    public double Ratio => Numerator / Denominator;
-}
-
 public partial class TouchComposite : Grid
 {
-    public static readonly IReadOnlyList<LayerConfig> Layers =
-    [
-        new LayerConfig(2, 16),
-        new LayerConfig(3, 16),
-        new LayerConfig(4, 16),
-    ];
-
     public TouchComposite()
     {
         InitializeComponent();
@@ -30,9 +18,9 @@ public partial class TouchComposite : Grid
             .DistinctUntilChanged()
             .Subscribe(width =>
             {
-                LayerOne.Margin = new(width * Layers[0].Ratio);
-                LayerTwo.Margin = new(width * Layers[1].Ratio);
-                LayerThree.Margin = new(width * Layers[2].Ratio);
+                LayerOne.Margin = new(width * 2 / 16);
+                LayerTwo.Margin = new(width * 3 / 16);
+                LayerThree.Margin = new(width * 4 / 16);
             });
     }
 }
@@ -42,15 +30,14 @@ public partial class TouchComposite : Grid
 /// </summary>
 public class TouchLayerMarginConverter : MarkupExtension, IValueConverter
 {
-    public int LayerIndex { get; init; }
+    public double Numerator { get; init; }
 
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        if (value is not double d)
-            return Binding.DoNothing;
+    public double Denominator { get; init; }
 
-        return d * TouchComposite.Layers[LayerIndex].Ratio;
-    }
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture) 
+        => value is not double d
+            ? Binding.DoNothing
+            : d * Numerator / Denominator;
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         => Binding.DoNothing;
