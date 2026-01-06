@@ -33,7 +33,7 @@ public partial class MenuControl
 /// </summary>
 public partial class MenuControl : UserControl
 {
-    public Shared.TouchDockAnchor FakeTouchDockAnchor { get; set; } = Shared.TouchDockAnchor.Default;
+    public TouchDockAnchor FakeTouchDockAnchor { get; set; } = TouchDockAnchor.Default;
 
     public MenuControl()
     {
@@ -56,7 +56,7 @@ public partial class MenuControl : UserControl
 
     private Size ActualSize => new(ActualWidth, ActualHeight);
 
-    private static Point AnchorPoint(Shared.TouchDockAnchor anchor, Size window)
+    private static Point AnchorPoint(TouchDockAnchor anchor, Size window)
     {
         var width = window.Width;
         var height = window.Height;
@@ -65,14 +65,14 @@ public partial class MenuControl : UserControl
 
         return anchor switch
         {
-            Shared.TouchDockAnchor.TopLeft => new Point(TouchSpacing, TouchSpacing),
-            Shared.TouchDockAnchor.TopRight => new Point(alignRight, TouchSpacing),
-            Shared.TouchDockAnchor.BottomLeft => new Point(TouchSpacing, alignBottom),
-            Shared.TouchDockAnchor.BottomRight => new Point(alignRight, alignBottom),
-            Shared.TouchDockAnchor.Left x => new Point(TouchSpacing, x.Scale * height - TouchSize / 2 - TouchSpacing),
-            Shared.TouchDockAnchor.Top x => new Point(x.Scale * width - TouchSize / 2 - TouchSpacing, TouchSpacing),
-            Shared.TouchDockAnchor.Right x => new Point(alignRight, x.Scale * height - TouchSize / 2 - TouchSpacing),
-            Shared.TouchDockAnchor.Bottom x => new Point(x.Scale * width - TouchSize / 2 - TouchSpacing, alignBottom),
+            TouchDockAnchor.TopLeft => new Point(TouchSpacing, TouchSpacing),
+            TouchDockAnchor.TopRight => new Point(alignRight, TouchSpacing),
+            TouchDockAnchor.BottomLeft => new Point(TouchSpacing, alignBottom),
+            TouchDockAnchor.BottomRight => new Point(alignRight, alignBottom),
+            TouchDockAnchor.Left x => new Point(TouchSpacing, x.Scale * height - TouchSize / 2 - TouchSpacing),
+            TouchDockAnchor.Top x => new Point(x.Scale * width - TouchSize / 2 - TouchSpacing, TouchSpacing),
+            TouchDockAnchor.Right x => new Point(alignRight, x.Scale * height - TouchSize / 2 - TouchSpacing),
+            TouchDockAnchor.Bottom x => new Point(x.Scale * width - TouchSize / 2 - TouchSpacing, alignBottom),
             _ => default,
         };
     }
