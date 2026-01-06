@@ -13,8 +13,8 @@
         Height="{Binding ActualWidth, ElementName=Touch}"
         HorizontalAlignment="Left"
         VerticalAlignment="Top"
-        d:CornerRadius="{Binding ActualWidth, ElementName=Touch, Converter={local:CornerRadiusToCircleConverter}}"
-        Background="{StaticResource AssistiveTouchBackground}">
+        Background="{StaticResource AssistiveTouchBackground}"
+        CornerRadius="{Binding ActualWidth, ElementName=Touch, Converter={local:CornerRadiusToCircleConverter}}">
 
         <control:TouchComposite />
 

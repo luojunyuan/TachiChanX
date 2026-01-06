@@ -19,19 +19,19 @@
     </Grid.Resources>
 
     <Ellipse x:Name="LayerOne"
-        d:Margin="{Binding ActualWidth, ElementName=PART_Root, Converter={local:TouchLayerMarginConverter Numerator=2, Denominator=16}}"
+        Margin="{Binding ActualWidth, ElementName=PART_Root, Converter={local:TouchLayerMarginConverter Numerator=2, Denominator=16}}"
         Fill="{StaticResource AssistiveTouchLayerOneBackground}"
         Stroke="{StaticResource AssistiveTouchLayerOneLine}"
         StrokeThickness="{x:Static root:Shared.AssistiveTouchCircleThickness}" />
 
     <Ellipse x:Name="LayerTwo"
-        d:Margin="{Binding ActualWidth, ElementName=PART_Root, Converter={local:TouchLayerMarginConverter Numerator=3, Denominator=16}}"
+        Margin="{Binding ActualWidth, ElementName=PART_Root, Converter={local:TouchLayerMarginConverter Numerator=3, Denominator=16}}"
         Fill="{StaticResource AssistiveTouchLayerTwoBackground}"
         Stroke="{StaticResource AssistiveTouchLayerTwoLine}"
         StrokeThickness="{x:Static root:Shared.AssistiveTouchCircleThickness}" />
 
     <Ellipse x:Name="LayerThree"
-        d:Margin="{Binding ActualWidth, ElementName=PART_Root, Converter={local:TouchLayerMarginConverter Numerator=4, Denominator=16}}"
+        Margin="{Binding ActualWidth, ElementName=PART_Root, Converter={local:TouchLayerMarginConverter Numerator=4, Denominator=16}}"
         Fill="{StaticResource AssistiveTouchLayerThreeBackground}"
         Stroke="{StaticResource AssistiveTouchLayerThreeLine}"
         StrokeThickness="{x:Static root:Shared.AssistiveTouchCircleThickness}" />

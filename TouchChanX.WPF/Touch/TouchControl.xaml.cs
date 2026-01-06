@@ -33,12 +33,6 @@ public partial class TouchControl : UserControl
 
     private void TouchSubscribe()
     {
-        // 订阅 Touch 自身大小变化保持圆形
-        Touch.Events().SizeChanged
-            .Select(size => size.NewSize.Width)
-            .DistinctUntilChanged()
-            .Subscribe(width => Touch.CornerRadius = new(width / 2.0));
-
         var raiseMouseReleasedSubject = new Subject<MouseEventArgs>();
 
         var pointerPressedStream =
@@ -195,13 +189,13 @@ public partial class TouchControl : UserControl
 }
 
 /// <summary>
-/// 将宽度转换为圆形的 CornerRadius，仅用于设计时
+/// 将宽度转换为圆形的 CornerRadius
 /// </summary>
 public class CornerRadiusToCircleConverter : MarkupExtension, IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) 
         => value is not double width 
-            ? DependencyProperty.UnsetValue 
+            ? Binding.DoNothing
             : new CornerRadius(width / 2.0);
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
