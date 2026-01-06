@@ -218,8 +218,8 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 
-  <Target Name="CopyToMsix" AfterTargets="AfterBuild">
-    <Message Text="正在复制 $(TargetFileName) 到 TouchChanX.MSIX 目录..." Importance="high" />
+  <Target Name="SyncToMsix" AfterTargets="Build">
+    <Message Text="$(ProjectName) 正在刷新 MSIX 负载: $(TargetFileName)..." Importance="high" />
 
     <Copy SourceFiles="$(TargetPath)" 
           DestinationFiles="$(SolutionDir)TouchChanX.MSIX\$(TargetFileName)" 
