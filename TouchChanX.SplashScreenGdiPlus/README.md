@@ -34,3 +34,7 @@
 ## ShowAsync() 调用的设计方案
 
 这里出现的模式是 bracket pattern，无论中间执行是否异常，资源都能被正确释放
+
+## ⚠Attention!
+
+`System.Drawing.Common` 依赖了 `Microsoft.Win32.SystemEvents` (10.0.1) 会在宿主可执行项目 AnyCPU 编译时输出一份多余的 runtime 文件夹到输出目录下。
