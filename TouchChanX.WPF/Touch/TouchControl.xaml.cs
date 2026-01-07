@@ -1,12 +1,9 @@
 ﻿using R3;
 using R3.ObservableEvents;
 using System.Diagnostics;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Markup;
 
 namespace TouchChanX.WPF.Touch;
 
@@ -24,7 +21,7 @@ public partial class TouchControl : UserControl
     }
 
     private const int TouchSpacing = 2;
-    
+
     private TouchControl Container => this;
 
     private Size CurrentContainerSize => new(this.ActualWidth, this.ActualHeight);
@@ -55,7 +52,7 @@ public partial class TouchControl : UserControl
             {
                 var pressPos = pressEvent.GetPosition(Container);
 
-                return 
+                return
                     pointerMovedStream
                     .Where(moveEvent =>
                     {
@@ -123,7 +120,7 @@ public partial class TouchControl : UserControl
                         new Rect((Point)touchPos, CurrentTouchSize),
                         TouchSpacing);
             })
-            .SelectMany(finalPos => 
+            .SelectMany(finalPos =>
                 Observable.FromAsync(_ => new(AnimateTouchToEdgeAsync(finalPos, Touch))))
             .Share();
 
@@ -147,7 +144,7 @@ public partial class TouchControl : UserControl
         TouchMiscSubscribe();
     }
 
-    private Observable<Unit> WhenWindowReady => 
+    private Observable<Unit> WhenWindowReady =>
         Container.Events().SizeChanged
             .Where(sizeEvent => sizeEvent.NewSize.Width > CurrentTouchSize.Width)
             .Take(1)
@@ -186,20 +183,4 @@ public partial class TouchControl : UserControl
         //    .Merge(whenWindowSizeChanged.Select(_ => Unit.Default))
         //    .Subscribe(_ => SetWindowObservableRegion?.Invoke(TouchDockRect));
     }
-}
-
-/// <summary>
-/// 将宽度转换为圆形的 CornerRadius
-/// </summary>
-public class CornerRadiusToCircleConverter : MarkupExtension, IValueConverter
-{
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture) 
-        => value is not double width 
-            ? Binding.DoNothing
-            : new CornerRadius(width / 2.0);
-
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        => Binding.DoNothing;
-
-    public override object ProvideValue(IServiceProvider serviceProvider) => this;
 }
