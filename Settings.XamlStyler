@@ -26,7 +26,7 @@
     "PageSource, PageIndex, Offset, Color, TargetName, Property, Value, StartPoint, EndPoint",
     "mc:Ignorable, d:IsDataSource, d:LayoutOverrides, d:IsStaticText",
     "Storyboard.*, From, To, Duration"
-  ],
+  ], // ⭐ 固定 http 开头的 xmlns 顺序最前
   "FirstLineAttributes": "x:Class, x:Name", // ⭐
   "OrderAttributesByName": true,
 
@@ -47,7 +47,7 @@
   "NoNewLineMarkupExtensions": "x:Bind, Binding, c:Binding", // ⭐
 
   // Thickness 格式化
-  "ThicknessSeparator": 1, // ⭐
+  "ThicknessSeparator": 1, // ⭐ 使用空格分割
   "ThicknessAttributes": "Margin, Padding, BorderThickness, ThumbnailClipMargin",
 
   // 杂项 (Misc)
