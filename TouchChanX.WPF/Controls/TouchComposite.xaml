@@ -1,6 +1,7 @@
 ﻿<Grid x:Class="TouchChanX.WPF.Controls.TouchComposite" x:Name="PART_Root"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:TouchChanX.WPF.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -19,19 +20,19 @@
     </Grid.Resources>
 
     <Ellipse x:Name="LayerOne"
-        Margin="{Binding ActualWidth, ElementName=PART_Root, Converter={local:TouchLayerMarginConverter Numerator=2, Denominator=16}}"
+        Margin="{c:Binding ActualWidth * 2 / 16, ElementName=PART_Root}"
         Fill="{StaticResource AssistiveTouchLayerOneBackground}"
         Stroke="{StaticResource AssistiveTouchLayerOneLine}"
         StrokeThickness="{x:Static root:Shared.AssistiveTouchCircleThickness}" />
 
     <Ellipse x:Name="LayerTwo"
-        Margin="{Binding ActualWidth, ElementName=PART_Root, Converter={local:TouchLayerMarginConverter Numerator=3, Denominator=16}}"
+        Margin="{c:Binding ActualWidth * 3 / 16, ElementName=PART_Root}"
         Fill="{StaticResource AssistiveTouchLayerTwoBackground}"
         Stroke="{StaticResource AssistiveTouchLayerTwoLine}"
         StrokeThickness="{x:Static root:Shared.AssistiveTouchCircleThickness}" />
 
     <Ellipse x:Name="LayerThree"
-        Margin="{Binding ActualWidth, ElementName=PART_Root, Converter={local:TouchLayerMarginConverter Numerator=4, Denominator=16}}"
+        Margin="{c:Binding ActualWidth * 4 / 16, ElementName=PART_Root}"
         Fill="{StaticResource AssistiveTouchLayerThreeBackground}"
         Stroke="{StaticResource AssistiveTouchLayerThreeLine}"
         StrokeThickness="{x:Static root:Shared.AssistiveTouchCircleThickness}" />

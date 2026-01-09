@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="TouchChanX.WPF.Menu.MenuControl" x:Name="Root"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
     xmlns:control="clr-namespace:TouchChanX.WPF.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:TouchChanX.WPF.Menu"
@@ -27,7 +28,7 @@
         Width="80"
         Height="{Binding Width, ElementName=Menu}"
         Background="{StaticResource AssistiveTouchBackground}"
-        CornerRadius="40">
+        CornerRadius="{c:Binding ActualWidth / 2, ElementName=FakeTouch}">
 
         <Grid>
             <Grid x:Name="PagePanel">
