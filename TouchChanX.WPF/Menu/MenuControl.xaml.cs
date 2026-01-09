@@ -1,18 +1,7 @@
 ﻿using R3;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using R3.ObservableEvents;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using R3.ObservableEvents;
 
 namespace TouchChanX.WPF.Menu;
 
@@ -40,10 +29,10 @@ public partial class MenuControl : UserControl
         InitializeComponent();
 
         this.Events().IsVisibleChanged
-            .Skip(1)
-            .Where(evt => (bool)evt.NewValue)
+            .Where(_ => IsVisible)
             .SubscribeAwait(async (_, _) =>
             {
+                this.UpdateLayout();
                 var endOffset = new Point((ActualWidth - 300) / 2, (ActualHeight - 300) / 2);
                 await StartAnimationAsync(Menu, endOffset);
                 IsExpanded = true;

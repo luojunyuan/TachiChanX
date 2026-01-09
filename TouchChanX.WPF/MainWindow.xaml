@@ -11,23 +11,11 @@
     mc:Ignorable="d">
 
     <Window.Resources>
-        <Style TargetType="touch:TouchControl">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsMenuOpen.Value}" Value="True">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding IsMenuOpen.Value}" Value="False">
-                    <Setter Property="Visibility" Value="Visible" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
         <Style TargetType="menu:MenuControl">
+            <Setter Property="Visibility" Value="Collapsed" />
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsMenuOpen.Value}" Value="True">
+                <DataTrigger Binding="{Binding IsVisible, ElementName=Touch}" Value="False">
                     <Setter Property="Visibility" Value="Visible" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding IsMenuOpen.Value}" Value="False">
-                    <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
