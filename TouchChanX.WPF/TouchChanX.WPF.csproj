@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CalcBinding6" />
+    <PackageReference Include="CalcBinding" />
     <PackageReference Include="R3" />
     <PackageReference Include="R3Extensions.ObservableEvents.SourceGenerator" />
   </ItemGroup>

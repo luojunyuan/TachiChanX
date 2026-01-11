@@ -1,11 +1,11 @@
-<Project>
+﻿<Project>
   <PropertyGroup>
     <!-- Enable central package management, https://learn.microsoft.com/en-us/nuget/consume-packages/Central-Package-Management -->
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Avalonia.Desktop" Version="11.3.10" />
-    <PackageVersion Include="CalcBinding6" Version="1.1.0" />
+    <PackageVersion Include="CalcBinding" Version="2.5.2" />
     <PackageVersion Include="DotnetRuntimeBootstrapper" Version="2.5.4" />
     <PackageVersion Include="LightResults" Version="10.0.2" />
     <PackageVersion Include="Microsoft.UI.Xaml" Version="2.8.7" />
