@@ -41,5 +41,5 @@
     <Platform Solution="*|x86" Project="x86" />
   </Project>
   <Project Path="TouchChanX.WPF/TouchChanX.WPF.csproj" Id="aaad1b9d-b262-4536-9442-6641c00e91f9" />
-  <Project Path="TouchChanX/TouchChanX.csproj" />
+  <Project DefaultStartup="true" Path="TouchChanX/TouchChanX.csproj" />
 </Solution>
