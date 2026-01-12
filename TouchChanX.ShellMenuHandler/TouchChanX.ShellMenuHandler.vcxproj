@@ -202,6 +202,7 @@
   <ItemGroup>
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="TouchChanRootCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -213,16 +214,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TouchChanRootCommand.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-
   <Target Name="SyncToMsix" AfterTargets="Build">
     <Message Text="$(ProjectName) 正在刷新 MSIX 负载: $(TargetFileName)..." Importance="high" />
-
-    <Copy SourceFiles="$(TargetPath)" 
-          DestinationFiles="$(SolutionDir)TouchChanX.MSIX\$(TargetFileName)" 
-          SkipUnchangedFiles="False" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFiles="$(SolutionDir)TouchChanX.MSIX\$(TargetFileName)" SkipUnchangedFiles="False" />
   </Target>
 </Project>
