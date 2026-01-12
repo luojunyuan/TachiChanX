@@ -16,7 +16,7 @@
   "EnableAttributeReordering": true,
   "AttributeOrderingRuleGroups": [
     "x:Class",
-    "xmlns, xmlns:x, xmlns:d, xmlns:mc",
+    "xmlns, xmlns:x, xmlns:d, xmlns:mc", // ⭐ 固定 http 开头的 xmlns 顺序最前
     "xmlns:*",
     "x:Key, Key, x:Name, Name, x:Uid, Uid, Title",
     "Grid.Row, Grid.RowSpan, Grid.Column, Grid.ColumnSpan, Canvas.Left, Canvas.Top, Canvas.Right, Canvas.Bottom",
@@ -26,7 +26,7 @@
     "PageSource, PageIndex, Offset, Color, TargetName, Property, Value, StartPoint, EndPoint",
     "mc:Ignorable, d:IsDataSource, d:LayoutOverrides, d:IsStaticText",
     "Storyboard.*, From, To, Duration"
-  ], // ⭐ 固定 http 开头的 xmlns 顺序最前
+  ],
   "FirstLineAttributes": "x:Class, x:Name", // ⭐
   "OrderAttributesByName": true,
 
