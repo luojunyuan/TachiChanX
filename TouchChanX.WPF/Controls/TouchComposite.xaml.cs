@@ -4,6 +4,8 @@ namespace TouchChanX.WPF.Controls;
 
 public partial class TouchComposite : Grid
 {
+    public const double AssistiveTouchCircleThickness = 1.0;
+
     public TouchComposite()
     {
         InitializeComponent();
