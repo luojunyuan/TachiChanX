@@ -34,13 +34,12 @@ public partial class MenuControl : UserControl
             {
                 this.UpdateLayout();
 
-                var endOffset = CenterOffset(ContainerSize, MenuSize);
-
-                await StartAnimationAsync(Menu, endOffset);
+                await StartAnimationAsync(Menu, new Point(
+                    (ContainerSize.Width - MenuSize) / 2,
+                    (ContainerSize.Height - MenuSize) / 2)
+                );
 
                 IsExpanded = true;
-
-                static Point CenterOffset(Size c, double s) => new((c.Width - s) / 2, (c.Height - s) / 2);
             });
     }
 
