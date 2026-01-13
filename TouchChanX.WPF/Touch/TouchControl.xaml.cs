@@ -20,7 +20,7 @@ public partial class TouchControl : UserControl
         TouchSubscribe();
     }
 
-    private const int TouchSpacing = 2;
+    private const int TouchSpacing = Shared.TouchSpacing;
 
     private TouchControl Container => this;
 

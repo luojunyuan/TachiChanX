@@ -10,7 +10,7 @@
     mc:Ignorable="d">
 
     <Border x:Name="Touch"
-        Width="80"
+        Width="{x:Static root:Shared.TouchSize}"
         Height="{Binding ActualWidth, ElementName=Touch}"
         HorizontalAlignment="Left"
         VerticalAlignment="Top"

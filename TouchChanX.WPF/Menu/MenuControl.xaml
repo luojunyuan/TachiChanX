@@ -25,8 +25,8 @@
     </UserControl.Resources>
 
     <Border x:Name="Menu"
-        Width="80"
-        Height="80"
+        Width="{x:Static root:Shared.TouchSize}"
+        Height="{x:Static root:Shared.TouchSize}"
         Background="{StaticResource AssistiveTouchBackground}"
         CornerRadius="{c:Binding ActualWidth / 2, ElementName=FakeTouch}">
 
@@ -37,7 +37,7 @@
                 <ContentControl x:Name="InnerPageHost" />
             </Grid>
 
-            <control:TouchComposite x:Name="FakeTouch" Width="80" Height="{Binding ActualWidth, ElementName=FakeTouch}" />
+            <control:TouchComposite x:Name="FakeTouch" Width="{x:Static root:Shared.TouchSize}" Height="{Binding ActualWidth, ElementName=FakeTouch}" />
         </Grid>
 
         <Border.RenderTransform>

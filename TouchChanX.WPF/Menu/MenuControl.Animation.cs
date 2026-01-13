@@ -23,7 +23,7 @@ public partial class MenuControl // Animation
         var yAnimation = new DoubleAnimation()
         { Duration = PageTransitionInDuration, To = pos.Y, FillBehavior = FillBehavior.Stop };
         var widthAnimation = new DoubleAnimation()
-        { Duration = PageTransitionInDuration, To = 300 };
+        { Duration = PageTransitionInDuration, To = MenuSize };
         var heightAnimation = widthAnimation.Clone();
 
         var transformStoryboard = new Storyboard();

@@ -33,7 +33,7 @@ public partial class MenuControl : UserControl
             .SubscribeAwait(async (_, _) =>
             {
                 this.UpdateLayout();
-                var endOffset = new Point((ActualWidth - 300) / 2, (ActualHeight - 300) / 2);
+                var endOffset = new Point((ActualWidth - MenuSize) / 2, (ActualHeight - MenuSize) / 2);
                 await StartAnimationAsync(Menu, endOffset);
                 IsExpanded = true;
             });
@@ -41,7 +41,9 @@ public partial class MenuControl : UserControl
 
     private const int TouchSpacing = Shared.TouchSpacing;
 
-    private const int TouchSize = 80;
+    private const double TouchSize = Shared.TouchSize;
+
+    private const double MenuSize = Shared.MenuSize;
 
     private Size ActualSize => new(ActualWidth, ActualHeight);
 
