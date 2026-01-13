@@ -26,7 +26,7 @@
 
     <Border x:Name="Menu"
         Width="80"
-        Height="{Binding Width, ElementName=Menu}"
+        Height="80"
         Background="{StaticResource AssistiveTouchBackground}"
         CornerRadius="{c:Binding ActualWidth / 2, ElementName=FakeTouch}">
 

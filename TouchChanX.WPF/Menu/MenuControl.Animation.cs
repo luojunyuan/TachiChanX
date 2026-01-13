@@ -14,6 +14,7 @@ public partial class MenuControl // Animation
     private static readonly PropertyPath TranslateXPropertyChain = new($"({RenderTransformProperty}).({TranslateTransform.XProperty})");
     private static readonly PropertyPath TranslateYPropertyChain = new($"({RenderTransformProperty}).({TranslateTransform.YProperty})");
     private static readonly PropertyPath WidthPropertyPath = new(WidthProperty);
+    private static readonly PropertyPath HeightPropertyPath = new(HeightProperty);
 
     public static Task StartAnimationAsync(FrameworkElement menu, Point pos)
     {
@@ -23,17 +24,21 @@ public partial class MenuControl // Animation
         { Duration = PageTransitionInDuration, To = pos.Y, FillBehavior = FillBehavior.Stop };
         var widthAnimation = new DoubleAnimation()
         { Duration = PageTransitionInDuration, To = 300 };
+        var heightAnimation = widthAnimation.Clone();
 
         var transformStoryboard = new Storyboard();
         Storyboard.SetTarget(xAnimation, menu);
         Storyboard.SetTarget(yAnimation, menu);
         Storyboard.SetTarget(widthAnimation, menu);
+        Storyboard.SetTarget(heightAnimation, menu);
         Storyboard.SetTargetProperty(xAnimation, TranslateXPropertyChain);
         Storyboard.SetTargetProperty(yAnimation, TranslateYPropertyChain);
         Storyboard.SetTargetProperty(widthAnimation, WidthPropertyPath);
+        Storyboard.SetTargetProperty(heightAnimation, HeightPropertyPath);
         transformStoryboard.Children.Add(xAnimation);
         transformStoryboard.Children.Add(yAnimation);
         transformStoryboard.Children.Add(widthAnimation);
+        transformStoryboard.Children.Add(heightAnimation);
         var tcs = new TaskCompletionSource();
         transformStoryboard.Events().Completed.Subscribe(_ => tcs.SetResult());
         transformStoryboard.Freeze();
