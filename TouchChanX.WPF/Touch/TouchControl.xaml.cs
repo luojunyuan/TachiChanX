@@ -12,12 +12,14 @@ namespace TouchChanX.WPF.Touch;
 /// </summary>
 public partial class TouchControl : UserControl
 {
+    public Observable<Rect> Clicked { get; }
+
     public TouchControl()
     {
         InitializeComponent();
         InitializeStaticAnimations();
 
-        TouchSubscribe();
+        Clicked = TouchSubscribe();
     }
 
     private const int TouchSpacing = Shared.TouchSpacing;
@@ -28,7 +30,7 @@ public partial class TouchControl : UserControl
 
     private Size CurrentTouchSize => new(Touch.ActualWidth, Touch.ActualHeight);
 
-    private void TouchSubscribe()
+    private Observable<Rect> TouchSubscribe()
     {
         var raiseMouseReleasedSubject = new Subject<MouseEventArgs>();
 
@@ -142,6 +144,14 @@ public partial class TouchControl : UserControl
             .Subscribe(_ => RunFadeInAnimaion(Touch));
 
         TouchMiscSubscribe();
+
+        // OnClicked
+        return pointerPressedStream
+            .SelectMany(press => pointerReleasedStream.Take(1).TakeUntil(dragStartedStream))
+            .Delay(OpacityFadeInDuration)
+            .ObserveOn(App.UISyncContext)
+            .Select(_ => TouchDockRect)
+            .Share();
     }
 
     private Observable<Unit> WhenWindowReady =>
