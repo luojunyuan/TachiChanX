@@ -24,22 +24,26 @@ public partial class MenuControl
 /// </summary>
 public partial class MenuControl : UserControl
 {
-    public TouchDockAnchor FakeTouchDockAnchor { get; set; } = TouchDockAnchor.Default;
+    private TouchDockAnchor _fakeTouchDockAnchor = TouchDockAnchor.Default;
 
-    public Observable<Unit> Closed { get; }
+    public void ShowAt(Rect touchRect)
+    {
+        this._fakeTouchDockAnchor = TouchDockAnchor.SnapFromRect(ContainerSize, touchRect);
+        this.Visibility = Visibility.Visible;
+    }
 
     public MenuControl()
     {
         InitializeComponent();
 
+        // Open
         this.Events().IsVisibleChanged
             .Where(_ => IsVisible)
             .SubscribeAwait(async (_, _) =>
             {
                 this.UpdateLayout();
 
-                var point = AnchorPoint(FakeTouchDockAnchor, ContainerSize);
-                Debug.WriteLine(point);
+                var point = AnchorPoint(_fakeTouchDockAnchor, ContainerSize);
                 (MenuInitPosition.X, MenuInitPosition.Y) = (point.X, point.Y); 
 
                 await StartAnimationAsync(MenuBorder, new Point(
@@ -50,22 +54,21 @@ public partial class MenuControl : UserControl
                 IsExpanded = true;
             });
 
-        var closed = this.Events().PreviewMouseLeftButtonUp
+        // Close
+        this.Events().PreviewMouseLeftButtonUp
             .Where(e => e.OriginalSource == MenuBackground)
-            .Select(_ => Unit.Default)
-            .Share();
-
-        Closed = closed;
-
-        closed
-            .SubscribeAwait(async (_, _) =>
+            .SelectAwait(async (_, _) =>
             {
                 IsExpanded = false;
 
-                var touchAnchor = AnchorPoint(FakeTouchDockAnchor, ContainerSize);
+                var touchAnchor = AnchorPoint(_fakeTouchDockAnchor, ContainerSize);
 
                 await StartAnimationAsync2(MenuBorder, touchAnchor);
-            });
+
+                return Unit.Default;
+            })
+            .Prepend(Unit.Default)
+            .Subscribe(_ => this.Visibility = Visibility.Collapsed);
     }
 
     private const int TouchSpacing = Shared.TouchSpacing;

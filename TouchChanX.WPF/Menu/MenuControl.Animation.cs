@@ -17,6 +17,9 @@ public partial class MenuControl // Animation
     private static readonly PropertyPath WidthPropertyPath = new(WidthProperty);
     private static readonly PropertyPath HeightPropertyPath = new(HeightProperty);
 
+    private static readonly Subject<bool> AnimationRunningSubject = new();
+    public static Observable<bool> AnimationRunning => AnimationRunningSubject;
+
     public static Task StartAnimationAsync(FrameworkElement menu, Point pos)
     {
         if (menu.RenderTransform is not TranslateTransform moveTransform)

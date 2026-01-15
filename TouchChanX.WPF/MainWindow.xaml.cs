@@ -14,18 +14,10 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-        Touch.Clicked.Subscribe(touchRect =>
-        {
-            Menu.FakeTouchDockAnchor = TouchDockAnchor.SnapFromRect(new(this.ActualWidth, this.ActualHeight), touchRect);
-            Menu.Visibility = Visibility.Visible;
-        });
-
-        Menu.Closed
-            .Prepend(Unit.Default)
-            .Subscribe(_ => Menu.Visibility = Visibility.Collapsed);
+        Touch.Clicked.Subscribe(Menu.ShowAt);
 
         // 订阅执行任何动画期间都禁止整个页面再次交互
-        Observable.Merge(TouchControl.AnimationRunning)
+        Observable.Merge(TouchControl.AnimationRunning, MenuControl.AnimationRunning)
             .Subscribe(running => this.IsHitTestVisible = !running);
     }
 }
