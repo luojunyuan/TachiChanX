@@ -1,5 +1,7 @@
 ﻿using R3;
 using R3.ObservableEvents;
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -24,6 +26,8 @@ public partial class MenuControl : UserControl
 {
     public TouchDockAnchor FakeTouchDockAnchor { get; set; } = TouchDockAnchor.Default;
 
+    public Observable<Unit> Closed { get; }
+
     public MenuControl()
     {
         InitializeComponent();
@@ -34,12 +38,33 @@ public partial class MenuControl : UserControl
             {
                 this.UpdateLayout();
 
-                await StartAnimationAsync(Menu, new Point(
+                var point = AnchorPoint(FakeTouchDockAnchor, ContainerSize);
+                Debug.WriteLine(point);
+                (MenuInitPosition.X, MenuInitPosition.Y) = (point.X, point.Y); 
+
+                await StartAnimationAsync(MenuBorder, new Point(
                     (ContainerSize.Width - MenuSize) / 2,
                     (ContainerSize.Height - MenuSize) / 2)
                 );
 
                 IsExpanded = true;
+            });
+
+        var closed = this.Events().PreviewMouseLeftButtonUp
+            .Where(e => e.OriginalSource == MenuBackground)
+            .Select(_ => Unit.Default)
+            .Share();
+
+        Closed = closed;
+
+        closed
+            .SubscribeAwait(async (_, _) =>
+            {
+                IsExpanded = false;
+
+                var touchAnchor = AnchorPoint(FakeTouchDockAnchor, ContainerSize);
+
+                await StartAnimationAsync2(MenuBorder, touchAnchor);
             });
     }
 

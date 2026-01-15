@@ -10,7 +10,7 @@
     mc:Ignorable="d">
 
     <UserControl.Resources>
-        <Style TargetType="Border">
+        <Style x:Key="MenuStyle" TargetType="Border">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsExpanded, ElementName=Root}" Value="True">
                     <Setter Property="HorizontalAlignment" Value="Center" />
@@ -24,24 +24,27 @@
         </Style>
     </UserControl.Resources>
 
-    <Border x:Name="Menu"
-        Width="{x:Static root:Shared.TouchSize}"
-        Height="{x:Static root:Shared.TouchSize}"
-        Background="{StaticResource AssistiveTouchBackground}"
-        CornerRadius="{c:Binding ActualWidth / 2, ElementName=FakeTouch}">
+    <Grid x:Name="MenuBackground" Background="Transparent">
+        <Border x:Name="MenuBorder"
+            Width="{x:Static root:Shared.TouchSize}"
+            Height="{x:Static root:Shared.TouchSize}"
+            Background="{StaticResource AssistiveTouchBackground}"
+            CornerRadius="{c:Binding ActualWidth / 2, ElementName=FakeTouch}"
+            Style="{StaticResource MenuStyle}">
 
-        <Grid>
-            <Grid x:Name="PagePanel">
-                <!--<pages:MainPage x:Name="MainPage"  Padding="12" />-->
+            <Grid>
+                <Grid x:Name="PagePanel">
+                    <!--<pages:MainPage x:Name="MainPage"  Padding="12" />-->
 
-                <ContentControl x:Name="InnerPageHost" />
+                    <ContentControl x:Name="InnerPageHost" />
+                </Grid>
+
+                <control:TouchComposite x:Name="FakeTouch" Width="{x:Static root:Shared.TouchSize}" Height="{Binding ActualWidth, ElementName=FakeTouch}" />
             </Grid>
 
-            <control:TouchComposite x:Name="FakeTouch" Width="{x:Static root:Shared.TouchSize}" Height="{Binding ActualWidth, ElementName=FakeTouch}" />
-        </Grid>
-
-        <Border.RenderTransform>
-            <TranslateTransform />
-        </Border.RenderTransform>
-    </Border>
+            <Border.RenderTransform>
+                <TranslateTransform x:Name="MenuInitPosition" />
+            </Border.RenderTransform>
+        </Border>
+    </Grid>
 </UserControl>

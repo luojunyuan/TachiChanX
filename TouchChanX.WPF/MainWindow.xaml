@@ -12,7 +12,7 @@
     mc:Ignorable="d">
 
     <Grid>
-        <touch:TouchControl x:Name="Touch" />
-        <menu:MenuControl x:Name="Menu" Visibility="{c:Binding !IsVisible, ElementName=Touch}" />
+        <touch:TouchControl x:Name="Touch" Visibility="{c:Binding !IsVisible, ElementName=Menu}" />
+        <menu:MenuControl x:Name="Menu" />
     </Grid>
 </Window>
