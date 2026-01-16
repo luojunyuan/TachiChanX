@@ -18,6 +18,7 @@ public partial class MainWindow : Window
 
         // 订阅执行任何动画期间都禁止整个页面再次交互
         Observable.Merge(TouchControl.AnimationRunning, MenuControl.AnimationRunning)
+            .DistinctUntilChanged()
             .Subscribe(running => this.IsHitTestVisible = !running);
     }
 }

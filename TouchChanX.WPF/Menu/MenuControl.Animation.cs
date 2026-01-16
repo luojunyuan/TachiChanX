@@ -20,11 +20,8 @@ public partial class MenuControl // Animation
     private static readonly Subject<bool> AnimationRunningSubject = new();
     public static Observable<bool> AnimationRunning => AnimationRunningSubject;
 
-    public static Task StartAnimationAsync(FrameworkElement menu, Point pos)
+    public static Task MenuOpenAnimationAsync(FrameworkElement menu, Point pos)
     {
-        if (menu.RenderTransform is not TranslateTransform moveTransform)
-            return Task.CompletedTask;
-
         var xAnimation = new DoubleAnimation()
         { Duration = PageTransitionInDuration, To = pos.X, FillBehavior = FillBehavior.Stop };
         var yAnimation = new DoubleAnimation()
@@ -48,24 +45,25 @@ public partial class MenuControl // Animation
         transformStoryboard.Children.Add(heightAnimation);
         var tcs = new TaskCompletionSource();
         transformStoryboard.Events().Completed
-            .Do(_ => (moveTransform.X, moveTransform.Y) = (0, 0))
+            .Do(_ => AnimationRunningSubject.OnNext(false))
             .Subscribe(_ => tcs.SetResult());
         transformStoryboard.Freeze();
 
+        AnimationRunningSubject.OnNext(true);
         transformStoryboard.Begin();
 
         return tcs.Task;
     }
 
 
-    public static Task StartAnimationAsync2(FrameworkElement menu, Point pos)
+    public static Task MenuCloseAnimationAsync(FrameworkElement menu, Point centerPos, Point targetPos)
     {
         var xAnimation = new DoubleAnimation()
-        { Duration = PageTransitionInDuration, To = pos.X, FillBehavior = FillBehavior.Stop };
+        { Duration = PageTransitionInDuration, From = centerPos.X, To = targetPos.X, FillBehavior = FillBehavior.Stop };
         var yAnimation = new DoubleAnimation()
-        { Duration = PageTransitionInDuration, To = pos.Y, FillBehavior = FillBehavior.Stop };
+        { Duration = PageTransitionInDuration, From = centerPos.Y, To = targetPos.Y, FillBehavior = FillBehavior.Stop };
         var widthAnimation = new DoubleAnimation()
-        { Duration = PageTransitionInDuration, To = 80 };
+        { Duration = PageTransitionInDuration, To = TouchSize };
         var heightAnimation = widthAnimation.Clone();
 
         var transformStoryboard = new Storyboard();
@@ -82,9 +80,12 @@ public partial class MenuControl // Animation
         transformStoryboard.Children.Add(widthAnimation);
         transformStoryboard.Children.Add(heightAnimation);
         var tcs = new TaskCompletionSource();
-        transformStoryboard.Events().Completed.Subscribe(_ => tcs.SetResult());
+        transformStoryboard.Events().Completed
+            .Do(_ => AnimationRunningSubject.OnNext(false))
+            .Subscribe(_ => tcs.SetResult());
         transformStoryboard.Freeze();
 
+        AnimationRunningSubject.OnNext(true);
         transformStoryboard.Begin();
 
         return tcs.Task;

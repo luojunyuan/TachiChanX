@@ -46,11 +46,9 @@ public partial class MenuControl : UserControl
                 var point = AnchorPoint(_fakeTouchDockAnchor, ContainerSize);
                 (MenuInitPosition.X, MenuInitPosition.Y) = (point.X, point.Y); 
 
-                await StartAnimationAsync(MenuBorder, new Point(
-                    (ContainerSize.Width - MenuSize) / 2,
-                    (ContainerSize.Height - MenuSize) / 2)
-                );
+                await MenuOpenAnimationAsync(MenuBorder, CenterPosition);
 
+                (MenuInitPosition.X, MenuInitPosition.Y) = (0, 0);
                 IsExpanded = true;
             });
 
@@ -63,7 +61,7 @@ public partial class MenuControl : UserControl
 
                 var touchAnchor = AnchorPoint(_fakeTouchDockAnchor, ContainerSize);
 
-                await StartAnimationAsync2(MenuBorder, touchAnchor);
+                await MenuCloseAnimationAsync(MenuBorder, CenterPosition, touchAnchor);
 
                 return Unit.Default;
             })
@@ -78,6 +76,10 @@ public partial class MenuControl : UserControl
     private const double MenuSize = Shared.MenuSize;
 
     private Size ContainerSize => new(ActualWidth, ActualHeight);
+
+    private Point CenterPosition => new(
+        (ContainerSize.Width - MenuSize) / 2,
+        (ContainerSize.Height - MenuSize) / 2);
 
     private static Point AnchorPoint(TouchDockAnchor anchor, Size window)
     {
