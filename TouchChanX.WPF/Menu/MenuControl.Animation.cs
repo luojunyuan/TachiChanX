@@ -63,6 +63,11 @@ public partial class MenuControl // Animation
 
     public static Task MenuCloseAnimationAsync(FrameworkElement menu, Point centerPos, Point targetPos)
     {
+        if (menu.RenderTransform is not TranslateTransform moveTransform)
+            return Task.CompletedTask;
+
+        (moveTransform.X, moveTransform.Y) = (centerPos.X, centerPos.Y);
+
         var xAnimation = new DoubleAnimation()
         { Duration = PageTransitionInDuration, From = centerPos.X, To = targetPos.X, FillBehavior = FillBehavior.Stop };
         var yAnimation = new DoubleAnimation()
@@ -86,6 +91,7 @@ public partial class MenuControl // Animation
         transformStoryboard.Children.Add(heightAnimation);
         var tcs = new TaskCompletionSource();
         transformStoryboard.Events().Completed
+            .Do(_ => (moveTransform.X, moveTransform.Y) = (targetPos.X, targetPos.Y))
             .Do(_ => AnimationRunningSubject.OnNext(false))
             .Subscribe(_ => tcs.SetResult());
         transformStoryboard.Freeze();
