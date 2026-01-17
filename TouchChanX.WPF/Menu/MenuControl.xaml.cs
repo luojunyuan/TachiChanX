@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace TouchChanX.WPF.Menu;
 
@@ -29,23 +30,38 @@ public partial class MenuControl : UserControl
     public void ShowAt(Rect touchRect)
     {
         this.Visibility = Visibility.Visible;
-        this.UpdateLayout();
 
         this._fakeTouchDockAnchor = TouchDockAnchor.SnapFromRect(ContainerSize, touchRect);
     }
 
+    private readonly ReadOnlyReactiveProperty<Size> _containerSizeState;
+    private Size ContainerSize => _containerSizeState.CurrentValue;
+
+    private Point CenterPosition => new(
+        (ContainerSize.Width - MenuSize) / 2,
+        (ContainerSize.Height - MenuSize) / 2);
+
+    private Point TouchAnchor => AnchorPoint(_fakeTouchDockAnchor, ContainerSize);
+
     public MenuControl()
     {
         InitializeComponent();
+        this.Visibility = Visibility.Collapsed;
+
+        _containerSizeState = this.Events().Loaded
+            .Select(_ => VisualTreeHelper.GetParent(this) as FrameworkElement)
+            .WhereNotNull()
+            .SelectMany(p => ((FrameworkElement)p).Events().SizeChanged
+                .Select(e => e.NewSize)
+                .Prepend(new Size(p.ActualWidth, p.ActualHeight)))
+            .ToReadOnlyReactiveProperty();
 
         // Open
         this.Events().IsVisibleChanged
             .Where(_ => IsVisible)
             .SubscribeAwait(async (_, _) =>
             {
-                var point = AnchorPoint(_fakeTouchDockAnchor, ContainerSize);
-                
-                await MenuOpenAnimationAsync(MenuBorder, CenterPosition, point);
+                await MenuOpenAnimationAsync(MenuBorder, CenterPosition, TouchAnchor);
 
                 IsExpanded = true;
             });
@@ -53,18 +69,14 @@ public partial class MenuControl : UserControl
         // Close
         this.Events().PreviewMouseLeftButtonUp
             .Where(e => e.OriginalSource == MenuBackground)
-            .SelectAwait(async (_, _) =>
+            .SubscribeAwait(async (_, _) =>
             {
                 IsExpanded = false;
 
-                var touchAnchor = AnchorPoint(_fakeTouchDockAnchor, ContainerSize);
+                await MenuCloseAnimationAsync(MenuBorder, CenterPosition, TouchAnchor);
 
-                await MenuCloseAnimationAsync(MenuBorder, CenterPosition, touchAnchor);
-
-                return Unit.Default;
-            })
-            .Prepend(Unit.Default)
-            .Subscribe(_ => this.Visibility = Visibility.Collapsed);
+                this.Visibility = Visibility.Collapsed;
+            });
     }
 
     private const int TouchSpacing = Shared.TouchSpacing;
@@ -72,12 +84,6 @@ public partial class MenuControl : UserControl
     private const double TouchSize = Shared.TouchSize;
 
     private const double MenuSize = Shared.MenuSize;
-
-    private Size ContainerSize => new(ActualWidth, ActualHeight);
-
-    private Point CenterPosition => new(
-        (ContainerSize.Width - MenuSize) / 2,
-        (ContainerSize.Height - MenuSize) / 2);
 
     private static Point AnchorPoint(TouchDockAnchor anchor, Size window)
     {

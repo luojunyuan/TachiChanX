@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace TouchChanX.WPF.Touch;
 
@@ -20,13 +21,22 @@ public partial class TouchControl : UserControl
         InitializeStaticAnimations();
 
         Clicked = TouchSubscribe();
+
+        _containerSizeState = this.Events().Loaded
+            .Select(_ => VisualTreeHelper.GetParent(this) as FrameworkElement)
+            .WhereNotNull()
+            .SelectMany(p => ((FrameworkElement)p).Events().SizeChanged
+                .Select(e => e.NewSize)
+                .Prepend(new Size(p.ActualWidth, p.ActualHeight)))
+            .ToReadOnlyReactiveProperty();
     }
+
+    private readonly ReadOnlyReactiveProperty<Size> _containerSizeState;
+    private Size ContainerSize => _containerSizeState.CurrentValue;
 
     private const int TouchSpacing = Shared.TouchSpacing;
 
     private TouchControl Container => this;
-
-    private Size CurrentContainerSize => new(this.ActualWidth, this.ActualHeight);
 
     private Size CurrentTouchSize => new(Touch.ActualWidth, Touch.ActualHeight);
 
@@ -101,7 +111,7 @@ public partial class TouchControl : UserControl
         var boundaryExceededStream =
             draggingStream
             .Where(item => PositionCalculator.IsBeyondBoundary(
-                CurrentContainerSize,
+                ContainerSize,
                 new Rect(item.NewPosition, CurrentTouchSize)))
             .Select(item => item.MovedEvent);
 
@@ -118,7 +128,7 @@ public partial class TouchControl : UserControl
                 var touchPos = distanceToOrigin - distanceToElement;
                 return
                     PositionCalculator.CalculateTouchFinalPosition(
-                        CurrentContainerSize,
+                        ContainerSize,
                         new Rect((Point)touchPos, CurrentTouchSize),
                         TouchSpacing);
             })
