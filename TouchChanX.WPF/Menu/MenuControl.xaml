@@ -43,7 +43,7 @@
             </Grid>
 
             <Border.RenderTransform>
-                <TranslateTransform x:Name="MenuInitPosition" />
+                <TranslateTransform />
             </Border.RenderTransform>
         </Border>
     </Grid>

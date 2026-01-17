@@ -1,7 +1,6 @@
 ﻿using R3;
 using R3.ObservableEvents;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
@@ -20,12 +19,17 @@ public partial class MenuControl // Animation
     private static readonly Subject<bool> AnimationRunningSubject = new();
     public static Observable<bool> AnimationRunning => AnimationRunningSubject;
 
-    public static Task MenuOpenAnimationAsync(FrameworkElement menu, Point pos)
+    public static Task MenuOpenAnimationAsync(FrameworkElement menu, Point centerPos, Point initPos)
     {
+        if (menu.RenderTransform is not TranslateTransform moveTransform)
+            return Task.CompletedTask;
+
+        (moveTransform.X, moveTransform.Y) = (initPos.X, initPos.Y);
+
         var xAnimation = new DoubleAnimation()
-        { Duration = PageTransitionInDuration, To = pos.X, FillBehavior = FillBehavior.Stop };
+        { Duration = PageTransitionInDuration, To = centerPos.X, FillBehavior = FillBehavior.Stop };
         var yAnimation = new DoubleAnimation()
-        { Duration = PageTransitionInDuration, To = pos.Y, FillBehavior = FillBehavior.Stop };
+        { Duration = PageTransitionInDuration, To = centerPos.Y, FillBehavior = FillBehavior.Stop };
         var widthAnimation = new DoubleAnimation()
         { Duration = PageTransitionInDuration, To = MenuSize };
         var heightAnimation = widthAnimation.Clone();
@@ -45,6 +49,7 @@ public partial class MenuControl // Animation
         transformStoryboard.Children.Add(heightAnimation);
         var tcs = new TaskCompletionSource();
         transformStoryboard.Events().Completed
+            .Do(_ => (moveTransform.X, moveTransform.Y) = (0, 0))
             .Do(_ => AnimationRunningSubject.OnNext(false))
             .Subscribe(_ => tcs.SetResult());
         transformStoryboard.Freeze();

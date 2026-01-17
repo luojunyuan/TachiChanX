@@ -28,8 +28,10 @@ public partial class MenuControl : UserControl
 
     public void ShowAt(Rect touchRect)
     {
-        this._fakeTouchDockAnchor = TouchDockAnchor.SnapFromRect(ContainerSize, touchRect);
         this.Visibility = Visibility.Visible;
+        this.UpdateLayout();
+
+        this._fakeTouchDockAnchor = TouchDockAnchor.SnapFromRect(ContainerSize, touchRect);
     }
 
     public MenuControl()
@@ -41,14 +43,10 @@ public partial class MenuControl : UserControl
             .Where(_ => IsVisible)
             .SubscribeAwait(async (_, _) =>
             {
-                this.UpdateLayout();
-
                 var point = AnchorPoint(_fakeTouchDockAnchor, ContainerSize);
-                (MenuInitPosition.X, MenuInitPosition.Y) = (point.X, point.Y); 
+                
+                await MenuOpenAnimationAsync(MenuBorder, CenterPosition, point);
 
-                await MenuOpenAnimationAsync(MenuBorder, CenterPosition);
-
-                (MenuInitPosition.X, MenuInitPosition.Y) = (0, 0);
                 IsExpanded = true;
             });
 
