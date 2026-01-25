@@ -139,7 +139,7 @@ public partial class TouchControl : UserControl
         // 订阅变透明动画
         Observable.Merge(
             WhenWindowReady,
-            //whenTouchVisible,
+            WhenTouchVisible,
             touchDockedStream)
             .Select(_ =>
                 Observable.Timer(OpacityFadeDelay)
@@ -170,6 +170,11 @@ public partial class TouchControl : UserControl
             .Take(1)
             .Select(_ => Unit.Default);
 
+    private Observable<Unit> WhenTouchVisible =>
+        Container.Events().IsVisibleChanged
+            .Where(_ => Container.IsVisible)
+            .Select(_ => Unit.Default);
+
     private Rect TouchDockRect
     {
         get => new(MoveTransform.X, MoveTransform.Y, Touch.Width, Touch.Height);
@@ -178,13 +183,6 @@ public partial class TouchControl : UserControl
 
     private void TouchMiscSubscribe()
     {
-        var whenTouchVisibled =
-            Container.Events().IsVisibleChanged
-            .Skip(1)
-            .Select(_ => Container.IsVisible)
-            .Do(v => Debug.WriteLine($"{v} touch visible"))
-            .Subscribe();
-
         // TODO: 测试 Touch 一边拖动窗口大小一边改变的边缘场景
 
         // 订阅窗口大小改变时自动更新停靠的touch位置
