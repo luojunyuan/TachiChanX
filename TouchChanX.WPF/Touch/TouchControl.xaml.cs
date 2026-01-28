@@ -1,6 +1,5 @@
 ﻿using R3;
 using R3.ObservableEvents;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -157,8 +156,14 @@ public partial class TouchControl : UserControl
 
         // OnClicked
         return pointerPressedStream
-            .SelectMany(press => pointerReleasedStream.Take(1).TakeUntil(dragStartedStream))
+            .SelectMany(press => 
+                pointerReleasedStream
+                .Take(1)
+                .TakeUntil(dragStartedStream))
+            // 略微有些 hack 的操作，即锁定了可能的 fade in 动画，保证了双击不会重复 press 的时序问题
+            .Do(_ => AnimationRunningSubject.OnNext(true))
             .Delay(OpacityFadeInDuration)
+            .ThrottleFirst(OpacityFadeInDuration)
             .ObserveOn(App.UISyncContext)
             .Select(_ => TouchDockRect)
             .Share();

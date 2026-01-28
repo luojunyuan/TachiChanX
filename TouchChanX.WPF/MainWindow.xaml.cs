@@ -16,7 +16,7 @@ public partial class MainWindow : Window
 
         Touch.Clicked.Subscribe(Menu.ShowAt);
 
-        // 订阅执行任何动画期间都禁止整个页面再次交互
+        // 订阅一些动画期间都禁止整个页面再次交互
         Observable.Merge(TouchControl.AnimationRunning, MenuControl.AnimationRunning)
             .DistinctUntilChanged()
             .Subscribe(running => this.IsHitTestVisible = !running);

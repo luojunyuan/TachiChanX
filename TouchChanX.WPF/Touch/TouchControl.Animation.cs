@@ -70,25 +70,17 @@ public partial class TouchControl
 
     private static void InitializeStaticAnimations()
     {
-        Observable.Merge(
-            FadeInOpacityAnimation.Events().Completed,
-            FadeOutOpacityAnimation.Events().Completed)
-           .Do(_ => AnimationRunningSubject.OnNext(false))
-           .Subscribe();
-
         FadeInOpacityAnimation.Freeze();
         FadeOutOpacityAnimation.Freeze();
     }
 
     private static void RunFadeInAnimaion(FrameworkElement touch)
     {
-        AnimationRunningSubject.OnNext(true);
         touch.BeginAnimation(OpacityProperty, FadeInOpacityAnimation);
     }
 
     private static void RunFadeOutAnimaion(FrameworkElement touch)
     {
-        AnimationRunningSubject.OnNext(true);
         touch.BeginAnimation(OpacityProperty, FadeOutOpacityAnimation);
     }
 }
