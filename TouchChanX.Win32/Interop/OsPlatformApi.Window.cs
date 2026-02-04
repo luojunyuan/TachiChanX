@@ -7,9 +7,6 @@ using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace TouchChanX.Win32.Interop;
 
-/// <summary>
-/// 操作 Windows 窗口相关的业务逻辑
-/// </summary>
 public static partial class OsPlatformApi // Window
 {
     /// <summary>

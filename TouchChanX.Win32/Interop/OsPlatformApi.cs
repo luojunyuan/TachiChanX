@@ -5,9 +5,6 @@ using Windows.Win32.UI.HiDpi;
 
 namespace TouchChanX.Win32.Interop;
 
-/// <summary>
-/// 对 Win32 Api 的业务逻辑封装
-/// </summary>
 public static partial class OsPlatformApi
 {
     /// <summary>
