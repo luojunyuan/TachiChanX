@@ -1,7 +1,5 @@
 ﻿using R3;
 using R3.ObservableEvents;
-using System.Diagnostics;
-using System.Diagnostics.Metrics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -49,9 +47,9 @@ public partial class MenuControl : UserControl
         this.Visibility = Visibility.Collapsed;
 
         _containerSizeState = this.Events().Loaded
-            .Select(_ => VisualTreeHelper.GetParent(this) as FrameworkElement)
-            .WhereNotNull()
-            .SelectMany(p => ((FrameworkElement)p).Events().SizeChanged
+            .Select(_ => VisualTreeHelper.GetParent(this).Required<FrameworkElement>())
+            .SelectMany(p =>
+                p.Events().SizeChanged
                 .Select(e => e.NewSize)
                 .Prepend(new Size(p.ActualWidth, p.ActualHeight)))
             .ToReadOnlyReactiveProperty();
