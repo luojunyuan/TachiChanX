@@ -1,6 +1,7 @@
 ﻿using R3;
 using R3.ObservableEvents;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
@@ -15,43 +16,30 @@ public partial class MenuControl // Animation
     private static readonly PropertyPath TranslateYPropertyChain = new($"({RenderTransformProperty}).({TranslateTransform.YProperty})");
     private static readonly PropertyPath WidthPropertyPath = new(WidthProperty);
     private static readonly PropertyPath HeightPropertyPath = new(HeightProperty);
+    private static readonly PropertyPath OpacityPropertyPath = new(OpacityProperty);
 
     private static readonly Subject<bool> AnimationRunningSubject = new();
     public static Observable<bool> AnimationRunning => AnimationRunningSubject;
 
-    public static Task MenuOpenAnimationAsync(FrameworkElement menu, Point centerPos, Point initPos)
+    public Task MenuOpenAnimationAsync()
     {
-        if (menu.RenderTransform is not TranslateTransform moveTransform)
-            return Task.CompletedTask;
+        (MenuMoveTransform.X, MenuMoveTransform.Y) = (TouchAnchor.X, TouchAnchor.Y);
 
-        (moveTransform.X, moveTransform.Y) = (initPos.X, initPos.Y);
+        var transformStoryboard = new Storyboard()
+        {
+            Children =
+            [
+                ..BuildMenuTransitionAnimations(MenuBorder, CenterPosition),
+                ApplyOpacityAnimation(FakeTouch, false),
+            ]
+        };
 
-        var xAnimation = new DoubleAnimation()
-        { Duration = PageTransitionInDuration, To = centerPos.X, FillBehavior = FillBehavior.Stop };
-        var yAnimation = new DoubleAnimation()
-        { Duration = PageTransitionInDuration, To = centerPos.Y, FillBehavior = FillBehavior.Stop };
-        var widthAnimation = new DoubleAnimation()
-        { Duration = PageTransitionInDuration, To = MenuSize };
-        var heightAnimation = widthAnimation.Clone();
-
-        var transformStoryboard = new Storyboard();
-        Storyboard.SetTarget(xAnimation, menu);
-        Storyboard.SetTarget(yAnimation, menu);
-        Storyboard.SetTarget(widthAnimation, menu);
-        Storyboard.SetTarget(heightAnimation, menu);
-        Storyboard.SetTargetProperty(xAnimation, TranslateXPropertyChain);
-        Storyboard.SetTargetProperty(yAnimation, TranslateYPropertyChain);
-        Storyboard.SetTargetProperty(widthAnimation, WidthPropertyPath);
-        Storyboard.SetTargetProperty(heightAnimation, HeightPropertyPath);
-        transformStoryboard.Children.Add(xAnimation);
-        transformStoryboard.Children.Add(yAnimation);
-        transformStoryboard.Children.Add(widthAnimation);
-        transformStoryboard.Children.Add(heightAnimation);
         var tcs = new TaskCompletionSource();
         transformStoryboard.Events().Completed
-            .Do(_ => (moveTransform.X, moveTransform.Y) = (0, 0))
+            .Do(_ => (MenuMoveTransform.X, MenuMoveTransform.Y) = (0, 0))
             .Do(_ => AnimationRunningSubject.OnNext(false))
             .Subscribe(_ => tcs.SetResult());
+
         transformStoryboard.Freeze();
 
         AnimationRunningSubject.OnNext(true);
@@ -60,23 +48,43 @@ public partial class MenuControl // Animation
         return tcs.Task;
     }
 
-
-    public static Task MenuCloseAnimationAsync(FrameworkElement menu, Point centerPos, Point targetPos)
+    public Task MenuCloseAnimationAsync()
     {
-        if (menu.RenderTransform is not TranslateTransform moveTransform)
-            return Task.CompletedTask;
+        (MenuMoveTransform.X, MenuMoveTransform.Y) = (CenterPosition.X, CenterPosition.Y);
 
-        (moveTransform.X, moveTransform.Y) = (centerPos.X, centerPos.Y);
+        var transformStoryboard = new Storyboard()
+        {
+            Children =
+            [
+                ..BuildMenuTransitionAnimations(MenuBorder, TouchAnchor, false),
+                ApplyOpacityAnimation(FakeTouch, true),
+            ]
+        };
 
+        var tcs = new TaskCompletionSource();
+        transformStoryboard.Events().Completed
+            .Do(_ => (MenuMoveTransform.X, MenuMoveTransform.Y) = (TouchAnchor.X, TouchAnchor.Y))
+            .Do(_ => AnimationRunningSubject.OnNext(false))
+            .Subscribe(_ => tcs.SetResult());
+
+        transformStoryboard.Freeze();
+
+        AnimationRunningSubject.OnNext(true);
+        transformStoryboard.Begin();
+
+        return tcs.Task;
+    }
+
+    private static DoubleAnimation[] BuildMenuTransitionAnimations(FrameworkElement menu, Point destPos, bool isOpening = true)
+    {
         var xAnimation = new DoubleAnimation()
-        { Duration = PageTransitionInDuration, From = centerPos.X, To = targetPos.X, FillBehavior = FillBehavior.Stop };
+        { Duration = PageTransitionInDuration, To = destPos.X, FillBehavior = FillBehavior.Stop };
         var yAnimation = new DoubleAnimation()
-        { Duration = PageTransitionInDuration, From = centerPos.Y, To = targetPos.Y, FillBehavior = FillBehavior.Stop };
+        { Duration = PageTransitionInDuration, To = destPos.Y, FillBehavior = FillBehavior.Stop };
         var widthAnimation = new DoubleAnimation()
-        { Duration = PageTransitionInDuration, To = TouchSize };
+        { Duration = PageTransitionInDuration, To = isOpening ? MenuSize : TouchSize };
         var heightAnimation = widthAnimation.Clone();
 
-        var transformStoryboard = new Storyboard();
         Storyboard.SetTarget(xAnimation, menu);
         Storyboard.SetTarget(yAnimation, menu);
         Storyboard.SetTarget(widthAnimation, menu);
@@ -85,20 +93,25 @@ public partial class MenuControl // Animation
         Storyboard.SetTargetProperty(yAnimation, TranslateYPropertyChain);
         Storyboard.SetTargetProperty(widthAnimation, WidthPropertyPath);
         Storyboard.SetTargetProperty(heightAnimation, HeightPropertyPath);
-        transformStoryboard.Children.Add(xAnimation);
-        transformStoryboard.Children.Add(yAnimation);
-        transformStoryboard.Children.Add(widthAnimation);
-        transformStoryboard.Children.Add(heightAnimation);
-        var tcs = new TaskCompletionSource();
-        transformStoryboard.Events().Completed
-            .Do(_ => (moveTransform.X, moveTransform.Y) = (targetPos.X, targetPos.Y))
-            .Do(_ => AnimationRunningSubject.OnNext(false))
-            .Subscribe(_ => tcs.SetResult());
-        transformStoryboard.Freeze();
 
-        AnimationRunningSubject.OnNext(true);
-        transformStoryboard.Begin();
+        return [xAnimation, yAnimation, widthAnimation, heightAnimation];
+    }
 
-        return tcs.Task;
+    private static DoubleAnimation ApplyOpacityAnimation(FrameworkElement target, bool isShowing)
+    {
+        double from = isShowing ? 0.0 : 1.0;
+        double to = isShowing ? 1.0 : 0.0;
+
+        var animation = new DoubleAnimation
+        {
+            From = from,
+            To = to,
+            Duration = PageTransitionInDuration,
+        };
+
+        Storyboard.SetTarget(animation, target);
+        Storyboard.SetTargetProperty(animation, OpacityPropertyPath);
+
+        return animation;
     }
 }

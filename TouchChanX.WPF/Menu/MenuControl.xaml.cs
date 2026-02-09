@@ -59,7 +59,7 @@ public partial class MenuControl : UserControl
             .Where(_ => IsVisible)
             .SubscribeAwait(async (_, _) =>
             {
-                await MenuOpenAnimationAsync(MenuBorder, CenterPosition, TouchAnchor);
+                await MenuOpenAnimationAsync();
 
                 IsExpanded = true;
             });
@@ -71,7 +71,7 @@ public partial class MenuControl : UserControl
             {
                 IsExpanded = false;
 
-                await MenuCloseAnimationAsync(MenuBorder, CenterPosition, TouchAnchor);
+                await MenuCloseAnimationAsync();
 
                 this.Visibility = Visibility.Collapsed;
             });
