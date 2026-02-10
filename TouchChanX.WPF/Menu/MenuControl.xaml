@@ -12,15 +12,16 @@
     mc:Ignorable="d">
 
     <UserControl.Resources>
+        <!--  仅通过 Style 设置对齐，方可确保初始位置正确初始化为左上角  -->
         <Style x:Key="MenuStyle" TargetType="Border">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsExpanded, ElementName=Root}" Value="True">
-                    <Setter Property="HorizontalAlignment" Value="Center" />
-                    <Setter Property="VerticalAlignment" Value="Center" />
-                </DataTrigger>
                 <DataTrigger Binding="{Binding IsExpanded, ElementName=Root}" Value="False">
                     <Setter Property="HorizontalAlignment" Value="Left" />
                     <Setter Property="VerticalAlignment" Value="Top" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsExpanded, ElementName=Root}" Value="True">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -35,6 +36,8 @@
             Style="{StaticResource MenuStyle}">
 
             <Grid>
+                <control:TouchComposite x:Name="FakeTouch" Width="{x:Static app:Shared.TouchSize}" Height="{Binding ActualWidth, ElementName=FakeTouch}" />
+
                 <!--  因为存在交叉页面跳转显隐的结构，所以内外两层 page 是需要的  -->
                 <Grid x:Name="PagePanel" d:Opacity="0">
                     <page:MainPage x:Name="MainPage" Padding="12" />
@@ -42,7 +45,6 @@
                     <ContentControl x:Name="InnerPageHost" />
                 </Grid>
 
-                <control:TouchComposite x:Name="FakeTouch" Width="{x:Static app:Shared.TouchSize}" Height="{Binding ActualWidth, ElementName=FakeTouch}" />
             </Grid>
 
             <Border.RenderTransform>

@@ -8,11 +8,27 @@
     d:DataContext="{d:DesignInstance Type=local:MenuButton}"
     d:DesignHeight="80"
     d:DesignWidth="80"
+    Background="Transparent"
     Foreground="White"
     mc:Ignorable="d">
 
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
         <ic:SymbolIcon FontSize="38" Symbol="{Binding Symbol, ElementName=Root}" />
         <TextBlock HorizontalAlignment="Center" Text="{Binding Text, ElementName=Root}" />
+
+        <!--  NOTE: 不能是 UserControl 的直接子元素  -->
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="NormalState" />
+
+                <VisualState x:Name="PressedState">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Foreground" Duration="0:0:0">
+                            <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{StaticResource AccentBrush}" />
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </StackPanel>
 </UserControl>
