@@ -1,7 +1,6 @@
 ﻿using R3;
 using R3.ObservableEvents;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
@@ -30,6 +29,7 @@ public partial class MenuControl // Animation
             Children =
             [
                 ..BuildMenuTransitionAnimations(MenuBorder, CenterPosition),
+                ApplyOpacityAnimation(PagePanel, true),
                 ApplyOpacityAnimation(FakeTouch, false),
             ]
         };
@@ -57,6 +57,7 @@ public partial class MenuControl // Animation
             Children =
             [
                 ..BuildMenuTransitionAnimations(MenuBorder, TouchAnchor, false),
+                ApplyOpacityAnimation(PagePanel, false),
                 ApplyOpacityAnimation(FakeTouch, true),
             ]
         };

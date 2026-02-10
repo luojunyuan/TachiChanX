@@ -3,14 +3,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:app="clr-namespace:TouchChanX.WPF"
     xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
     xmlns:control="clr-namespace:TouchChanX.WPF.Controls"
     xmlns:local="clr-namespace:TouchChanX.WPF.Touch"
-    xmlns:root="clr-namespace:TouchChanX.WPF"
+    d:DataContext="{d:DesignInstance Type=local:TouchControl}"
     mc:Ignorable="d">
 
     <Border x:Name="Touch"
-        Width="{x:Static root:Shared.TouchSize}"
+        Width="{x:Static app:Shared.TouchSize}"
         Height="{Binding ActualWidth, ElementName=Touch}"
         HorizontalAlignment="Left"
         VerticalAlignment="Top"

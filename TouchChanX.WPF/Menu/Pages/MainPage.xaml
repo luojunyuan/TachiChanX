@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="TouchChanX.WPF.Menu.Pages.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:c="clr-namespace:TouchChanX.WPF.Controls"
+    xmlns:local="clr-namespace:TouchChanX.WPF.Menu.Pages"
+    d:DataContext="{d:DesignInstance Type=local:MainPage}"
+    d:DesignHeight="320"
+    d:DesignWidth="320"
+    mc:Ignorable="d">
+
+    <Grid x:Name="MainPageGrid" ColumnDefinitions="*,*,*" RowDefinitions="*,*,*">
+
+        <c:MenuButton
+            Grid.Row="0"
+            Grid.Column="1"
+            Symbol="Tablet"
+            Tag="Device"
+            Text="Device" />
+
+        <c:MenuButton
+            Grid.Row="1"
+            Grid.Column="0"
+            Symbol="Games"
+            Tag="Game"
+            Text="Game" />
+    </Grid>
+</UserControl>

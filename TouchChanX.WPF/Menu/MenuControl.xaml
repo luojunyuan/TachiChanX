@@ -3,10 +3,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:app="clr-namespace:TouchChanX.WPF"
     xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
     xmlns:control="clr-namespace:TouchChanX.WPF.Controls"
     xmlns:local="clr-namespace:TouchChanX.WPF.Menu"
-    xmlns:root="clr-namespace:TouchChanX.WPF"
+    xmlns:page="clr-namespace:TouchChanX.WPF.Menu.Pages"
+    d:DataContext="{d:DesignInstance Type=local:MenuControl}"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -26,20 +28,21 @@
 
     <Grid x:Name="MenuBackground" Background="Transparent">
         <Border x:Name="MenuBorder"
-            Width="{x:Static root:Shared.TouchSize}"
-            Height="{x:Static root:Shared.TouchSize}"
+            Width="{x:Static app:Shared.TouchSize}"
+            Height="{x:Static app:Shared.TouchSize}"
             Background="{StaticResource AssistiveTouchBackground}"
             CornerRadius="{c:Binding ActualWidth / 2, ElementName=FakeTouch}"
             Style="{StaticResource MenuStyle}">
 
             <Grid>
-                <Grid x:Name="PagePanel">
-                    <!--<pages:MainPage x:Name="MainPage"  Padding="12" />-->
+                <!--  因为存在交叉页面跳转显隐的结构，所以内外两层 page 是需要的  -->
+                <Grid x:Name="PagePanel" d:Opacity="0">
+                    <page:MainPage x:Name="MainPage" Padding="12" />
 
                     <ContentControl x:Name="InnerPageHost" />
                 </Grid>
 
-                <control:TouchComposite x:Name="FakeTouch" Width="{x:Static root:Shared.TouchSize}" Height="{Binding ActualWidth, ElementName=FakeTouch}" />
+                <control:TouchComposite x:Name="FakeTouch" Width="{x:Static app:Shared.TouchSize}" Height="{Binding ActualWidth, ElementName=FakeTouch}" />
             </Grid>
 
             <Border.RenderTransform>

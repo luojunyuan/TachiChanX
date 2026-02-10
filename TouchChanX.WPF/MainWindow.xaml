@@ -4,11 +4,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
+    xmlns:local="clr-namespace:TouchChanX.WPF"
     xmlns:menu="clr-namespace:TouchChanX.WPF.Menu"
     xmlns:touch="clr-namespace:TouchChanX.WPF.Touch"
     Title="MainWindow"
     Width="800"
     Height="450"
+    d:DataContext="{d:DesignInstance Type=local:MainWindow}"
     mc:Ignorable="d">
 
     <Grid>

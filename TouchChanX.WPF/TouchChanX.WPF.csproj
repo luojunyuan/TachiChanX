@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="CalcBinding" />
+    <PackageReference Include="FluentIcons.Wpf" />
     <PackageReference Include="R3" />
     <PackageReference Include="R3Extensions.ObservableEvents.SourceGenerator" />
   </ItemGroup>

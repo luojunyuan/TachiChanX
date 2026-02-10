@@ -1,0 +1,34 @@
+﻿using FluentIcons.Common;
+using System.Windows;
+using System.Windows.Controls;
+
+namespace TouchChanX.WPF.Controls;
+
+/// <summary>
+/// MenuButton.xaml 的交互逻辑
+/// </summary>
+public partial class MenuButton : UserControl
+{
+    public static readonly DependencyProperty TextProperty =
+        DependencyProperty.Register(nameof(Text), typeof(string), typeof(MenuButton), new PropertyMetadata(string.Empty));
+
+    public static readonly DependencyProperty SymbolProperty =
+        DependencyProperty.Register(nameof(Symbol), typeof(Symbol), typeof(MenuButton), new PropertyMetadata(Symbol.Emoji));
+
+    public string Text
+    {
+        get { return (string)GetValue(TextProperty); }
+        set { SetValue(TextProperty, value); }
+    }
+
+    public Symbol Symbol
+    {
+        get { return (Symbol)GetValue(SymbolProperty); }
+        set { SetValue(SymbolProperty, value); }
+    }
+
+    public MenuButton()
+    {
+        InitializeComponent();
+    }
+}
