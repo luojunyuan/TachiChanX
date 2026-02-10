@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
   <PropertyGroup>
     <ImplicitUsings>true</ImplicitUsings>
     <Nullable>enable</Nullable>
