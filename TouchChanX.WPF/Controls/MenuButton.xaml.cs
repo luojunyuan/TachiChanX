@@ -1,9 +1,8 @@
 ﻿using FluentIcons.Common;
-using System.Windows;
-using System.Windows.Controls;
 using R3;
 using R3.ObservableEvents;
-using System.Windows.Input;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace TouchChanX.WPF.Controls;
 
@@ -33,16 +32,20 @@ public partial class MenuButton : UserControl
     public MenuButton()
     {
         InitializeComponent();
-        
-        this.Events().MouseEnter
-            .Where(e => e is { LeftButton: MouseButtonState.Pressed } or { RightButton: MouseButtonState.Pressed })
-            .Merge(this.Events().MouseDown.Cast<MouseButtonEventArgs, MouseEventArgs>())
-            .Subscribe(_ => 
+        InitializeVSMTransition();
+    }
+
+    private void InitializeVSMTransition()
+    {
+        this.Events().TouchEnter.Select(_ => Unit.Default)
+            .Merge(this.Events().MouseDown.Select(_ => Unit.Default))
+            .Subscribe(_ =>
                 VisualStateManager.GoToState(this, nameof(PressedState), false));
 
-        this.Events().MouseLeave
-            .Merge(this.Events().MouseUp.Cast<MouseButtonEventArgs, MouseEventArgs>())
-            .Subscribe(_ => 
+        this.Events().TouchLeave.Select(_ => Unit.Default)
+            .Merge(this.Events().MouseUp.Select(_ => Unit.Default))
+            .Merge(this.Events().MouseLeave.Select(_ => Unit.Default))
+            .Subscribe(_ =>
                 VisualStateManager.GoToState(this, nameof(NormalState), false));
     }
 }
