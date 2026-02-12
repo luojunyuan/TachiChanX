@@ -45,6 +45,7 @@ public partial class MenuButton : UserControl
                 VisualStateManager.GoToState(this, nameof(PressedState), false));
 
         this.Events().TouchLeave.Select(_ => Unit.Default)
+            .Merge(this.Events().MouseUp.Select(_ => Unit.Default))
             .Merge(this.Events().MouseLeave.Select(_ => Unit.Default))
             .Subscribe(_ =>
                 VisualStateManager.GoToState(this, nameof(NormalState), false));
