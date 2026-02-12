@@ -36,6 +36,7 @@ public partial class MenuControl // Animation
 
         var tcs = new TaskCompletionSource();
         transformStoryboard.Events().Completed
+            .Do(_ => FakeTouch.Visibility = Visibility.Collapsed)
             .Do(_ => (MenuMoveTransform.X, MenuMoveTransform.Y) = (0, 0))
             .Do(_ => AnimationRunningSubject.OnNext(false))
             .Subscribe(_ => tcs.SetResult());
@@ -51,6 +52,7 @@ public partial class MenuControl // Animation
     public Task MenuCloseAnimationAsync()
     {
         (MenuMoveTransform.X, MenuMoveTransform.Y) = (CenterPosition.X, CenterPosition.Y);
+        FakeTouch.Visibility = Visibility.Visible;
 
         var transformStoryboard = new Storyboard()
         {

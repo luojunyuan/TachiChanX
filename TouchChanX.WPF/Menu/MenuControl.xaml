@@ -9,6 +9,7 @@
     xmlns:local="clr-namespace:TouchChanX.WPF.Menu"
     xmlns:page="clr-namespace:TouchChanX.WPF.Menu.Pages"
     d:DataContext="{d:DesignInstance Type=local:MenuControl}"
+    Background="Transparent"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -27,29 +28,27 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid x:Name="MenuBackground" Background="Transparent">
-        <Border x:Name="MenuBorder"
-            Width="{x:Static app:Shared.TouchSize}"
-            Height="{x:Static app:Shared.TouchSize}"
-            Background="{StaticResource AssistiveTouchBackground}"
-            CornerRadius="{c:Binding ActualWidth / 2, ElementName=FakeTouch}"
-            Style="{StaticResource MenuStyle}">
+    <Border x:Name="MenuBorder"
+        Width="{x:Static app:Shared.TouchSize}"
+        Height="{x:Static app:Shared.TouchSize}"
+        Background="{StaticResource AssistiveTouchBackground}"
+        CornerRadius="{c:Binding ActualWidth / 2, ElementName=FakeTouch}"
+        Style="{StaticResource MenuStyle}">
 
-            <Grid>
-                <control:TouchComposite x:Name="FakeTouch" Width="{x:Static app:Shared.TouchSize}" Height="{Binding ActualWidth, ElementName=FakeTouch}" />
+        <Grid>
+            <control:TouchComposite x:Name="FakeTouch" Width="{x:Static app:Shared.TouchSize}" Height="{Binding ActualWidth, ElementName=FakeTouch}" />
 
-                <!--  因为存在交叉页面跳转显隐的结构，所以内外两层 page 是需要的  -->
-                <Grid x:Name="PagePanel" d:Opacity="0">
-                    <page:MainPage x:Name="MainPage" Padding="12" />
+            <!--  因为存在交叉页面跳转显隐的结构，所以内外两层 page 是需要的  -->
+            <Grid x:Name="PagePanel" d:Opacity="0">
+                <page:MainPage x:Name="MainPage" Padding="12" />
 
-                    <ContentControl x:Name="InnerPageHost" />
-                </Grid>
-
+                <ContentControl x:Name="InnerPageHost" />
             </Grid>
 
-            <Border.RenderTransform>
-                <TranslateTransform x:Name="MenuMoveTransform" />
-            </Border.RenderTransform>
-        </Border>
-    </Grid>
+        </Grid>
+
+        <Border.RenderTransform>
+            <TranslateTransform x:Name="MenuMoveTransform" />
+        </Border.RenderTransform>
+    </Border>
 </UserControl>

@@ -1,5 +1,6 @@
 ﻿using R3;
 using R3.ObservableEvents;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -66,7 +67,7 @@ public partial class MenuControl : UserControl
 
         // Close
         this.Events().PreviewMouseLeftButtonUp
-            .Where(e => e.OriginalSource == MenuBackground)
+            .Where(e => e.OriginalSource == MenuBorder)
             .SubscribeAwait(async (_, _) =>
             {
                 IsExpanded = false;
