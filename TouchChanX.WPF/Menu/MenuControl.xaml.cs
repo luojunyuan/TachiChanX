@@ -66,7 +66,7 @@ public partial class MenuControl : UserControl
             });
 
         // Close
-        this.Events().PreviewMouseLeftButtonUp
+        this.Events().MouseLeftButtonUp
             .Where(e => e.OriginalSource == MenuBorder)
             .SubscribeAwait(async (_, _) =>
             {

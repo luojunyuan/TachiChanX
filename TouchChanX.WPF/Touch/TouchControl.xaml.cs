@@ -44,14 +44,14 @@ public partial class TouchControl : UserControl
         var raiseMouseReleasedSubject = new Subject<MouseEventArgs>();
 
         var pointerPressedStream =
-            Touch.Events().PreviewMouseLeftButtonDown
+            Touch.Events().MouseLeftButtonDown
             .Do(_ => Touch.CaptureMouse())
             .Share();
         var pointerMovedStream =
-            Touch.Events().PreviewMouseMove
+            Touch.Events().MouseMove
             .Share();
         var pointerReleasedStream =
-            Touch.Events().PreviewMouseLeftButtonUp
+            Touch.Events().MouseLeftButtonUp
             .Cast<MouseButtonEventArgs, MouseEventArgs>()
             .Merge(raiseMouseReleasedSubject)
             .Do(_ => Touch.ReleaseMouseCapture())
