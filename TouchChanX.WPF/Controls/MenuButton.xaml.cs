@@ -30,6 +30,11 @@ public partial class MenuButton : UserControl
         set { SetValue(SymbolProperty, value); }
     }
 
+    public Observable<Unit> Clicked => field ??= 
+        this.Events().MouseUp
+        .Select(_ => Unit.Default)
+        .Share();
+
     public MenuButton()
     {
         InitializeComponent();
