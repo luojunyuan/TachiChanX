@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows7.0</TargetFramework>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <ApplicationManifest>../app.manifest</ApplicationManifest>
   </PropertyGroup>
   
@@ -15,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TouchChanX.Win32\TouchChanX.Win32.csproj" />
+    <ProjectReference Include="..\TouchChanX.WPF\TouchChanX.WPF.csproj" />
   </ItemGroup>
 
   <ItemGroup>

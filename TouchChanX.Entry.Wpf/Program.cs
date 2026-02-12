@@ -3,4 +3,4 @@ Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
 
 var app = new TouchChanX.WPF.App();
 app.InitializeComponent();
-app.Run();
+app.Run(new TouchChanX.WPF.MainWindow());

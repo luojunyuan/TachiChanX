@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.ComponentModel;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -59,25 +60,37 @@ public static partial class OsPlatformApi // Window
         Task.Run(() => PInvoke.SetParent(new(child), new(parent)) != HWND.Null);
 
     /// <summary>
+    /// 设置窗口的 Owner 窗口
+    /// </summary>
+    public static void SetOwnerWindow(nint child, nint parent)
+    {
+        Marshal.SetLastPInvokeError(0);
+
+        if (PInvoke.SetWindowLong(new(child), WINDOW_LONG_PTR_INDEX.GWL_HWNDPARENT, parent) == 0 &&
+            Marshal.GetLastPInvokeError() != 0)
+            throw new Win32Exception();
+    }
+
+    /// <summary>
     /// 设置窗口的 WindowStyle
     /// </summary>
-    public static void ToggleWindowStyle(nint hwnd, bool enable, WindowStyle style)
+    public static void ToggleWindowStyle(nint hwnd, WindowStyles style, bool enable)
     {
-        var oldStyle = (WindowStyle)PInvoke.GetWindowLong(new HWND(hwnd), WINDOW_LONG_PTR_INDEX.GWL_STYLE);
+        var oldStyle = (WindowStyles)PInvoke.GetWindowLong(new HWND(hwnd), WINDOW_LONG_PTR_INDEX.GWL_STYLE);
         var newStyle = enable ? oldStyle | style : oldStyle & ~style;
         if (PInvoke.SetWindowLong(new HWND(hwnd), WINDOW_LONG_PTR_INDEX.GWL_STYLE, (int)newStyle) != (int)oldStyle)
-            Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
+            throw new Win32Exception();
     }
 
     /// <summary>
     /// 设置窗口的 ExtendedWindowStyle
     /// </summary>
-    public static void ToggleWindowExStyle(nint hwnd, bool enable, ExtendedWindowStyle style)
+    public static void ToggleWindowExStyle(nint hwnd, ExtendedWindowStyles style, bool enable)
     {
-        var oldStyle = (ExtendedWindowStyle)PInvoke.GetWindowLong(new HWND(hwnd), WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
+        var oldStyle = (ExtendedWindowStyles)PInvoke.GetWindowLong(new HWND(hwnd), WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
         var newStyle = enable ? oldStyle | style : oldStyle & ~style;
         if (PInvoke.SetWindowLong(new HWND(hwnd), WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, (int)newStyle) != (int)oldStyle)
-            Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
+            throw new Win32Exception();
     }
 
     /// <summary>
@@ -97,7 +110,7 @@ public static partial class OsPlatformApi // Window
 }
 
 [Flags]
-public enum WindowStyle : uint
+public enum WindowStyles : uint
 {
     ClipChildren = WINDOW_STYLE.WS_CLIPCHILDREN,
     TiledWindow = WINDOW_STYLE.WS_TILEDWINDOW,
@@ -108,7 +121,7 @@ public enum WindowStyle : uint
 }
 
 [Flags]
-public enum ExtendedWindowStyle : uint
+public enum ExtendedWindowStyles : uint
 {
     Layered = WINDOW_EX_STYLE.WS_EX_LAYERED,
     AppWindow = WINDOW_EX_STYLE.WS_EX_APPWINDOW,
