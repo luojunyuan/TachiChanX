@@ -58,7 +58,6 @@ public abstract class SplashScreenBase(Stream resource)
 {
     private readonly Bitmap _image = LoadBitmap(resource);
     private HWND _hWndSplash;
-    private HDC _hdc;
 
     private static Bitmap LoadBitmap(Stream s)
     {
@@ -72,6 +71,7 @@ public abstract class SplashScreenBase(Stream resource)
 
         const string className = "SplashScreen";
         const string windowTitle = "Splash Screen";
+
         fixed (char* lpClassName = className)
         {
             var wndClass = new WNDCLASSEXW
@@ -84,17 +84,13 @@ public abstract class SplashScreenBase(Stream resource)
             PInvoke.RegisterClassEx(in wndClass);
         }
 
-        // 高分辨率图像缩放
-        const double scaleFactor = 2.0;
-        const double scaleFactorMid = 1.5;
-        var dpi = (int)(GetDpiScale() * 100);
+        double scale = GetDpiScale();
 
-        var (width, height) = dpi switch
-        {
-            < 150 => ((int)(image.Width / scaleFactor), (int)(image.Height / scaleFactor)),
-            < 175 => ((int)(image.Width / scaleFactorMid), (int)(image.Height / scaleFactorMid)),
-            _ => (image.Width, image.Height),
-        };
+        const int baseLogicalWidth = 96;
+        const int baseLogicalHeight = 96;
+
+        int width = (int)Math.Round(baseLogicalWidth * scale);
+        int height = (int)Math.Round(baseLogicalHeight * scale);
 
         var (x, y) = CenterToPrimaryScreen(width, height);
 
@@ -102,29 +98,63 @@ public abstract class SplashScreenBase(Stream resource)
             WINDOW_EX_STYLE.WS_EX_TOOLWINDOW |
             WINDOW_EX_STYLE.WS_EX_TRANSPARENT |
             WINDOW_EX_STYLE.WS_EX_TOPMOST |
-            WINDOW_EX_STYLE.WS_EX_NOACTIVATE,
+            WINDOW_EX_STYLE.WS_EX_NOACTIVATE |
+            WINDOW_EX_STYLE.WS_EX_LAYERED,
             className,
             windowTitle,
             WINDOW_STYLE.WS_POPUP | WINDOW_STYLE.WS_VISIBLE,
             x, y, width, height,
             HWND.Null, null, null, null);
 
-        _hdc = PInvoke.GetDC(_hWndSplash);
+        using var sizedBitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+        using (var g = Graphics.FromImage(sizedBitmap))
+        {
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
 
-        using var g = Graphics.FromHdc(_hdc);
-        g.DrawImage(image, 0, 0, width, height);
+            g.Clear(Color.Transparent);
+            g.DrawImage(image, new Rectangle(0, 0, width, height));
+        }
 
-        var originalStyle = PInvoke.GetWindowLong(_hWndSplash, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
-        _ = PInvoke.SetWindowLong(_hWndSplash, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE,
-            originalStyle | (int)WINDOW_EX_STYLE.WS_EX_LAYERED);
+        var screenDc = PInvoke.GetDC(HWND.Null);
+        var memDc = PInvoke.CreateCompatibleDC(screenDc);
 
-        PInvoke.SetLayeredWindowAttributes(_hWndSplash, new COLORREF((uint)Color.Green.ToArgb()), 0, LAYERED_WINDOW_ATTRIBUTES_FLAGS.LWA_COLORKEY);
+        var hBitmap = sizedBitmap.GetHbitmap(Color.FromArgb(0));
+        var oldBitmap = PInvoke.SelectObject(memDc, (HGDIOBJ)hBitmap);
+
+        var blend = new BLENDFUNCTION
+        {
+            BlendOp = (byte)PInvoke.AC_SRC_OVER,
+            BlendFlags = 0,
+            SourceConstantAlpha = 255,
+            AlphaFormat = (byte)PInvoke.AC_SRC_ALPHA
+        };
+
+        var ptSrc = new Point { X = 0, Y = 0 };
+        var ptDest = new Point { X = x, Y = y };
+        var size = new SIZE { cx = width, cy = height };
+
+        PInvoke.UpdateLayeredWindow(
+            _hWndSplash,
+            screenDc,
+            &ptDest,
+            &size,
+            memDc,
+            &ptSrc,
+            new COLORREF(0),
+            &blend,
+            UPDATE_LAYERED_WINDOW_FLAGS.ULW_ALPHA);
+
+        PInvoke.SelectObject(memDc, oldBitmap);
+        PInvoke.DeleteObject((HGDIOBJ)hBitmap);
+        PInvoke.DeleteDC(memDc);
+        _ = PInvoke.ReleaseDC(HWND.Null, screenDc);
     }
 
     protected void ReleaseResources()
     {
         _image.Dispose();
-        _ = PInvoke.ReleaseDC(_hWndSplash, _hdc);
         PInvoke.DestroyWindow(_hWndSplash);
     }
 
@@ -137,6 +167,9 @@ public abstract class SplashScreenBase(Stream resource)
         return (nX, nY);
     }
 
+    /// <summary>
+    /// 只在主屏幕上获取 DPI 缩放比例，避免多屏幕环境下的复杂性
+    /// </summary>
     private static double GetDpiScale()
     {
         var monitor = PInvoke.MonitorFromPoint(new Point(0, 0), MONITOR_FROM_FLAGS.MONITOR_DEFAULTTOPRIMARY);
@@ -148,7 +181,7 @@ public abstract class SplashScreenBase(Stream resource)
             return dpi == 0 ? 1 : dpi / 96d;
         }
 
-        return 1;
+        return 1.0;
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
