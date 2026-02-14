@@ -2,7 +2,7 @@
   "profiles": {
     "TouchChanX": {
       "commandName": "Project",
-      "commandLineArgs": "\"C:\\Windows\\System32\\charmap.exe\""
+      "commandLineArgs": "\"C:\\Windows\\notepad.exe\""
     }
   }
 }

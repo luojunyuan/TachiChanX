@@ -1,10 +1,13 @@
-﻿SetParent
+﻿// 窗口同步 Hook 相关
+SetParent
 GetClientRect
+ClientToScreen
 MoveWindow
 CreateRectRgn
 SetWindowRgn
 SetWinEventHook
 GetWindowThreadProcessId
+
 GetProcessDpiAwareness
 GetDpiForWindow
 MonitorFromWindow

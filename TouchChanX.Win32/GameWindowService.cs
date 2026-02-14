@@ -1,6 +1,6 @@
-﻿using System.Drawing;
+﻿using R3;
+using System.Drawing;
 using System.Runtime.InteropServices;
-using R3;
 using Windows.Win32;
 using Windows.Win32.UI.Accessibility;
 
@@ -60,6 +60,48 @@ public static class GameWindowService
                 winEventDelegateHandle.Free();
             });
         });
+
+    /// <summary>
+    /// 同步两个窗口的位置和大小
+    /// </summary>
+    /// <remarks>必须在 UI 线程中订阅</remarks>
+    public static IDisposable SyncWindowTransform(nint followHandle, nint parentHandle)
+    {
+        PerformSync(followHandle, parentHandle);
+
+        WINEVENTPROC winEventDelegate = (_, eventId, hWnd, idObject, idChild, _, _) =>
+        {
+            if (eventId == EventObjectLocationChange &&
+                hWnd == parentHandle &&
+                idObject == OBJID_WINDOW &&
+                idChild == SWEH_CHILDID_SELF)
+            {
+                PerformSync(followHandle, parentHandle);
+            }
+        };
+
+        var winEventDelegateHandle = GCHandle.Alloc(winEventDelegate);
+        var targetThreadId = PInvoke.GetWindowThreadProcessId(new(parentHandle), out var processId);
+
+        var windowsEventHook = PInvoke.SetWinEventHook(
+            EventObjectLocationChange, EventObjectLocationChange,
+            null, winEventDelegate, processId, targetThreadId,
+            WinEventHookInternalFlags);
+
+        return Disposable.Create(() =>
+        {
+            windowsEventHook.Close();
+            winEventDelegateHandle.Free();
+        });
+
+        static void PerformSync(nint followHandle, nint parentHandle)
+        {
+            var clientPosition = new Point();
+            PInvoke.GetClientRect(new(parentHandle), out var clientRect);
+            PInvoke.ClientToScreen(new(parentHandle), ref clientPosition);
+            PInvoke.MoveWindow(new(followHandle), clientPosition.X, clientPosition.Y, clientRect.Width, clientRect.Height, false);
+        }
+    }
 
     private const uint EventObjectDestroy = 0x8001;
 

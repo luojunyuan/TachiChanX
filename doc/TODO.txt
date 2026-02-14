@@ -1,7 +1,0 @@
-优化
-1. 尝试把部分动画重构为 transitions （理论上只要属性只受动画效果影响便可以替代）
-2. 使用视频软件逐帧对比 AssistiveTouch 和 TachiChan 动画变化，1:1还原缓动效果
-3. 考虑是否需要 Touch.Size 跟随窗口大小变化
-
-Alternative
-- 使用 Opacity + IsHitTestVisible 替代 IsVisible 应该也可以实现完全一样的业务

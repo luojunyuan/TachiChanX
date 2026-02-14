@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Shell;
+using TouchChanX.Win32;
 using TouchChanX.Win32.Interop;
 using TouchChanX.WPF;
 
@@ -31,6 +32,7 @@ internal static class WpfStartup
             var hwnd = new WindowInteropHelper(mainWindow).Handle;
             OsPlatformApi.SetOwnerWindow(hwnd, ownerHwnd);
             OsPlatformApi.ToggleWindowExStyle(hwnd, ExtendedWindowStyles.AppWindow, false);
+            GameWindowService.SyncWindowTransform(hwnd, ownerHwnd);
         };
 
         return app.Run(mainWindow);
