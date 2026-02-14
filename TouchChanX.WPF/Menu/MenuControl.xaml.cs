@@ -27,9 +27,10 @@ public partial class MenuControl : UserControl
 
     public void ShowAt(Rect touchRect)
     {
-        this.Visibility = Visibility.Visible;
-
         this._fakeTouchDockAnchor = TouchDockAnchor.SnapFromRect(ContainerSize, touchRect);
+
+        this.Visibility = Visibility.Visible;
+        // Note：改变 Visibility 后会立马触发 IsVisibleChanged 事件，甚至不会执行完 ShowAt 函数
     }
 
     private readonly ReadOnlyReactiveProperty<Size> _containerSizeState;
