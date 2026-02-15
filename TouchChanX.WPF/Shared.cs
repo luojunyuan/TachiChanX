@@ -1,7 +1,9 @@
-﻿using System.Diagnostics;
+﻿using R3;
+using R3.ObservableEvents;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using R3.ObservableEvents;
+using System.Windows.Media;
 
 namespace TouchChanX.WPF;
 
@@ -11,6 +13,17 @@ public static class Shared
 
     public const double TouchSize = 80.0;
     public const double MenuSize = TouchSize * 4;
+
+    extension(FrameworkElement element)
+    {
+        public Observable<Size> ObserveParentSize() => 
+            element.Events().Loaded
+            .Select(_ => VisualTreeHelper.GetParent(element).Required<FrameworkElement>())
+            .SelectMany(p =>
+                p.Events().SizeChanged
+                .Select(e => e.NewSize)
+                .Prepend(new Size(p.ActualWidth, p.ActualHeight)));
+    }
 }
 
 public static class ThrowHelper

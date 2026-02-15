@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using R3;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -27,20 +28,39 @@ internal static class WpfStartup
             BorderBrush = Brushes.Red,
         });
 
+
         mainWindow.SourceInitialized += (_, _) =>
         {
             var hwnd = new WindowInteropHelper(mainWindow).Handle;
             OsPlatformApi.SetOwnerWindow(hwnd, ownerHwnd);
             OsPlatformApi.ToggleWindowExStyle(hwnd, ExtendedWindowStyles.AppWindow, false);
             GameWindowService.SyncWindowTransform(hwnd, ownerHwnd);
+            mainWindow.Touch.RegionResetRequested.Subscribe(_ => OsPlatformApi.ResetWindowOriginalObservableRegion(hwnd));
+            mainWindow.Touch.RegionChangeRequested
+                .Select(touchRect => touchRect.ScaleByDpi(mainWindow.GetDpi()).ToGdiRect())
+                .Subscribe(touchRect => OsPlatformApi.SetWindowObservableRegion(hwnd, touchRect));
         };
 
         return app.Run(mainWindow);
     }
 }
 
-public static class WindowExtension
+public static class WpfExtension
 {
+    extension(Rect rect)
+    {
+        public Rect ScaleByDpi(double dpi) =>
+            new(rect.X * dpi, rect.Y * dpi, rect.Width * dpi, rect.Height * dpi);
+
+        public System.Drawing.Rectangle ToGdiRect() =>
+            new((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height);
+    }
+
+    extension(Visual visual)
+    {
+        public double GetDpi() => VisualTreeHelper.GetDpi(visual).DpiScaleX;
+    }
+
     extension<T>(T window) where T : Window
     {
         public T UseTransparentChromeWindow()
@@ -55,6 +75,11 @@ public static class WindowExtension
                 CaptionHeight = 0,
             });
 
+            return window;
+        }
+
+        public T DisableWPFTabletSupport()
+        {
             return window;
         }
     }

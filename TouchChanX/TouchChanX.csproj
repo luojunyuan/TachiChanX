@@ -18,6 +18,11 @@
     <ProjectReference Include="..\TouchChanX.Win32\TouchChanX.Win32.csproj" />
     <ProjectReference Include="..\TouchChanX.WPF\TouchChanX.WPF.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <RuntimeHostConfigurationOption Include="Switch.System.Windows.Input.Stylus.EnablePointerSupport" Value="true" />
+    <RuntimeHostConfigurationOption Include="Switch.System.Windows.Media.EnableHardwareAccelerationInRdp" Value="true" />
+  </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="EmbeddedResource.resx">

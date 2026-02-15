@@ -96,15 +96,18 @@ public static partial class OsPlatformApi // Window
     /// <summary>
     /// 恢复窗口原始可观测区域
     /// </summary>
-    public static void ResetWindowOriginalObservableRegion(nint hwnd, Size size) =>
-        SetWindowObservableRegion(hwnd, new(Point.Empty, size));
+    public static void ResetWindowOriginalObservableRegion(nint hwnd)
+    {
+        PInvoke.GetClientRect(new(hwnd), out var initRect);
+        SetWindowObservableRegion(hwnd, new(Point.Empty, initRect.Size));
+    }
 
     /// <summary>
     /// 设置窗口可以被观测和点击的区域
     /// </summary>
     public static void SetWindowObservableRegion(nint hwnd, Rectangle rect)
     {
-        HRGN hRgn = PInvoke.CreateRectRgn(rect.X, rect.Y, rect.X + rect.Width, rect.Y + rect.Height);
+        var hRgn = PInvoke.CreateRectRgn(rect.X, rect.Y, rect.Right, rect.Bottom);
         _ = PInvoke.SetWindowRgn(new(hwnd), hRgn, true);
     }
 }

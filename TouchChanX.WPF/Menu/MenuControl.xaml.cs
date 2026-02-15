@@ -47,12 +47,7 @@ public partial class MenuControl : UserControl
         InitializeComponent();
         this.Visibility = Visibility.Collapsed;
 
-        _containerSizeState = this.Events().Loaded
-            .Select(_ => VisualTreeHelper.GetParent(this).Required<FrameworkElement>())
-            .SelectMany(p =>
-                p.Events().SizeChanged
-                .Select(e => e.NewSize)
-                .Prepend(new Size(p.ActualWidth, p.ActualHeight)))
+        _containerSizeState = this.ObserveParentSize()
             .ToReadOnlyReactiveProperty();
 
         // Open
