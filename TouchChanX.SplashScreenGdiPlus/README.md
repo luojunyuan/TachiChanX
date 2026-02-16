@@ -34,3 +34,13 @@
 ## ⚠ Attention ⚠
 
 `System.Drawing.Common` 依赖了 `Microsoft.Win32.SystemEvents` (10.0.1) 会在宿主可执行项目 AnyCPU 编译时输出一份多余的 runtime 文件夹到输出目录下。
+
+```xml
+  <!-- 因 Microsoft.Win32.SystemEvents 传递依赖引起的多余的输出 -->
+  <Target Name="CleanupRuntimes" AfterTargets="Build">
+    <Message Text="$(ProjectName) 正在清理冗余的 runtimes 目录..." Importance="low" />
+    <RemoveDir Directories="$(OutputPath)runtimes" />
+  </Target>
+```
+
+> .NET Desktop Runtime 包含了 System.Drawing.Common 的依赖，桌面项目中不会有多余 dll 生成问题

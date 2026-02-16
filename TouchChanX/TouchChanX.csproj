@@ -31,9 +31,4 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <!-- 因 Microsoft.Win32.SystemEvents 传递依赖引起的多余的输出 -->
-  <Target Name="CleanupRuntimes" AfterTargets="Build">
-    <Message Text="$(ProjectName) 正在清理冗余的 runtimes 目录..." Importance="low" />
-    <RemoveDir Directories="$(OutputPath)runtimes" />
-  </Target>
 </Project>
