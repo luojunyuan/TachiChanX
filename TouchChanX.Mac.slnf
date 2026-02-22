@@ -1,9 +1,0 @@
-﻿{
-  "solution": {
-    "path": "TouchChanX.slnx",
-    "projects": [
-      "TouchChanX.Ava\\TouchChanX.Ava.csproj",
-      "TouchChanX.Rider\\TouchChanX.Rider.csproj"
-    ]
-  }
-}

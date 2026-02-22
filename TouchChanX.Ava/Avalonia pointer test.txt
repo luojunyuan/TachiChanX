@@ -1,9 +1,0 @@
-1. 鼠标
-* 鼠标精准按下时，不会触发 PointerMoved 事件
-* 触控板按下或 hold 时，容易出现移动，可能会出现 move 也可能不会
-
-2. 触摸
-* 快速触摸时，可能会同鼠标精准度相同，只有 Press 和 Release 事件
-* 快速触摸时，大部分情况是 press -> move -> release 每个事件发生一次，并且发生的坐标 x,y 完全一致
-* 长按 hold 时，move 事件会持续触发，但是坐标可能并无改变
-* 多点触控时，可能会产生 press -> move -> press -> release 多个 press
