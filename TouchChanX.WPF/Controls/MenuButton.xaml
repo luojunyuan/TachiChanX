@@ -3,7 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:ic="clr-namespace:FluentIcons.Wpf;assembly=FluentIcons.Wpf"
     xmlns:local="clr-namespace:TouchChanX.WPF.Controls"
     d:DataContext="{d:DesignInstance Type=local:MenuButton}"
     d:DesignHeight="80"
@@ -13,7 +12,12 @@
     mc:Ignorable="d">
 
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-        <ic:SymbolIcon FontSize="38" Symbol="{Binding Symbol, ElementName=Root}" />
+        <Path
+            Width="36"
+            Height="36"
+            Data="{Binding SymbolData, ElementName=Root}"
+            Fill="{Binding Foreground, ElementName=Root}"
+            Stretch="Uniform" />
         <TextBlock HorizontalAlignment="Center" Text="{Binding Text, ElementName=Root}" />
 
         <!--  NOTE: 不能是 UserControl 的直接子元素  -->

@@ -1,9 +1,9 @@
-﻿using FluentIcons.Common;
-using R3;
+﻿using R3;
 using R3.ObservableEvents;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace TouchChanX.WPF.Controls;
 
@@ -12,17 +12,22 @@ namespace TouchChanX.WPF.Controls;
 /// </summary>
 public partial class MenuButton : UserControl
 {
+    private static readonly DependencyPropertyKey SymbolDataPropertyKey =
+        DependencyProperty.RegisterReadOnly(nameof(SymbolData), typeof(Geometry), typeof(MenuButton), new PropertyMetadata(null));
+
+    private static readonly DependencyProperty SymbolDataProperty = SymbolDataPropertyKey.DependencyProperty;
+
+    public static readonly DependencyProperty SymbolProperty =
+        DependencyProperty.Register(nameof(Symbol), typeof(Symbol), typeof(MenuButton), new PropertyMetadata(Symbol.Emoji, (d, e) =>
+        {
+            var s = (Symbol)e.NewValue;
+            d.SetValue(SymbolDataPropertyKey, s.ToGeometry());
+        }));
+
     public static readonly DependencyProperty TextProperty =
         DependencyProperty.Register(nameof(Text), typeof(string), typeof(MenuButton), new PropertyMetadata(string.Empty));
 
-    public static readonly DependencyProperty SymbolProperty =
-        DependencyProperty.Register(nameof(Symbol), typeof(Symbol), typeof(MenuButton), new PropertyMetadata(Symbol.Emoji));
-
-    public string Text
-    {
-        get { return (string)GetValue(TextProperty); }
-        set { SetValue(TextProperty, value); }
-    }
+    private Geometry SymbolData => (Geometry)GetValue(SymbolDataProperty);
 
     public Symbol Symbol
     {
@@ -30,7 +35,13 @@ public partial class MenuButton : UserControl
         set { SetValue(SymbolProperty, value); }
     }
 
-    public Observable<Unit> Clicked => field ??= 
+    public string Text
+    {
+        get { return (string)GetValue(TextProperty); }
+        set { SetValue(TextProperty, value); }
+    }
+
+    public Observable<Unit> Clicked => field ??=
         this.Events().MouseUp
         .Select(_ => Unit.Default)
         .Share();
