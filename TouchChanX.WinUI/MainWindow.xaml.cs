@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -16,16 +16,23 @@ using Windows.Foundation.Collections;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace TouchChanX.WinUI
+namespace TouchChanX.WinUI;
+
+/// <summary>
+/// An empty window that can be used on its own or navigated to within a Frame.
+/// </summary>
+public sealed partial class MainWindow : Window
 {
-    /// <summary>
-    /// An empty window that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class MainWindow : Window
+    public MainWindow()
     {
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
+}
+
+public static class Shared
+{
+    public const int TouchSpacing = 2;
+    
+    public const double TouchSize = 80.0;
+    public const double MenuSize = TouchSize * 4;
 }

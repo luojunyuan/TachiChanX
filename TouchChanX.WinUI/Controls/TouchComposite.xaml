@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Grid x:Class="TouchChanX.WinUI.Controls.TouchComposite"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="using:TouchChanX.WinUI.Controls"
+    d:DataContext="{d:DesignInstance Type=local:TouchComposite}"
+    mc:Ignorable="d">
+
+    <Grid.Resources>
+        <SolidColorBrush x:Key="AssistiveTouchLayerOneLine" Color="#232323" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerOneBackground" Color="#505050" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerTwoLine" Color="#434343" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerTwoBackground" Color="#939393" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerThreeLine" Color="#686868" />
+        <SolidColorBrush x:Key="AssistiveTouchLayerThreeBackground" Color="#FFFFFF" />
+        <x:Double x:Key="AssistiveTouchCircleThickness">1</x:Double>
+    </Grid.Resources>
+
+    <Ellipse x:Name="LayerOne"
+        Margin="{x:Bind TouchLayerMargin(2, 16)}"
+        Fill="{StaticResource AssistiveTouchLayerOneBackground}"
+        Stroke="{StaticResource AssistiveTouchLayerOneLine}"
+        StrokeThickness="{StaticResource AssistiveTouchCircleThickness}" />
+
+    <Ellipse x:Name="LayerTwo"
+        Margin="{x:Bind TouchLayerMargin(3, 16)}"
+        Fill="{StaticResource AssistiveTouchLayerTwoBackground}"
+        Stroke="{StaticResource AssistiveTouchLayerTwoLine}"
+        StrokeThickness="{StaticResource AssistiveTouchCircleThickness}" />
+
+    <Ellipse x:Name="LayerThree"
+        Margin="{x:Bind TouchLayerMargin(4, 16)}"
+        Fill="{StaticResource AssistiveTouchLayerThreeBackground}"
+        Stroke="{StaticResource AssistiveTouchLayerThreeLine}"
+        StrokeThickness="{StaticResource AssistiveTouchCircleThickness}" />
+</Grid>

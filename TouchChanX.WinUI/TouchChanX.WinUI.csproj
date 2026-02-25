@@ -3,10 +3,26 @@
     <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
     <Platforms>x86;x64;ARM64</Platforms>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Controls\TouchComposite.xaml" />
+    <None Remove="Touch\TouchControl.xaml" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Touch\TouchControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Controls\TouchComposite.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
 </Project>

@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="using:TouchChanX.WinUI"
+    xmlns:touch="using:TouchChanX.WinUI.Touch"
     Title="TouchChanX.WinUI"
     mc:Ignorable="d">
 
@@ -13,6 +14,6 @@
     </Window.SystemBackdrop>
 
     <Grid>
-        <Button Content="Xxx" />
+        <touch:TouchControl />
     </Grid>
 </Window>
