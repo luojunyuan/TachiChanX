@@ -18,8 +18,7 @@ namespace TouchChanX.WinUI.Touch;
 
 public sealed partial class TouchControl : UserControl
 {
-    public static CornerRadius CircleCornerRadius(double width) => 
-        double.IsNaN(width) ? default : new(width / 2);
+    private static CornerRadius CircleCornerRadius(double width) => new(width / 2);
 
     public TouchControl()
     {

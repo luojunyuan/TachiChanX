@@ -20,9 +20,9 @@
         HorizontalAlignment="Left"
         VerticalAlignment="Top"
         Background="{StaticResource AssistiveTouchBackground}"
-        CornerRadius="{x:Bind local:TouchControl.CircleCornerRadius(TouchBorder.Width), Mode=OneWay}">
+        CornerRadius="{x:Bind local:TouchControl.CircleCornerRadius(root:Shared.TouchSize)}">
 
-        <c:TouchComposite Width="{x:Bind TouchBorder.Width, Mode=OneWay}" />
+        <c:TouchComposite Width="{x:Bind root:Shared.TouchSize}" />
 
     </Border>
 </UserControl>
