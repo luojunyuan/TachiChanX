@@ -25,7 +25,7 @@
         <c:TouchComposite Width="{x:Bind root:Shared.TouchSize}" />
 
         <Border.RenderTransform>
-            <TranslateTransform x:Name="TouchTransform" />
+            <CompositeTransform x:Name="TouchTransform" />
         </Border.RenderTransform>
     </Border>
 </UserControl>

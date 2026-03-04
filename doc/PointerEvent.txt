@@ -1,0 +1,9 @@
+WinUI
+
+Touch
+轻点释放: 同Mouse
+Hold长按：
+
+Mouse
+轻点释放：触发俩次 Press 事件，轻轻移动可能触发 Move 事件，没有 Release 事件，即使触发 Move 坐标也完全一致
+Hold长按：
