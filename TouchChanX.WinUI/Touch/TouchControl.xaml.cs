@@ -31,6 +31,7 @@ public sealed partial class TouchControl : UserControl
         var draggingStream = TouchBorder.Events().ManipulationDelta.Share();
         var dragEnded = TouchBorder.Events().ManipulationCompleted.Share();
 
+        // 订阅拖动事件，更新位置
         draggingStream
             .Select(item => item.Delta.Translation)
             .Subscribe(delta =>
@@ -39,24 +40,35 @@ public sealed partial class TouchControl : UserControl
                 TouchTransform.TranslateY += delta.Y;
             });
 
+        // 订阅边界检查事件，超出边界则结束拖动
         draggingStream
             .Where(item => PositionCalculator.IsBeyondBoundary(
                 ContainerSize, TouchRect))
             .Subscribe(e => e.Complete());
 
+        // 订阅拖动结束事件，执行停靠动画
         dragEnded
             .Select(_ => PositionCalculator.CalculateTouchDockedPosition(
-                ContainerSize, TouchRect, 2))
+                ContainerSize, TouchRect, Shared.TouchSpacing))
             .Subscribe(finalPos =>
                 AnimateTouchToEdge(finalPos, TouchTransform));
 
+        // 订阅父容器大小变化事件，动态调整触控位置以保持相对位置不变
+        this.ObserveParentSize()
+            .Select(sizeEvent => PositionCalculator.CalculateNewDockedPosition(
+                sizeEvent.PreviousSize, TouchRect, sizeEvent.NewSize, Shared.TouchSpacing))
+            .Subscribe(rect =>
+                (TouchTransform.TranslateX, TouchTransform.TranslateY) =
+                    (rect.X, rect.Y));
+
+        // 订阅透明度VSM状态变化事件
         this.Events().Loaded.AsUnitObservable()
             .Merge(dragEnded.AsUnitObservable())
             .Subscribe(_ => VisualStateManager.GoToState(this, "Faded", true));
-
         pressed
             .Subscribe(_ => VisualStateManager.GoToState(this, "Normal", true));
 
+        // 定义对外暴露的 Clicked 流
         Clicked =
             pressed
             .Select(_ =>
