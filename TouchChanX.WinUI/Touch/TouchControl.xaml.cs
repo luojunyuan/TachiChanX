@@ -1,6 +1,5 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using R3;
 using R3.ObservableEvents;
@@ -13,6 +12,8 @@ public sealed partial class TouchControl : UserControl
 {
     public static CornerRadius CircleCornerRadius(double width) => new(width / 2);
 
+    public Observable<Unit> Clicked { get; }
+
     private Size ContainerSize => new(ActualWidth, ActualHeight);
 
     private Rect TouchRect => new(TouchTransform.TranslateX, TouchTransform.TranslateY, TouchBorder.ActualWidth, TouchBorder.ActualHeight);
@@ -22,18 +23,16 @@ public sealed partial class TouchControl : UserControl
         InitializeComponent();
 
         TouchBorder.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY;
+        (TouchTransform.TranslateX, TouchTransform.TranslateY) =
+            (Shared.TouchSpacing, Shared.TouchSpacing);
 
-        var draggingStream =
-            TouchBorder.Events().ManipulationDelta
-            .Select(e => new
-            {
-                Delta = e.Delta.Translation,
-                Args = e,
-            })
-            .Share();
+        var pressed = TouchBorder.Events().PointerPressed.Share();
+        var dragStarted = TouchBorder.Events().ManipulationStarted.Share();
+        var draggingStream = TouchBorder.Events().ManipulationDelta.Share();
+        var dragEnded = TouchBorder.Events().ManipulationCompleted.Share();
 
         draggingStream
-            .Select(item => item.Delta)
+            .Select(item => item.Delta.Translation)
             .Subscribe(delta =>
             {
                 TouchTransform.TranslateX += delta.X;
@@ -43,14 +42,29 @@ public sealed partial class TouchControl : UserControl
         draggingStream
             .Where(item => PositionCalculator.IsBeyondBoundary(
                 ContainerSize, TouchRect))
-            .Select(item => item.Args)
             .Subscribe(e => e.Complete());
 
-        TouchBorder.Events().ManipulationCompleted
+        dragEnded
             .Select(_ => PositionCalculator.CalculateTouchDockedPosition(
                 ContainerSize, TouchRect, 2))
-            .Subscribe(finalPos => 
+            .Subscribe(finalPos =>
                 AnimateTouchToEdge(finalPos, TouchTransform));
+
+        this.Events().Loaded.AsUnitObservable()
+            .Merge(dragEnded.AsUnitObservable())
+            .Subscribe(_ => VisualStateManager.GoToState(this, "Faded", true));
+
+        pressed
+            .Subscribe(_ => VisualStateManager.GoToState(this, "Normal", true));
+
+        Clicked =
+            pressed
+            .Select(_ =>
+                TouchBorder.Events().Tapped
+                .TakeUntil(dragStarted))
+            .Switch() // 处理拖动取消流和反复点击流
+            .AsUnitObservable()
+            .Share();
     }
 }
 
