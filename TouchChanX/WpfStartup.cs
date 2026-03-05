@@ -1,4 +1,6 @@
-﻿using R3;
+﻿#if PublishUnpackaged
+
+using R3;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
@@ -84,3 +86,5 @@ public static class WpfExtension
         }
     }
 }
+
+#endif
