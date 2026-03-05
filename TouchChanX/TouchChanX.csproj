@@ -6,6 +6,10 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ApplicationManifest>../app.manifest</ApplicationManifest>
   </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\klee_hires.png" />
+  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="DotnetRuntimeBootstrapper">
@@ -23,12 +27,6 @@
     <RuntimeHostConfigurationOption Include="Switch.System.Windows.Input.Stylus.DisableStylusAndTouchSupport" Value="true" />
     <RuntimeHostConfigurationOption Include="Switch.System.Windows.Input.Stylus.EnablePointerSupport" Value="false" />
     <RuntimeHostConfigurationOption Include="Switch.System.Windows.Media.EnableHardwareAccelerationInRdp" Value="true" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="EmbeddedResource.resx">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

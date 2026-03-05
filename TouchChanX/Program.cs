@@ -1,8 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Shell;
-using TouchChanX.Win32;
+﻿using TouchChanX.Win32;
 using TouchChanX.Win32.Interop;
 
 if (args.Length == 0)
@@ -18,7 +14,7 @@ if (gamePathResult.IsFailure(out var pathError, out var gamePath))
     return;
 }
 
-await using var fileStream = TouchChanX.EmbeddedResource.KleeHires;
+await using var fileStream = TouchChanX.AssetLoader.KleeHires;
 
 var processResult = await GameStartup.GetOrLaunchGameWithSplashAsync(gamePath, fileStream);
 if (processResult.IsFailure(out var processError, out var process))
