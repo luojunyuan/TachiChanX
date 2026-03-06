@@ -38,5 +38,9 @@
     <Platform Solution="*|x86" Project="x86" />
   </Project>
   <Project Path="TouchChanX.WPF/TouchChanX.WPF.csproj" Id="aaad1b9d-b262-4536-9442-6641c00e91f9" />
-  <Project Path="TouchChanX/TouchChanX.csproj" />
+  <Project Path="TouchChanX/TouchChanX.csproj">
+    <Platform Solution="*|ARM64" Project="ARM64" />
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="*|x86" Project="x86" />
+  </Project>
 </Solution>
