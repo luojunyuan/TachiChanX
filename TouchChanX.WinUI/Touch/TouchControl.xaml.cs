@@ -12,7 +12,7 @@ public sealed partial class TouchControl : UserControl
 {
     public static CornerRadius CircleCornerRadius(double width) => new(width / 2);
 
-    public Observable<Unit> Clicked { get; }
+    public Observable<Rect> Clicked { get; }
 
     private Size ContainerSize => new(ActualWidth, ActualHeight);
 
@@ -53,8 +53,8 @@ public sealed partial class TouchControl : UserControl
             .Subscribe(finalPos =>
                 AnimateTouchToEdge(finalPos, TouchTransform));
 
-        // 订阅父容器大小变化事件，动态调整触控位置以保持相对位置不变
-        this.ObserveParentSize()
+        // 订阅容器大小变化事件，动态调整触控位置以保持相对位置不变
+        this.Events().SizeChanged
             .Select(sizeEvent => PositionCalculator.CalculateNewDockedPosition(
                 sizeEvent.PreviousSize, TouchRect, sizeEvent.NewSize, Shared.TouchSpacing))
             .Subscribe(rect =>
@@ -75,7 +75,7 @@ public sealed partial class TouchControl : UserControl
                 TouchBorder.Events().Tapped
                 .TakeUntil(dragStarted))
             .Switch() // 处理拖动取消流和反复点击流
-            .AsUnitObservable()
+            .Select(_ => TouchRect)
             .Share();
     }
 }
@@ -91,6 +91,6 @@ public static class PointerExtesions
     extension(Point)
     {
         public static Vector2 operator -(Point p1, Point p2) =>
-           p1.ToVector2() - p2.ToVector2();
+            p1.ToVector2() - p2.ToVector2();
     }
 }
