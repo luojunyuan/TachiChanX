@@ -18,10 +18,7 @@ public sealed partial class MenuControl : UserControl
         InitializeComponent();
         InitializeCompositionVisuals();
 
-        var isVisibleSubj = new Subject<bool>();
-        RegisterPropertyChangedCallback(VisibilityProperty, (_, _) => isVisibleSubj.OnNext(Visibility == Visibility.Visible));
-
-        isVisibleSubj
+        this.IsVisibleChanged
             .Where(isVisible => isVisible)
             .SelectMany(_ => this.Events().LayoutUpdated.Take(1).AsUnitObservable())
             .SubscribeAwait(async (_, _) =>

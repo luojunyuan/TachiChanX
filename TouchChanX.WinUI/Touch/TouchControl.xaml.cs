@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using R3;
 using R3.ObservableEvents;
+using System.Diagnostics;
 using System.Numerics;
 using Windows.Foundation;
 
@@ -64,6 +65,7 @@ public sealed partial class TouchControl : UserControl
 
         // 订阅透明度VSM状态变化事件
         this.Events().Loaded.AsUnitObservable()
+            .Merge(this.IsVisibleChanged.Where(visible => visible).AsUnitObservable())
             .Merge(dragEnded.AsUnitObservable())
             .Subscribe(_ => VisualStateManager.GoToState(this, "Faded", true));
         pressed

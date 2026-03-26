@@ -34,16 +34,12 @@ public static class Shared
 
     extension(FrameworkElement element)
     {
-        public Observable<SizeChangedEventArgs> ObserveParentSize() =>
-            element.Events().Loaded
-            .Select(_ => VisualTreeHelper.GetParent(element).Required<FrameworkElement>())
-            .SelectMany(p => p.Events().SizeChanged);
-    }
+        public Observable<bool> IsVisibleChanged => Observable.Create<bool>(observer =>
+        {
+            var token = element.RegisterPropertyChangedCallback(UIElement.VisibilityProperty, (_, _) =>
+                observer.OnNext(element.Visibility == Visibility.Visible));
 
-    [StackTraceHidden]
-    public static T Required<T>(this object? obj,
-       string? errorMessage = null,
-       [CallerArgumentExpression(nameof(obj))]
-        string? paramName = null)
-       => (T)(obj ?? throw new ArgumentNullException(paramName, errorMessage));
+            return Disposable.Create(() => element.UnregisterPropertyChangedCallback(UIElement.VisibilityProperty, token));
+        });
+    }
 }
