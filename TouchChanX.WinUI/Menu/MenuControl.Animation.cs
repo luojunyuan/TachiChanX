@@ -20,7 +20,7 @@ public partial class MenuControl
 
     private CompositionRoundedRectangleGeometry MenuBackgroundCornerShape => field ??= Compositor.CreateRoundedRectangleGeometry();
 
-    private readonly TouchComposite TouchComposite = new()
+    private readonly TouchGlyph TouchGlyph = new()
     {
         Width = Shared.TouchSize,
         HorizontalAlignment = HorizontalAlignment.Left,
@@ -35,7 +35,7 @@ public partial class MenuControl
         MenuBackgroundVisual.Shapes.Add(backgroundSpriteShape);
 
         ElementCompositionPreview.SetElementChildVisual(TransitionShellHost, MenuBackgroundVisual);
-        TransitionItemsHost.Children.Add(TouchComposite);
+        TransitionItemsHost.Children.Add(TouchGlyph);
     }
 
     private TouchDockAnchor _lastTouchDockAnchor = TouchDockAnchor.Default;
@@ -86,7 +86,7 @@ public partial class MenuControl
         AnimationBuilder.Create()
             .Translation(from: fromOffset, to: toOffset, duration: MenuTransitionDuration)
             .Opacity(from: showing ? 1f : 0f, to: showing ? 0f : 1f, duration: MenuTransitionDuration)
-            .Start(TouchComposite);
+            .Start(TouchGlyph);
 
         batch.Completed += (_, _) => taskCompletionSource.SetResult();
         batch.End();

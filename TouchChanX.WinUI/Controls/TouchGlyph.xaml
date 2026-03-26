@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Grid x:Class="TouchChanX.WinUI.Controls.TouchComposite"
+<Grid x:Class="TouchChanX.WinUI.Controls.TouchGlyph"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="using:TouchChanX.WinUI.Controls"
     Height="{x:Bind Width}"
-    d:DataContext="{d:DesignInstance Type=local:TouchComposite}"
+    d:DataContext="{d:DesignInstance Type=local:TouchGlyph}"
     mc:Ignorable="d">
 
     <Grid.Resources>
