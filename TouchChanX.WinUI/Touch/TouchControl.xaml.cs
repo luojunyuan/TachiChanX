@@ -1,6 +1,7 @@
-﻿using Microsoft.UI.Xaml;
+﻿using CommunityToolkit.WinUI;
+using CommunityToolkit.WinUI.Animations;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
 using R3;
 using R3.ObservableEvents;
 using System.Numerics;
@@ -10,21 +11,18 @@ namespace TouchChanX.WinUI.Touch;
 
 public sealed partial class TouchControl : UserControl
 {
-    public static CornerRadius CircleCornerRadius(double width) => new(width / 2);
+    private static readonly TimeSpan ReleaseToEdgeDuration = TimeSpan.FromMilliseconds(200);
 
     public Observable<Rect> Clicked { get; }
 
     private Size ContainerSize => new(ActualWidth, ActualHeight);
 
-    private Rect TouchRect => new(TouchTransform.TranslateX, TouchTransform.TranslateY, TouchBorder.ActualWidth, TouchBorder.ActualHeight);
+    private Rect TouchRect => new(TouchBorder.Translation.X, TouchBorder.Translation.Y, TouchBorder.ActualWidth, TouchBorder.ActualHeight);
 
     public TouchControl()
     {
         InitializeComponent();
-
-        TouchBorder.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY;
-        (TouchTransform.TranslateX, TouchTransform.TranslateY) =
-            (Shared.TouchSpacing, Shared.TouchSpacing);
+        TouchBorder.Translation = new(Shared.TouchSpacing, Shared.TouchSpacing, 0);
 
         var pressed = TouchBorder.Events().PointerPressed.Share();
         var dragStarted = TouchBorder.Events().ManipulationStarted.Share();
@@ -35,10 +33,7 @@ public sealed partial class TouchControl : UserControl
         draggingStream
             .Select(item => item.Delta.Translation)
             .Subscribe(delta =>
-            {
-                TouchTransform.TranslateX += delta.X;
-                TouchTransform.TranslateY += delta.Y;
-            });
+                TouchBorder.Translation += delta.ToVector3());
 
         // 订阅边界检查事件，超出边界则结束拖动
         draggingStream
@@ -51,15 +46,21 @@ public sealed partial class TouchControl : UserControl
             .Select(_ => PositionCalculator.CalculateTouchDockedPosition(
                 ContainerSize, TouchRect, Shared.TouchSpacing))
             .Subscribe(finalPos =>
-                AnimateTouchToEdge(finalPos, TouchTransform));
+            {
+                var startOffset = new Point(TouchBorder.Translation.X - finalPos.X, TouchBorder.Translation.Y - finalPos.Y);
+                TouchBorder.Translation = finalPos.ToVector3();
+
+                AnimationBuilder.Create()
+                    .Translation(from: startOffset.ToVector2(), to: Vector2.Zero, duration: ReleaseToEdgeDuration)
+                    .Start(TouchBorder);
+            });
 
         // 订阅容器大小变化事件，动态调整触控位置以保持相对位置不变
         this.Events().SizeChanged
             .Select(sizeEvent => PositionCalculator.CalculateNewDockedPosition(
                 sizeEvent.PreviousSize, TouchRect, sizeEvent.NewSize, Shared.TouchSpacing))
             .Subscribe(rect =>
-                (TouchTransform.TranslateX, TouchTransform.TranslateY) =
-                    (rect.X, rect.Y));
+                 TouchBorder.Translation = new Point(rect.X, rect.Y).ToVector3());
 
         // 订阅透明度VSM状态变化事件
         this.Events().Loaded.AsUnitObservable()
@@ -80,17 +81,7 @@ public sealed partial class TouchControl : UserControl
     }
 }
 
-public static class PointerExtesions
+public partial class TouchControl // Converter
 {
-    extension(PointerRoutedEventArgs pointerEvent)
-    {
-        public Point GetPosition(UIElement? visual = null) =>
-            pointerEvent.GetCurrentPoint(visual).Position;
-    }
-
-    extension(Point)
-    {
-        public static Vector2 operator -(Point p1, Point p2) =>
-            p1.ToVector2() - p2.ToVector2();
-    }
+    public static CornerRadius CircleCornerRadius(double width) => new(width / 2);
 }

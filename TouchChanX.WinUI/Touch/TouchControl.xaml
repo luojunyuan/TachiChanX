@@ -20,11 +20,8 @@
         HorizontalAlignment="Left"
         VerticalAlignment="Top"
         Background="{StaticResource AssistiveTouchBackground}"
-        CornerRadius="{x:Bind local:TouchControl.CircleCornerRadius(root:Shared.TouchSize)}">
-        <Border.RenderTransform>
-            <CompositeTransform x:Name="TouchTransform" />
-        </Border.RenderTransform>
-
+        CornerRadius="{x:Bind local:TouchControl.CircleCornerRadius(root:Shared.TouchSize)}"
+        ManipulationMode="TranslateX, TranslateY">
         <c:TouchComposite Width="{x:Bind root:Shared.TouchSize}" />
 
         <VisualStateManager.VisualStateGroups>
