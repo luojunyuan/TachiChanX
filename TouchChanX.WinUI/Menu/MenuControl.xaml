@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<UserControl x:Class="TouchChanX.WinUI.Menu.MenuControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:c="using:TouchChanX.WinUI.Controls"
+    xmlns:local="using:TouchChanX.WinUI.Menu"
+    xmlns:root="using:TouchChanX.WinUI"
+    xmlns:touch="using:TouchChanX.WinUI.Touch"
+    d:DataContext="{d:DesignInstance Type=local:MenuControl}"
+    Visibility="Collapsed"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="AssistiveTouchBackground" Color="#2A2A2A" />
+    </UserControl.Resources>
+
+    <Grid x:Name="BackgroundLayer" Background="Transparent">
+        <Border x:Name="MenuBorder"
+            Width="{x:Bind root:Shared.MenuSize}"
+            Height="{x:Bind root:Shared.MenuSize}"
+            Background="{StaticResource AssistiveTouchBackground}"
+            CornerRadius="{x:Bind touch:TouchControl.CircleCornerRadius(root:Shared.TouchSize)}">
+
+            <Grid ColumnDefinitions="*, *, *" RowDefinitions="*, *, *">
+                <c:MenuButton x:Name="EditButton"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Symbol="Edit"
+                    Text="Edit" />
+
+                <c:MenuButton x:Name="SettingButton"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Symbol="Setting"
+                    Text="Setting" />
+            </Grid>
+        </Border>
+
+        <Grid x:Name="TransitionShellHost" />
+        <Grid x:Name="TransitionItemsHost" />
+    </Grid>
+</UserControl>

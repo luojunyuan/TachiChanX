@@ -4,7 +4,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:c="using:TouchChanX.WinUI.Controls"
     xmlns:local="using:TouchChanX.WinUI"
+    xmlns:menu="using:TouchChanX.WinUI.Menu"
     xmlns:touch="using:TouchChanX.WinUI.Touch"
     Title="TouchChanX.WinUI"
     mc:Ignorable="d">
@@ -13,7 +15,8 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <Grid>
-        <touch:TouchControl x:Name="Touch" />
+    <Grid Background="White">
+        <touch:TouchControl x:Name="Touch" Visibility="{x:Bind InvertVisible(MenuTouch.Visibility), Mode=OneWay}" />
+        <menu:MenuControl x:Name="MenuTouch" />
     </Grid>
 </Window>

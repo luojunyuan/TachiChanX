@@ -3,10 +3,8 @@ using Microsoft.UI.Xaml.Media;
 using R3;
 using R3.ObservableEvents;
 using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.CompilerServices;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace TouchChanX.WinUI;
 
@@ -19,8 +17,12 @@ public sealed partial class MainWindow : Window
     {
         InitializeComponent();
 
-        //Touch.Clicked.Subscribe(_ => Debug.WriteLine("Tapped"));
+        Touch.Clicked
+            .Select(rect => Menu.TouchDockAnchor.SnapFromRect(this.Content.ActualSize.ToSize(), rect))
+            .Subscribe(MenuTouch.ShowAt);
     }
+
+    private Visibility InvertVisible(Visibility visible) => visible == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
 }
 
 public static class Shared
