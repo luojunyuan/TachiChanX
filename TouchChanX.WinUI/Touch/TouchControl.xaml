@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:c="using:TouchChanX.WinUI.Controls"
     xmlns:local="using:TouchChanX.WinUI.Touch"
-    xmlns:root="using:TouchChanX.WinUI"
+    xmlns:top="using:TouchChanX.WinUI"
     d:DataContext="{d:DesignInstance Type=local:TouchControl}"
     mc:Ignorable="d">
 
@@ -15,14 +15,14 @@
     </UserControl.Resources>
 
     <Border x:Name="TouchBorder"
-        Width="{x:Bind root:Shared.TouchSize}"
-        Height="{x:Bind root:Shared.TouchSize}"
+        Width="{x:Bind top:Shared.TouchSize}"
+        Height="{x:Bind top:Shared.TouchSize}"
         HorizontalAlignment="Left"
         VerticalAlignment="Top"
         Background="{StaticResource AssistiveTouchBackground}"
-        CornerRadius="{x:Bind local:TouchControl.CircleCornerRadius(root:Shared.TouchSize)}"
+        CornerRadius="{x:Bind top:Converters.CircleCornerRadius(top:Shared.TouchSize)}"
         ManipulationMode="TranslateX, TranslateY">
-        <c:TouchComposite Width="{x:Bind root:Shared.TouchSize}" />
+        <c:TouchComposite Width="{x:Bind top:Shared.TouchSize}" />
 
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="OpacityStates">

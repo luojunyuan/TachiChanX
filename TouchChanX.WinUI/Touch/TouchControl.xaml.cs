@@ -4,7 +4,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using R3;
 using R3.ObservableEvents;
-using System.Diagnostics;
 using System.Numerics;
 using Windows.Foundation;
 
@@ -81,9 +80,4 @@ public sealed partial class TouchControl : UserControl
             .Select(_ => TouchRect)
             .Share();
     }
-}
-
-public partial class TouchControl // Converter
-{
-    public static CornerRadius CircleCornerRadius(double width) => new(width / 2);
 }

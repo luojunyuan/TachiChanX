@@ -5,8 +5,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:c="using:TouchChanX.WinUI.Controls"
-    xmlns:local="using:TouchChanX.WinUI"
     xmlns:menu="using:TouchChanX.WinUI.Menu"
+    xmlns:top="using:TouchChanX.WinUI"
     xmlns:touch="using:TouchChanX.WinUI.Touch"
     Title="TouchChanX.WinUI"
     mc:Ignorable="d">
@@ -16,7 +16,7 @@
     </Window.SystemBackdrop>
 
     <Grid Background="White">
-        <touch:TouchControl x:Name="Touch" Visibility="{x:Bind InvertVisible(MenuTouch.Visibility), Mode=OneWay}" />
+        <touch:TouchControl x:Name="Touch" Visibility="{x:Bind top:Converters.InvertVisible(MenuTouch.Visibility), Mode=OneWay}" />
         <menu:MenuControl x:Name="MenuTouch" />
     </Grid>
 </Window>

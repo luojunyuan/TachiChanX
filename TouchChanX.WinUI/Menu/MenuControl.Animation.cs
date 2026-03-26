@@ -3,11 +3,10 @@ using CommunityToolkit.WinUI.Animations;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Media;
 using System.Numerics;
-using System.Security.Cryptography;
 using TouchChanX.WinUI.Controls;
 using Windows.Foundation;
+using Windows.UI;
 
 namespace TouchChanX.WinUI.Menu;
 
@@ -21,8 +20,8 @@ public partial class MenuControl
 
     private CompositionRoundedRectangleGeometry MenuBackgroundCornerShape => field ??= Compositor.CreateRoundedRectangleGeometry();
 
-    private readonly TouchComposite TouchComposite = new() 
-    { 
+    private readonly TouchComposite TouchComposite = new()
+    {
         Width = Shared.TouchSize,
         HorizontalAlignment = HorizontalAlignment.Left,
         VerticalAlignment = VerticalAlignment.Top,
@@ -32,9 +31,9 @@ public partial class MenuControl
     {
         MenuBackgroundCornerShape.CornerRadius = new Vector2((float)(Shared.TouchSize / 2));
         var backgroundSpriteShape = Compositor.CreateSpriteShape(MenuBackgroundCornerShape);
-        backgroundSpriteShape.FillBrush = Compositor.CreateColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x2A, 0x2A, 0x2A));
+        backgroundSpriteShape.FillBrush = Compositor.CreateColorBrush(Color.FromArgb(0xFF, 0x2A, 0x2A, 0x2A));
         MenuBackgroundVisual.Shapes.Add(backgroundSpriteShape);
-        
+
         ElementCompositionPreview.SetElementChildVisual(TransitionShellHost, MenuBackgroundVisual);
         TransitionItemsHost.Children.Add(TouchComposite);
     }

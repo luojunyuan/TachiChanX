@@ -1,10 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
 using R3;
-using R3.ObservableEvents;
-using System.Diagnostics;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 
 namespace TouchChanX.WinUI;
 
@@ -21,8 +17,17 @@ public sealed partial class MainWindow : Window
             .Select(rect => Menu.TouchDockAnchor.SnapFromRect(this.Content.ActualSize.ToSize(), rect))
             .Subscribe(MenuTouch.ShowAt);
     }
+}
 
-    private Visibility InvertVisible(Visibility visible) => visible == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
+/// <summary>
+/// 用于 x:Bind 的转换器。
+/// </summary>
+public static class Converters
+{
+    public static CornerRadius CircleCornerRadius(double width) => new(width / 2);
+
+    public static Visibility InvertVisible(Visibility visible) =>
+        visible == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
 }
 
 public static class Shared

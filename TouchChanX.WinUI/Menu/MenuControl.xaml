@@ -7,7 +7,7 @@
     xmlns:c="using:TouchChanX.WinUI.Controls"
     xmlns:local="using:TouchChanX.WinUI.Menu"
     xmlns:root="using:TouchChanX.WinUI"
-    xmlns:touch="using:TouchChanX.WinUI.Touch"
+    xmlns:top="using:TouchChanX.WinUI"
     d:DataContext="{d:DesignInstance Type=local:MenuControl}"
     Visibility="Collapsed"
     mc:Ignorable="d">
@@ -21,7 +21,7 @@
             Width="{x:Bind root:Shared.MenuSize}"
             Height="{x:Bind root:Shared.MenuSize}"
             Background="{StaticResource AssistiveTouchBackground}"
-            CornerRadius="{x:Bind touch:TouchControl.CircleCornerRadius(root:Shared.TouchSize)}">
+            CornerRadius="{x:Bind top:Converters.CircleCornerRadius(root:Shared.TouchSize)}">
 
             <Grid ColumnDefinitions="*, *, *" RowDefinitions="*, *, *">
                 <c:MenuButton x:Name="EditButton"
