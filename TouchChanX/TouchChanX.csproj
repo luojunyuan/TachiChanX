@@ -7,10 +7,16 @@
     <PublishUnpackaged Condition="'$(PublishUnpackaged)' == ''">false</PublishUnpackaged>
     <Platforms>x86;x64;ARM64</Platforms>
     <EnableMsixTooling>true</EnableMsixTooling>
+    <DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <EmbeddedResource Include="Assets\klee_hires.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WinUIEx" />
   </ItemGroup>
   
   <ItemGroup>
