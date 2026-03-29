@@ -16,7 +16,7 @@ if (gamePathResult.IsFailure(out var pathError, out var gamePath))
 
 await using var fileStream = TouchChanX.AssetLoader.KleeHires;
 
-var processResult = await GameStartup.GetOrLaunchGameWithSplashAsync(gamePath, fileStream);
+var processResult = GameStartup.GetOrLaunchGameWithSplashAsync(gamePath, fileStream).GetAwaiter().GetResult();
 if (processResult.IsFailure(out var processError, out var process))
 {
     OsPlatformApi.MessageBox.Show(processError.Message);
@@ -30,7 +30,7 @@ if (processResult.IsFailure(out var processError, out var process))
 process.EnableRaisingEvents = true;
 process.Exited += (_, _) => Environment.Exit(0);
 
-var handleResult = await GameStartup.FindGoodWindowHandleAsync(process);
+var handleResult = GameStartup.FindGoodWindowHandleAsync(process).GetAwaiter().GetResult();
 if (handleResult.IsFailure(out var error, out var gameWindowHandle))
 {
     switch (error)
