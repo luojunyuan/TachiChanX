@@ -56,8 +56,7 @@ public static partial class OsPlatformApi // Window
     /// <summary>
     /// 设置窗口的父窗口
     /// </summary>
-    public static Task<bool> SetParentWindowAsync(nint child, nint parent) =>
-        Task.Run(() => PInvoke.SetParent(new(child), new(parent)) != HWND.Null);
+    public static Task<bool> SetParentWindowAsync(nint child, nint parent) => Task.Run(() => SetParentWindow(child, parent));
 
     /// <summary>
     /// 设置窗口的父窗口

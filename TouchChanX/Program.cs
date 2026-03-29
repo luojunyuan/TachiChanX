@@ -23,10 +23,7 @@ if (processResult.IsFailure(out var processError, out var process))
     return;
 }
 
-// 用于挂载程序意外退出的情景
-// TODO：测试 ，如果是正常退出游戏，tachi 窗口理应先退出
-// 但是现在 Owned 各自为独立窗口，必走这里，这样好吗 
-// 似乎永远保证 tachichan 跟随父进程生命周期最好，或者父窗口的生命周期
+// NOTE: 无论是 WPF 的 Owned 还是 WinUI 的 Child 窗口都跟随父进程结束而结束
 process.EnableRaisingEvents = true;
 process.Exited += (_, _) => Environment.Exit(0);
 
