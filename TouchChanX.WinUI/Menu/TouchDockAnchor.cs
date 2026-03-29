@@ -15,6 +15,9 @@ public abstract record TouchDockAnchor
 
     public static TouchDockAnchor Default { get; } = new Left(0.5);
 
+    /// <summary>
+    /// 计算 Touch 在边缘时的停靠位置和比例。如果不在有效边缘范围内，则返回 Default。
+    /// </summary>
     public static TouchDockAnchor SnapFromRect(Size containerSize, Rect touchRect)
     {
         const double tolerance = 0.01d;

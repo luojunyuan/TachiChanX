@@ -40,8 +40,8 @@
                     <Storyboard>
                         <DoubleAnimationUsingKeyFrames Storyboard.TargetName="TouchBorder" Storyboard.TargetProperty="Opacity">
                             <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="1.0" />
-                            <DiscreteDoubleKeyFrame KeyTime="0:0:4.2" Value="1.0" />
-                            <LinearDoubleKeyFrame KeyTime="0:0:4.6" Value="0.4" />
+                            <DiscreteDoubleKeyFrame KeyTime="0:0:4" Value="1.0" />
+                            <LinearDoubleKeyFrame KeyTime="0:0:4.4" Value="0.4" />
                         </DoubleAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>

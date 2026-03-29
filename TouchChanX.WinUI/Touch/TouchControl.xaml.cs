@@ -9,6 +9,13 @@ using Windows.Foundation;
 
 namespace TouchChanX.WinUI.Touch;
 
+public partial class TouchControl
+{
+    public static Observable<Unit>? ObservableRegionResetRequested { get; private set; }
+
+    public static Observable<Rect>? ObservableTouchRegionChanged { get; private set; }
+}
+
 public sealed partial class TouchControl : UserControl
 {
     private static readonly TimeSpan ReleaseToEdgeDuration = TimeSpan.FromMilliseconds(200);
@@ -28,6 +35,9 @@ public sealed partial class TouchControl : UserControl
         var dragStarted = TouchBorder.Events().ManipulationStarted.Share();
         var draggingStream = TouchBorder.Events().ManipulationDelta.Share();
         var dragEnded = TouchBorder.Events().ManipulationCompleted.Share();
+        var containerSizeChanged = this.Events().SizeChanged.Share();
+        var visibled = this.IsVisibleChanged.Where(visible => visible).AsUnitObservable().Share();
+        var touchDocked = new Subject<Unit>();
 
         // 订阅拖动事件，更新位置
         draggingStream
@@ -45,18 +55,20 @@ public sealed partial class TouchControl : UserControl
         dragEnded
             .Select(_ => PositionCalculator.CalculateTouchDockedPosition(
                 ContainerSize, TouchRect, Shared.TouchSpacing))
-            .Subscribe(finalPos =>
+            .SubscribeAwait(async (finalPos, _) =>
             {
                 var startOffset = new Point(TouchBorder.Translation.X - finalPos.X, TouchBorder.Translation.Y - finalPos.Y);
                 TouchBorder.Translation = finalPos.ToVector3();
 
-                AnimationBuilder.Create()
+                await AnimationBuilder.Create()
                     .Translation(from: startOffset.ToVector2(), to: Vector2.Zero, duration: ReleaseToEdgeDuration)
-                    .Start(TouchBorder);
+                    .StartAsync(TouchBorder, CancellationToken.None);
+
+                touchDocked.OnNext(Unit.Default);
             });
 
         // 订阅容器大小变化事件，动态调整触控位置以保持相对位置不变
-        this.Events().SizeChanged
+        containerSizeChanged
             .Select(sizeEvent => PositionCalculator.CalculateNewDockedPosition(
                 sizeEvent.PreviousSize, TouchRect, sizeEvent.NewSize, Shared.TouchSpacing))
             .Subscribe(rect =>
@@ -64,8 +76,8 @@ public sealed partial class TouchControl : UserControl
 
         // 订阅透明度VSM状态变化事件
         this.Events().Loaded.AsUnitObservable()
-            .Merge(this.IsVisibleChanged.Where(visible => visible).AsUnitObservable())
-            .Merge(dragEnded.AsUnitObservable())
+            .Merge(visibled)
+            .Merge(touchDocked)
             .Subscribe(_ => VisualStateManager.GoToState(this, "Faded", true));
         pressed
             .Subscribe(_ => VisualStateManager.GoToState(this, "Normal", true));
@@ -79,5 +91,13 @@ public sealed partial class TouchControl : UserControl
             .Switch() // 处理拖动取消流和反复点击流
             .Select(_ => TouchRect)
             .Share();
+
+        ObservableRegionResetRequested = pressed.AsUnitObservable();
+        ObservableTouchRegionChanged =
+            Observable.Merge(
+                containerSizeChanged.AsUnitObservable(),
+                touchDocked,
+                visibled)
+            .Select(_ => TouchRect);
     }
 }
