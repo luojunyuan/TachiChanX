@@ -60,6 +60,11 @@ public static partial class OsPlatformApi // Window
         Task.Run(() => PInvoke.SetParent(new(child), new(parent)) != HWND.Null);
 
     /// <summary>
+    /// 设置窗口的父窗口
+    /// </summary>
+    public static bool SetParentWindow(nint child, nint parent) => PInvoke.SetParent(new(child), new(parent)) != HWND.Null;
+
+    /// <summary>
     /// 设置窗口的 Owner 窗口
     /// </summary>
     public static void SetOwnerWindow(nint child, nint parent)

@@ -17,16 +17,24 @@ public partial class WinUIApp(nint gameWindowHandle)
         };
         var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
         OsPlatformApi.ToggleWindowStyle(hwnd, WindowStyles.TiledWindow, false);
-        OsPlatformApi.SetOwnerWindow(hwnd, gameWindowHandle);
-        
-        GameWindowService.SyncWindowTransform(hwnd, gameWindowHandle);
-        
+        // SetParent 的基础条件之一，可以让子窗口与父窗口统一焦点
+        OsPlatformApi.ToggleWindowStyle(hwnd, WindowStyles.Child, true);
+        // 必须给 WinUI 外层 Win32 窗口添加 Layered 样式，以使窗口分层背景正常可见
+        OsPlatformApi.ToggleWindowExStyle(hwnd, ExtendedWindowStyles.Layered, true);
+        // NOTE: 设置为子窗口后，window.AppWindow 会返回 null、Activated 事件一次也不激活了
+        OsPlatformApi.SetParentWindow(hwnd, gameWindowHandle);
+
+        // 确保在设置为子窗口后，重定位对齐父窗口左上角
+        GameWindowService.ClientSizeChanged(gameWindowHandle)
+            .Subscribe(size => OsPlatformApi.ResizeWindow(hwnd, size));
+
         WinUI.Touch.TouchControl.ObservableRegionResetRequested?
             .Subscribe(_ => OsPlatformApi.ResetWindowOriginalObservableRegion(hwnd));
         WinUI.Touch.TouchControl.ObservableTouchRegionChanged?
             .Select(touchRect => touchRect.Scale(window.Dpi).ToGdiRect())
             .Subscribe(rect => OsPlatformApi.SetWindowObservableRegion(hwnd, rect));
 
+        window.InitializeBindings();
         window.Activate();
     }
 }
