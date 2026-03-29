@@ -104,12 +104,11 @@ public static class GameWindowService
     }
 
     private const uint EventObjectDestroy = 0x8001;
-
-    // NOTE: 要注意重复订阅相同 windowHandle （已经销毁）是不符合预期的
+    
     /// <summary>
     /// 监听游戏窗口销毁消息
     /// </summary>
-    /// <remarks>必须在 UI 线程中订阅</remarks>
+    /// <remarks>必须在 UI 线程中订阅，要注意重复订阅相同 windowHandle （已经销毁）是不符合预期的</remarks>
     public static Observable<Unit> WindowDestroyed(nint windowHandle) =>
         Observable.Create<Unit>(observer =>
         {

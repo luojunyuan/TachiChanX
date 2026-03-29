@@ -45,12 +45,3 @@ if (handleResult.IsFailure(out var error, out var gameWindowHandle))
 }
 
 Microsoft.UI.Xaml.Application.Start(p => _ = new TouchChanX.WinUIApp(gameWindowHandle));
-
-
-// TODO: 测试真实环境下是否需要强制将游戏窗口提前
-#if PublishUnpackaged
-Thread.CurrentThread.SetApartmentState(ApartmentState.Unknown);
-Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
-
-TouchChanX.WpfStartup.Run(gameWindowHandle);
-#endif
