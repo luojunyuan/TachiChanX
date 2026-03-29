@@ -60,9 +60,11 @@ public sealed partial class TouchControl : UserControl
                 var startOffset = new Point(TouchBorder.Translation.X - finalPos.X, TouchBorder.Translation.Y - finalPos.Y);
                 TouchBorder.Translation = finalPos.ToVector3();
 
+                this.IsHitTestVisible = false;
                 await AnimationBuilder.Create()
                     .Translation(from: startOffset.ToVector2(), to: Vector2.Zero, duration: ReleaseToEdgeDuration)
                     .StartAsync(TouchBorder, CancellationToken.None);
+                this.IsHitTestVisible = true;
 
                 touchDocked.OnNext(Unit.Default);
             });
