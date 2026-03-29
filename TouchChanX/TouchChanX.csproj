@@ -4,7 +4,6 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
     <ApplicationManifest>../app.manifest</ApplicationManifest>
-    <PublishUnpackaged Condition="'$(PublishUnpackaged)' == ''">false</PublishUnpackaged>
     <Platforms>x86;x64;ARM64</Platforms>
     <EnableMsixTooling>true</EnableMsixTooling>
     <DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants>
@@ -22,21 +21,6 @@
   <ItemGroup>
     <ProjectReference Include="..\TouchChanX.Win32\TouchChanX.Win32.csproj" />
     <ProjectReference Include="..\TouchChanX.WinUI\TouchChanX.WinUI.csproj" />
-  </ItemGroup>
-
-  <PropertyGroup Condition="'$(PublishUnpackaged)' == 'true'">
-    <DefineConstants>$(DefineConstants);PublishUnpackaged</DefineConstants>
-  </PropertyGroup>
-  
-  <ItemGroup Condition="'$(PublishUnpackaged)' == 'true'">
-    <ProjectReference Include="..\TouchChanX.WPF\TouchChanX.WPF.csproj" />
-    <RuntimeHostConfigurationOption Include="Switch.System.Windows.Input.Stylus.DisableStylusAndTouchSupport" Value="true" />
-    <RuntimeHostConfigurationOption Include="Switch.System.Windows.Input.Stylus.EnablePointerSupport" Value="false" />
-    <RuntimeHostConfigurationOption Include="Switch.System.Windows.Media.EnableHardwareAccelerationInRdp" Value="true" />
-    <PackageReference Include="DotnetRuntimeBootstrapper">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
 </Project>
