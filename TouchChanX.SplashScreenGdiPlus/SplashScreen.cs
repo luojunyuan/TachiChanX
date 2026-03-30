@@ -28,20 +28,16 @@ public sealed class ThreadSplashScreen(Stream resource) : SplashScreenBase(resou
 
     public void Show()
     {
-        var showCompletedEvent = new ManualResetEvent(false);
         new Thread(() =>
         {
             DisplaySplash();
-            showCompletedEvent.Set();
 
             _disposeEvent.WaitOne();
 
             ReleaseResources();
 
             _disposeEvent.Dispose();
-            showCompletedEvent.Dispose();
         }).Start();
-        showCompletedEvent.WaitOne();
     }
 
     public void Dispose() => _disposeEvent.Set();
