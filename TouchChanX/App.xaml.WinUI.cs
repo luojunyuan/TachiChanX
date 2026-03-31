@@ -9,6 +9,10 @@ namespace TouchChanX;
 
 public partial class WinUIApp(nint gameWindowHandle)
 {
+    /// <summary>
+    /// WinUI 程序的入口点事件函数
+    /// </summary>
+    /// <remarks>QwQ: 耗时方法</remarks>
     protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
     {
         var window = new WinUI.MainWindow()
@@ -22,7 +26,7 @@ public partial class WinUIApp(nint gameWindowHandle)
         // 必须给 WinUI 外层 Win32 窗口添加 Layered 样式，以使窗口分层背景正常可见
         OsPlatformApi.ToggleWindowExStyle(hwnd, ExtendedWindowStyles.Layered, true);
         // NOTE: 设置为子窗口后，window.AppWindow 会返回 null、Activated 事件一次也不激活了
-        OsPlatformApi.SetParentWindow(hwnd, gameWindowHandle);
+        OsPlatformApi.SetParentWindowQwQ(hwnd, gameWindowHandle);
 
         // 确保在设置为子窗口后，重定位对齐父窗口左上角
         GameWindowService.ClientSizeChanged(gameWindowHandle)

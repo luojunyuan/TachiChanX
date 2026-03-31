@@ -25,14 +25,12 @@ public static partial class OsPlatformApi // Window
     public static bool HideWindow(nint hWnd) => PInvoke.ShowWindow(new(hWnd), SHOW_WINDOW_CMD.SW_HIDE);
 
     /// <summary>
-    /// 尝试恢复最小化的窗口
+    /// 在窗口处于最小化时恢复窗口
     /// </summary>
-    public static ValueTask TryRestoreWindowAsync(nint windowHandle)
+    public static void RestoreWindowQwQ(nint windowHandle)
     {
         if (PInvoke.IsIconic(new(windowHandle)))
-            return new ValueTask(Task.Run(() => PInvoke.ShowWindow(new(windowHandle), SHOW_WINDOW_CMD.SW_RESTORE)));
-
-        return ValueTask.CompletedTask;
+            PInvoke.ShowWindow(new(windowHandle), SHOW_WINDOW_CMD.SW_RESTORE);
     }
 
     /// <summary>
@@ -56,12 +54,8 @@ public static partial class OsPlatformApi // Window
     /// <summary>
     /// 设置窗口的父窗口
     /// </summary>
-    public static Task<bool> SetParentWindowAsync(nint child, nint parent) => Task.Run(() => SetParentWindow(child, parent));
-
-    /// <summary>
-    /// 设置窗口的父窗口
-    /// </summary>
-    public static bool SetParentWindow(nint child, nint parent) => PInvoke.SetParent(new(child), new(parent)) != HWND.Null;
+    public static bool SetParentWindowQwQ(nint child, nint parent) => 
+        PInvoke.SetParent(new(child), new(parent)) != HWND.Null;
 
     /// <summary>
     /// 设置窗口的 Owner 窗口

@@ -41,19 +41,19 @@ public static partial class GameStartup
         var process = await GetWindowProcessByPathAsync(path);
         if (process is not null)
         {
-            await Interop.OsPlatformApi.TryRestoreWindowAsync(process.MainWindowHandle);
+            Interop.OsPlatformApi.RestoreWindowQwQ(process.MainWindowHandle);
             return process;
         }
 
         using var splash = SplashScreen.Create(fileStream);
         splash.Show();
-        return await LaunchGameAsync(path);
+        return await LaunchGameQwQ(path);
     }
 
     /// <summary>
     /// 启动游戏进程
     /// </summary>
-    private static async Task<Result<Process>> LaunchGameAsync(string path)
+    private static async Task<Result<Process>> LaunchGameQwQ(string path)
     {
         // NOTE: NUKITASHI2(steam) 会先启动一个进程闪现黑屏窗口，然后再重新启动游戏进程
 
@@ -69,7 +69,8 @@ public static partial class GameStartup
             WorkingDirectory = Path.GetDirectoryName(path),
             EnvironmentVariables = { ["__COMPAT_LAYER"] = "HighDpiAware" }
         };
-        _ = await StartProcessAsync(startInfo);
+        // QwQ: 耗时方法
+        _ = Process.Start(startInfo);
 
         const int WaitMainWindowTimeout = 20000;
         const int UIMinimumResponseTime = 50;
@@ -93,8 +94,6 @@ public static partial class GameStartup
 
         return Result.Failure<Process>("Failed to start game within the timeout period.");
     }
-
-    private static Task<Process?> StartProcessAsync(ProcessStartInfo startInfo) => Task.Run(() => Process.Start(startInfo));
 
     /// <summary>
     /// 尝试通过限定的程序路径获取对应正在运行的，存在 MainWindowHandle 的进程
