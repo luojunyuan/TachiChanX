@@ -94,7 +94,8 @@ public sealed partial class TouchControl : UserControl
             .Select(_ => TouchRect)
             .Share();
 
-        ObservableRegionResetRequested = pressed.AsUnitObservable();
+        ObservableRegionResetRequested = 
+            pressed.AsUnitObservable().Merge(containerSizeChanged.AsUnitObservable());
         ObservableTouchRegionChanged =
             Observable.Merge(
                 containerSizeChanged.AsUnitObservable(),
