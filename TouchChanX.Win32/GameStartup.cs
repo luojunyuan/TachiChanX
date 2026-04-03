@@ -6,11 +6,18 @@ namespace TouchChanX.Win32;
 
 public static partial class GameStartup
 {
+    private const string MsixProtocolPrefix = "touchchan://";
+
     /// <summary>
     /// 准备有效的游戏路径
     /// </summary>
     public static Result<string> PrepareValidGamePath(string path)
     {
+        if (path.StartsWith(MsixProtocolPrefix, StringComparison.OrdinalIgnoreCase) && path.EndsWith('/'))
+        {
+            path = path[MsixProtocolPrefix.Length..^1];
+        }
+
         if (!File.Exists(path))
             return Result.Failure<string>($"Game path \"{path}\" not found, please check if it exist.");
 

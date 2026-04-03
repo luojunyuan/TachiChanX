@@ -62,6 +62,12 @@
               </com:SurrogateServer>
             </com:ComServer>
           </com:Extension>
+
+          <uap:Extension Category="windows.protocol" Executable="TouchChanX/TouchChanX.exe" EntryPoint="Windows.FullTrustApplication">
+            <uap:Protocol Name="touchchan">
+              <uap:DisplayName>TouchChanX</uap:DisplayName>
+            </uap:Protocol>
+          </uap:Extension>
         </Extensions>
     </Application>
   </Applications>

@@ -1,5 +1,8 @@
-﻿#include "TouchChanRootCommand.h"
+﻿#include <string>
 #include <Shlwapi.h>
+#include "ShellItemArray.h"
+#include "ShellItem.h"
+#include "TouchChanRootCommand.h"
 
 STDMETHODIMP TouchChanRootCommand::SetSite(IUnknown* pUnkSite)
 {
@@ -14,7 +17,7 @@ STDMETHODIMP TouchChanRootCommand::GetSite(REFIID riid, void** ppvSite)
 
 STDMETHODIMP TouchChanRootCommand::GetTitle(IShellItemArray*, PWSTR* name)
 {
-	return SHStrDup(L"TouchChan", name);
+	return SHStrDup(L"TachiChan", name);
 }
 
 STDMETHODIMP TouchChanRootCommand::GetIcon(IShellItemArray*, PWSTR* icon)
@@ -36,6 +39,13 @@ STDMETHODIMP TouchChanRootCommand::GetCanonicalName(GUID* guidCommandName)
 
 STDMETHODIMP TouchChanRootCommand::GetState(IShellItemArray* selection, BOOL okToBeSlow, EXPCMDSTATE* cmdState)
 {
+	// 只对单个选中项显示菜单项
+	if (selection && ShellItemArray{ selection }.size() != 1)
+	{
+		*cmdState = ECS_HIDDEN;
+		return S_OK;
+	}
+
 	*cmdState = ECS_ENABLED;
 	return S_OK;
 }
@@ -48,7 +58,20 @@ STDMETHODIMP TouchChanRootCommand::GetFlags(EXPCMDFLAGS* flags)
 
 STDMETHODIMP TouchChanRootCommand::Invoke(IShellItemArray* selection, IBindCtx*)
 {
-	return E_NOTIMPL;
+	if (!selection)
+		return E_INVALIDARG;
+
+	ShellItemArray items{ selection };
+	wchar_t* path = items.front().GetDisplayName();
+	if (!path)
+		return E_FAIL;
+
+	std::wstring msg = L"选中项: ";
+	msg += path;
+	CoTaskMemFree(path);
+
+	MessageBoxW(nullptr, msg.c_str(), L"TouchChan", MB_OK);
+	return S_OK;
 }
 
 STDMETHODIMP TouchChanRootCommand::EnumSubCommands(IEnumExplorerCommand** enumCommands)
