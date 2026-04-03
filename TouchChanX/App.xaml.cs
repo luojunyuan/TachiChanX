@@ -1,20 +1,33 @@
 ﻿using TouchChanX.Win32;
 using TouchChanX.Win32.Interop;
 using R3;
+using Microsoft.UI.Xaml;
 
 namespace TouchChanX;
 
-// NOTE: App.xaml 仅是为了过编译所必需的硬编码文件名
-// 有移除所有 xaml 的方法，但是如果窗口或控件需要使用 xaml 那么似乎 App.xaml 还是必须的
+public partial class App
+{
+    public App() : this(nint.Zero)
+    {
+        this.InitializeComponent();
+    }
+}
 
-public partial class WinUIApp(nint gameWindowHandle)
+public partial class App(nint gameWindowHandle)
 {
     /// <summary>
-    /// WinUI 程序的入口点事件函数
+    /// WinUI 程序窗口入口点事件函数
     /// </summary>
     /// <remarks>QwQ: 耗时方法</remarks>
     protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
     {
+        if (gameWindowHandle == nint.Zero)
+        {
+            var preference = new Window();
+            preference.Activate();
+            return;
+        }
+
         var window = new WinUI.MainWindow()
         {
             SystemBackdrop = new WinUIEx.TransparentTintBackdrop()

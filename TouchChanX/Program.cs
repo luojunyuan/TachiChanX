@@ -3,7 +3,7 @@ using TouchChanX.Win32.Interop;
 
 if (args.Length == 0)
 {
-    OsPlatformApi.MessageBox.Show("Please provide the game path as the first argument.");
+    Microsoft.UI.Xaml.Application.Start(p => _ = new TouchChanX.App());
     return;
 }
 
@@ -41,4 +41,4 @@ if (handleResult.IsFailure(out var error, out var gameWindowHandle))
     }
 }
 
-Microsoft.UI.Xaml.Application.Start(p => _ = new TouchChanX.WinUIApp(gameWindowHandle));
+Microsoft.UI.Xaml.Application.Start(p => _ = new TouchChanX.App(gameWindowHandle));
