@@ -1,9 +1,12 @@
 ﻿// dllmain.cpp : 定义 DLL 应用程序的入口点。
-#include "pch.h"
 #include <wrl/module.h>
 #include <wrl/implements.h>
 #include <wrl/client.h>
+#include <windows.h> // 好像用不上
 #include "TouchChanRootCommand.h"
+
+#pragma comment(lib, "runtimeobject")
+#pragma comment(lib, "Shlwapi.lib")
 
 CoCreatableClass(TouchChanRootCommand)
 CoCreatableClassWrlCreatorMapInclude(TouchChanRootCommand)

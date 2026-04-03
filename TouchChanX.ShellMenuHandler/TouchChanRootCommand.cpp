@@ -1,5 +1,4 @@
-﻿#include "pch.h"
-#include "TouchChanRootCommand.h"
+﻿#include "TouchChanRootCommand.h"
 #include <Shlwapi.h>
 
 STDMETHODIMP TouchChanRootCommand::SetSite(IUnknown* pUnkSite)
