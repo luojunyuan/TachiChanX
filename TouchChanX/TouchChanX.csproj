@@ -5,6 +5,7 @@
     <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
     <ApplicationManifest>../app.manifest</ApplicationManifest>
     <Platforms>x86;x64;ARM64</Platforms>
+    <PublishAot>true</PublishAot>
     <DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants>
   </PropertyGroup>
   
@@ -14,7 +15,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <EmbeddedResource Include="assets\klee_hires.png" />
+    <EmbeddedResource Include="assets\klee_hires.png" LogicalName="TouchChanX.klee_hires.png" />
   </ItemGroup>
 
   <ItemGroup>

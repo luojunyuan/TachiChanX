@@ -2,13 +2,11 @@
 
 internal static class AssetLoader
 {
-    private const string Prefix = "TouchChanX.Assets";
-
     private static Stream GetImageStream(string fileName)
     {
-        string resourcePath = $"{Prefix}.{fileName}";
+        string resourcePath = $"{typeof(AssetLoader).Namespace}.{fileName}";
 
-        Stream? stream = typeof(AssetLoader).Assembly.GetManifestResourceStream(resourcePath);
+        var stream = typeof(AssetLoader).Assembly.GetManifestResourceStream(resourcePath);
 
         return stream ?? throw new FileNotFoundException(resourcePath);
     }
