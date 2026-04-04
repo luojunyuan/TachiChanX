@@ -16,7 +16,7 @@
     Version="1.0.0.0" />
 
   <Properties>
-    <DisplayName>TouchChanX</DisplayName>
+    <DisplayName>TouchChanX.MSIX</DisplayName>
     <PublisherDisplayName>kimika</PublisherDisplayName>
     <Logo>Images\StoreLogo.png</Logo>
   </Properties>
@@ -35,8 +35,8 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
         <uap:VisualElements
-          DisplayName="TouchChanX"
-          Description="TouchChanX"
+          DisplayName="TouchChanX.MSIX"
+          Description="TouchChanX.MSIX"
           BackgroundColor="transparent"
           Square150x150Logo="Images\Square150x150Logo.png"
           Square44x44Logo="Images\Square44x44Logo.png">
@@ -63,7 +63,7 @@
             </com:ComServer>
           </com:Extension>
 
-          <uap:Extension Category="windows.protocol" Executable="TouchChanX.exe" EntryPoint="Windows.FullTrustApplication">
+          <uap:Extension Category="windows.protocol" Executable="TouchChanX/TouchChanX.exe" EntryPoint="Windows.FullTrustApplication">
             <uap:Protocol Name="touchchan">
               <uap:DisplayName>TouchChanX</uap:DisplayName>
             </uap:Protocol>
