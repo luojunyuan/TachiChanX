@@ -1,4 +1,5 @@
 ﻿#include <string>
+#include <format>
 #include <Shlwapi.h>
 #include "ShellItemArray.h"
 #include "ShellItem.h"
@@ -66,11 +67,17 @@ STDMETHODIMP TouchChanRootCommand::Invoke(IShellItemArray* selection, IBindCtx*)
 	if (!path)
 		return E_FAIL;
 
-	std::wstring msg = L"选中项: ";
-	msg += path;
-	CoTaskMemFree(path);
+	auto cmd = std::format(LR"(touchchan://"{}")", path);
 
-	MessageBoxW(nullptr, msg.c_str(), L"TouchChan", MB_OK);
+	ShellExecute(
+		NULL,
+		L"open",
+		cmd.data(),
+		nullptr,
+		nullptr,
+		SW_SHOW
+	);
+	
 	return S_OK;
 }
 
