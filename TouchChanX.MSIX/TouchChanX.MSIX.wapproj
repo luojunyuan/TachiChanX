@@ -108,7 +108,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TouchChanX\TouchChanX.csproj">
-      <SkipGetTargetFrameworkProperties>True</SkipGetTargetFrameworkProperties>
       <PublishProfile>Properties\PublishProfiles\win-$(Platform).pubxml</PublishProfile>
     </ProjectReference>
   </ItemGroup>
