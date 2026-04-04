@@ -5,6 +5,11 @@ using R3.ObservableEvents;
 
 namespace TouchChanX.WinUI.Menu;
 
+public partial class MenuControl
+{
+    public static Observable<Unit>? ObservableRegionResetRequested { get; private set; }
+}
+
 public sealed partial class MenuControl : UserControl
 {
     public void ShowAt(TouchDockAnchor touchDock)
@@ -37,6 +42,8 @@ public sealed partial class MenuControl : UserControl
                 TransitionPresentationVisible(false);
                 Visibility = Visibility.Collapsed;
             });
+
+        ObservableRegionResetRequested = this.Events().SizeChanged.AsUnitObservable();
     }
 
     /// <summary>
