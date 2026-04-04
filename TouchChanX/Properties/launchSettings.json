@@ -1,8 +1,11 @@
 ﻿{
   "profiles": {
-    "TouchChanX": {
+    "TouchChanX (Unpackaged)": {
       "commandName": "Project",
       "commandLineArgs": "\"C:\\Windows\\notepad.exe\""
+    },
+    "TouchChanX (Package)": {
+      "commandName": "MsixPackage"
     }
   }
 }

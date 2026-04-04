@@ -1,6 +1,8 @@
 ﻿using TouchChanX.Win32;
 using TouchChanX.Win32.Interop;
 
+// https://github.com/luojunyuan/TachiChanNext/blob/master/TouchChan.WinUI/App.xaml.cs
+
 if (args.Length == 0)
 {
     Microsoft.UI.Xaml.Application.Start(p => _ = new TouchChanX.App());
