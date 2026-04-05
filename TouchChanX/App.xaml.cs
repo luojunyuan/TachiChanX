@@ -1,8 +1,22 @@
-﻿using R3;
+﻿using Microsoft.UI.Xaml;
+using R3;
 using TouchChanX.Win32;
 using TouchChanX.Win32.Interop;
 
 namespace TouchChanX;
+
+public static class WinUIApplication
+{
+    public static void RunPreference()
+    {
+        Application.Start(p => _ = new App());
+    }
+
+    public static void RunWithGameWindow(nint gameWindowHandle)
+    {
+        Application.Start(p => _ = new App(gameWindowHandle));
+    }
+}
 
 public partial class App
 {
@@ -12,19 +26,19 @@ public partial class App
     }
 }
 
-public partial class TransparentBackdrop : Microsoft.UI.Xaml.Media.SystemBackdrop { }
-
 public partial class App(nint gameWindowHandle)
 {
+    private partial class TransparentBackdrop : Microsoft.UI.Xaml.Media.SystemBackdrop { }
+
     /// <summary>
     /// WinUI 程序窗口入口点事件函数
     /// </summary>
     /// <remarks>QwQ: 耗时方法</remarks>
-    protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+    protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
         if (gameWindowHandle == nint.Zero)
         {
-            var preference = new Microsoft.UI.Xaml.Window();
+            var preference = new Window();
             preference.Activate();
             return;
         }
@@ -71,7 +85,7 @@ public static class WinUIExtension
             new((int)rect.X, (int)rect.Y, (int)rect.Width + AntiClippingOffset, (int)rect.Height + AntiClippingOffset);
     }
 
-    extension(Microsoft.UI.Xaml.Window window)
+    extension(Window window)
     {
         public double Dpi => window.Content.XamlRoot.RasterizationScale;
     }

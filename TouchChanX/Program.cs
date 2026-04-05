@@ -3,7 +3,7 @@ using TouchChanX.Win32.Interop;
 
 if (args.Length == 0)
 {
-    Microsoft.UI.Xaml.Application.Start(p => _ = new TouchChanX.App());
+    TouchChanX.WinUIApplication.RunPreference();
     return;
 }
 
@@ -41,4 +41,4 @@ if (handleResult.IsFailure(out var error, out var gameWindowHandle))
     }
 }
 
-Microsoft.UI.Xaml.Application.Start(p => _ = new TouchChanX.App(gameWindowHandle));
+TouchChanX.WinUIApplication.RunWithGameWindow(gameWindowHandle);
