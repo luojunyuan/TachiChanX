@@ -67,7 +67,7 @@ STDMETHODIMP TouchChanRootCommand::Invoke(IShellItemArray* selection, IBindCtx*)
 	if (!path)
 		return E_FAIL;
 
-	auto cmd = std::format(LR"(touchchan://"{}")", path);
+	auto cmd = std::format(LR"(touchchanx://"{}")", path);
 
 	ShellExecute(
 		NULL,
