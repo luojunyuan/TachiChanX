@@ -17,6 +17,5 @@
     <PackageVersion Include="R3Extensions.ObservableEvents.SourceGenerator" Version="1.3.3" />
     <PackageVersion Include="System.Drawing.Common" Version="10.0.5" />
     <PackageVersion Include="WindowsShortcutFactory" Version="1.2.0" />
-    <PackageVersion Include="WinUIEx" Version="2.9.0" />
   </ItemGroup>
 </Project>
