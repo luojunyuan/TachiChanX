@@ -6,7 +6,7 @@ namespace TouchChanX.Win32;
 
 public static partial class GameStartup
 {
-    private const string MsixProtocolPrefix = "touchchan://";
+    private const string MsixProtocolPrefix = "touchchanx://";
 
     /// <summary>
     /// 准备有效的游戏路径
