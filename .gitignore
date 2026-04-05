@@ -430,6 +430,3 @@ FodyWeavers.xsd
 # Personalized rules.
 # MacOS useless file
 .DS_Store
-
-# Rider always creates this shit for me
-TachiChanX.sln

@@ -57,7 +57,7 @@
           </desktop4:Extension>
           <com:Extension Category="windows.comServer">
             <com:ComServer>
-              <com:SurrogateServer DisplayName="TachiChanX context menu verb handler">
+              <com:SurrogateServer DisplayName="TachiChan context menu verb handler">
                 <com:Class Id="C7F36224-0EBF-4CE7-A07B-71BD79CFEFC7" Path="TouchChanX.ShellMenuHandler.dll" ThreadingModel="STA"/>
               </com:SurrogateServer>
             </com:ComServer>
