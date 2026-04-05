@@ -7,7 +7,7 @@ namespace TouchChanX.WinUI.Menu;
 
 public partial class MenuControl
 {
-    public static Observable<Unit>? ObservableRegionResetRequested { get; private set; }
+    public static Observable<Unit> ObservableRegionResetRequested { get; private set; } = Observable.Empty<Unit>();
 }
 
 public sealed partial class MenuControl : UserControl

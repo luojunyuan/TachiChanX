@@ -11,9 +11,9 @@ namespace TouchChanX.WinUI.Touch;
 
 public partial class TouchControl
 {
-    public static Observable<Unit>? ObservableRegionResetRequested { get; private set; }
+    public static Observable<Unit> ObservableRegionResetRequested { get; private set; } = Observable.Empty<Unit>();
 
-    public static Observable<Rect>? ObservableTouchRegionChanged { get; private set; }
+    public static Observable<Rect> ObservableTouchRegionChanged { get; private set; } = Observable.Empty<Rect>();
 }
 
 public sealed partial class TouchControl : UserControl

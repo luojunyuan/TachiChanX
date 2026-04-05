@@ -60,10 +60,10 @@ public partial class App(nint gameWindowHandle)
         GameWindowService.ClientSizeChanged(gameWindowHandle)
             .Subscribe(size => OsPlatformApi.ResizeWindow(hwnd, size));
 
-        WinUI.Touch.TouchControl.ObservableRegionResetRequested?
-            .Merge(WinUI.Menu.MenuControl.ObservableRegionResetRequested ?? Observable.Empty<Unit>())
+        WinUI.Touch.TouchControl.ObservableRegionResetRequested
+            .Merge(WinUI.Menu.MenuControl.ObservableRegionResetRequested)
             .Subscribe(_ => OsPlatformApi.ResetWindowOriginalObservableRegion(hwnd));
-        WinUI.Touch.TouchControl.ObservableTouchRegionChanged?
+        WinUI.Touch.TouchControl.ObservableTouchRegionChanged
             .Select(touchRect => touchRect.Scale(window.Dpi).ToGdiRect())
             .Subscribe(rect => OsPlatformApi.SetWindowObservableRegion(hwnd, rect));
 
