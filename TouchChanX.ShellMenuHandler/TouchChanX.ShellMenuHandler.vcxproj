@@ -243,8 +243,8 @@
     <Import Project="..\packages\Microsoft.Windows.ImplementationLibrary.1.0.260126.7\build\native\Microsoft.Windows.ImplementationLibrary.targets" Condition="Exists('..\packages\Microsoft.Windows.ImplementationLibrary.1.0.260126.7\build\native\Microsoft.Windows.ImplementationLibrary.targets')" />
   </ImportGroup>
   <Target Name="SyncToMsix" AfterTargets="Build">
-    <Message Text="$(ProjectName) 正在刷新 MSIX 负载: $(TargetFileName)..." Importance="high" />
-    <Copy SourceFiles="$(TargetPath)" DestinationFiles="$(SolutionDir)TouchChanX.MSIX\$(TargetFileName)" SkipUnchangedFiles="False" />
+    <Message Text="$(ProjectName) 正在刷新 Package 负载: $(TargetFileName)..." Importance="high" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFiles="$(SolutionDir)TouchChanX.Package\$(TargetFileName)" SkipUnchangedFiles="False" />
   </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

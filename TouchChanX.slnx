@@ -20,7 +20,7 @@
     <File Path="Settings.XamlStyler" />
     <File Path="README.md" />
   </Folder>
-  <Project Path="TouchChanX.MSIX/TouchChanX.MSIX.wapproj" Type="c7167f0d-bc9f-4e6e-afe1-012c56b48db5" Id="1264a89a-ccaa-4823-89c3-f7be97b5229d">
+  <Project Path="TouchChanX.Package/TouchChanX.Package.wapproj" Type="c7167f0d-bc9f-4e6e-afe1-012c56b48db5" Id="1264a89a-ccaa-4823-89c3-f7be97b5229d">
     <BuildDependency Project="TouchChanX.ShellMenuHandler/TouchChanX.ShellMenuHandler.vcxproj" />
     <Deploy />
   </Project>

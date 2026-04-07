@@ -430,3 +430,6 @@ FodyWeavers.xsd
 # Personalized rules.
 # MacOS useless file
 .DS_Store
+
+# shell menu handler dll
+TouchChanX.Package/TouchChanX.ShellMenuHandler.dll
