@@ -67,6 +67,18 @@ public partial class App(nint gameWindowHandle)
             .Select(touchRect => touchRect.Scale(window.Dpi).ToGdiRect())
             .Subscribe(rect => OsPlatformApi.SetWindowObservableRegion(hwnd, rect));
 
+        // TODO: 监视父窗口销毁事件，把窗口设置到新的 gameWindowHandle 上
+        GameWindowService.WindowDestroyed(gameWindowHandle).Subscribe(_ =>
+        {
+            // 会循环询找新的窗口，直到找到一个有效的窗口或者超时就直接退出程序
+            gameWindowHandle = nint.Zero;
+            System.Diagnostics.Debug.WriteLine("Game window destroyed");
+
+            OsPlatformApi.SetParentWindowQwQ(hwnd, gameWindowHandle);
+            GameWindowService.ClientSizeChanged(gameWindowHandle)
+                .Subscribe(size => OsPlatformApi.ResizeWindow(hwnd, size));
+        });
+
         window.InitializeBindings();
         window.Activate();
     }
