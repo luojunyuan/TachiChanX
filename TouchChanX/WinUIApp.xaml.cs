@@ -9,24 +9,24 @@ public static class WinUIApplication
 {
     public static void RunPreference()
     {
-        Application.Start(p => _ = new App());
+        Application.Start(p => _ = new WinUIApp());
     }
 
     public static void RunWithGameWindow(nint gameWindowHandle)
     {
-        Application.Start(p => _ = new App(gameWindowHandle));
+        Application.Start(p => _ = new WinUIApp(gameWindowHandle));
     }
 }
 
-public partial class App
+public partial class WinUIApp
 {
-    public App() : this(nint.Zero)
+    public WinUIApp() : this(nint.Zero)
     {
         this.InitializeComponent();
     }
 }
 
-public partial class App(nint gameWindowHandle)
+public partial class WinUIApp(nint gameWindowHandle)
 {
     private partial class TransparentBackdrop : Microsoft.UI.Xaml.Media.SystemBackdrop { }
 

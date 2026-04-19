@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "TouchChanX.UWP": {
+      "commandName": "MsixPackage"
+    }
+  }
+}

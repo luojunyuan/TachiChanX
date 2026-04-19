@@ -11,6 +11,11 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <ApplicationDefinition Include="WinUIApp.xaml" />
+    <Page Remove="WinUIApp.xaml" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <EmbeddedResource Include="assets\klee_hires.png" LogicalName="TouchChanX.klee_hires.png" />
   </ItemGroup>
 
