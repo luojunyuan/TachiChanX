@@ -12,6 +12,16 @@
     <PublishProfile>win-$(Platform).pubxml</PublishProfile>
     <DisableRuntimeMarshalling>true</DisableRuntimeMarshalling>
     <EnableMsixTooling>true</EnableMsixTooling>
-    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+    <!-- 忽视隐式继承警告 -->
+    <NoWarn>$(NoWarn);NETSDK1023</NoWarn>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.UI.Xaml" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools.MSIX">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 </Project>
