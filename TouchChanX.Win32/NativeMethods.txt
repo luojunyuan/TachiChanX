@@ -31,3 +31,6 @@ CWPSTRUCT
 SetFocus
 SendMessage
 IsWindow
+
+TryCreatePackageDependency
+AddPackageDependency

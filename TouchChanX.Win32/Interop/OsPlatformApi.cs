@@ -1,6 +1,8 @@
 ﻿using System.Runtime.Versioning;
 using Windows.Win32;
 using Windows.Win32.Graphics.Gdi;
+using Windows.Win32.Security;
+using Windows.Win32.Storage.Packaging.Appx;
 using Windows.Win32.UI.HiDpi;
 
 namespace TouchChanX.Win32.Interop;
@@ -44,4 +46,37 @@ public static partial class OsPlatformApi
         PInvoke.GetDpiForMonitor(monitorHandle, MONITOR_DPI_TYPE.MDT_EFFECTIVE_DPI, out var dpiX, out _);
         return dpiX;
     }
+
+    [SupportedOSPlatform("windows10.0.22000.0")]
+    public static bool TryRegisterDependency(string familyName, PackageDependencyProcessorArchitectures arch)
+    {
+        var createResult = PInvoke.TryCreatePackageDependency(
+            PSID.Null,
+            familyName,
+            new PACKAGE_VERSION(),
+            (Windows.Win32.Storage.Packaging.Appx.PackageDependencyProcessorArchitectures)arch,
+            PackageDependencyLifetimeKind.PackageDependencyLifetimeKind_Process,
+            string.Empty,
+            CreatePackageDependencyOptions.CreatePackageDependencyOptions_None,
+            out var packageDependencyId);
+
+        if (createResult.Failed)
+            return false;
+
+        var addResult = PInvoke.AddPackageDependency(
+            packageDependencyId.ToString(),
+            0,
+            AddPackageDependencyOptions.AddPackageDependencyOptions_PrependIfRankCollision,
+            out _,
+            out _);
+
+        return addResult.Succeeded;
+    }
+}
+
+[Flags]
+public enum PackageDependencyProcessorArchitectures : uint
+{
+    X64 = Windows.Win32.Storage.Packaging.Appx.PackageDependencyProcessorArchitectures.PackageDependencyProcessorArchitectures_X64,
+    Arm64 = Windows.Win32.Storage.Packaging.Appx.PackageDependencyProcessorArchitectures.PackageDependencyProcessorArchitectures_Arm64,
 }

@@ -2,6 +2,9 @@
 using R3;
 using TouchChanX.Win32;
 using TouchChanX.Win32.Interop;
+using Windows.ApplicationModel;
+using Windows.System;
+using WinRT;
 
 namespace TouchChanX;
 
@@ -9,6 +12,35 @@ public static class WinUIApplication
 {
     public static void RunPreference()
     {
+        ComWrappersSupport.InitializeComWrappers();
+
+        // 使用 MSIX 动态依赖包 API，强行修改静态包图的依赖顺序
+        var dependencyPackageList = Package.Current.Dependencies;
+        var packageDependencyProcessorArchitectures =
+            Package.Current.Id.Architecture switch
+            {
+                ProcessorArchitecture.Arm64 => PackageDependencyProcessorArchitectures.Arm64,
+                ProcessorArchitecture.X64 => PackageDependencyProcessorArchitectures.X64,
+                _ => throw new NotSupportedException("Unsupported architecture")
+            };
+
+        foreach (Package dependencyPackage in dependencyPackageList)
+        {
+            if (!dependencyPackage.DisplayName.Contains("WindowsAppRuntime"))
+                continue;
+            
+            if (OsPlatformApi.TryRegisterDependency(
+                dependencyPackage.Id.FamilyName,
+                packageDependencyProcessorArchitectures))
+            {
+                break;
+            }
+            else
+            {
+                return;
+            }
+        }
+
         Application.Start(p => _ = new WinUIApp());
     }
 

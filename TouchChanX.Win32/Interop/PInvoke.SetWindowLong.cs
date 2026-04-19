@@ -4,7 +4,7 @@ using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace Windows.Win32;
 
-internal static partial class PInvoke
+internal static partial class PInvoke // SetWindowLong
 {
     // https://github.com/microsoft/CsWin32/issues/528
 
