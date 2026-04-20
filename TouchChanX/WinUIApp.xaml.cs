@@ -10,7 +10,7 @@ namespace TouchChanX;
 
 public static class WinUIApplication
 {
-    public static void RunPreference()
+    private static bool PrepareMsixDependency()
     {
         ComWrappersSupport.InitializeComWrappers();
 
@@ -28,7 +28,7 @@ public static class WinUIApplication
         {
             if (!dependencyPackage.DisplayName.Contains("WindowsAppRuntime"))
                 continue;
-            
+
             if (OsPlatformApi.TryRegisterDependency(
                 dependencyPackage.Id.FamilyName,
                 packageDependencyProcessorArchitectures))
@@ -37,15 +37,28 @@ public static class WinUIApplication
             }
             else
             {
-                return;
+                return false;
             }
         }
+
+        return true;
+    }
+
+    public static void RunPreference()
+    {
+        bool succeed = PrepareMsixDependency();
+        if (!succeed)
+            return;
 
         Application.Start(p => _ = new WinUIApp());
     }
 
     public static void RunWithGameWindow(nint gameWindowHandle)
     {
+        bool succeed = PrepareMsixDependency();
+        if (!succeed)
+            return;
+
         Application.Start(p => _ = new WinUIApp(gameWindowHandle));
     }
 }
