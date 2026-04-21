@@ -1,14 +1,24 @@
 ﻿using System.Runtime.Versioning;
 using Windows.Win32;
+using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.Security;
 using Windows.Win32.Storage.Packaging.Appx;
 using Windows.Win32.UI.HiDpi;
+using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace TouchChanX.Win32.Interop;
 
 public static partial class OsPlatformApi
 {
+    public static class MessageBox
+    {
+        private const string DisplayName = "TachiChan";
+
+        public static void Show(string text, string caption = DisplayName) =>
+            PInvoke.MessageBox(HWND.Null, text, caption, MESSAGEBOX_STYLE.MB_OK);
+    }
+
     /// <summary>
     /// 发送 Alt + Enter 消息
     /// </summary>

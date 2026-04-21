@@ -1,4 +1,4 @@
-﻿// 窗口同步 Hook 相关
+﻿// ---- 窗口同步 Hook 相关 ----
 SetParent
 GetClientRect
 ClientToScreen
@@ -8,29 +8,32 @@ SetWindowRgn
 SetWinEventHook
 GetWindowThreadProcessId
 
-GetProcessDpiAwareness
-GetDpiForWindow
-MonitorFromWindow
-GetDpiForMonitor
+// ---- 窗口状态操作相关 ----
+IsIconic
+ShowWindow
+SetForegroundWindow
 GetWindowLong
 SetWindowLong
 WINDOW_STYLE
 WINDOW_EX_STYLE
-IsIconic
-ShowWindow
-SetForegroundWindow
+
+// ---- Win32 消息弹窗 ----
 MessageBox
+
+// ---- Msix 动态依赖加载 ----
+TryCreatePackageDependency
+AddPackageDependency
+
+GetProcessDpiAwareness
+GetDpiForWindow
+MonitorFromWindow
+GetDpiForMonitor
 GetConsoleWindow
 EnumChildWindows
-
-
 GetModuleHandle
 SetWindowsHookEx
 CallNextHookEx
 CWPSTRUCT
-SetFocus
 SendMessage
+SetFocus
 IsWindow
-
-TryCreatePackageDependency
-AddPackageDependency

@@ -64,7 +64,7 @@ public static partial class OsPlatformApi // Window
     {
         Marshal.SetLastPInvokeError(0);
 
-        if (PInvoke.SetWindowLong(new(child), WINDOW_LONG_PTR_INDEX.GWL_HWNDPARENT, parent) == 0 &&
+        if (PInvoke.SetWindowLongPtr(new(child), WINDOW_LONG_PTR_INDEX.GWL_HWNDPARENT, parent) == 0 &&
             Marshal.GetLastPInvokeError() != 0)
             throw new Win32Exception();
     }
