@@ -1,0 +1,59 @@
+﻿using R3;
+using R3.ObservableEvents;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+
+namespace TouchChanX.WinUI.Menu;
+
+public partial class MenuControl
+{
+    public static Observable<Unit> ObservableRegionResetRequested { get; private set; } = Observable.Empty<Unit>();
+}
+
+public sealed partial class MenuControl : UserControl
+{
+    public void ShowAt(TouchDockAnchor touchDock)
+    {
+        _lastTouchDockAnchor = touchDock;
+        Visibility = Visibility.Visible;
+    }
+
+    public MenuControl()
+    {
+        InitializeComponent();
+        InitializeCompositionVisuals();
+
+        this.IsVisibleChanged
+            .Where(isVisible => isVisible)
+            .SelectMany(_ => this.Events().LayoutUpdated.Take(1).AsUnitObservable())
+            .SubscribeAwait(async (_, _) =>
+            {
+                TransitionPresentationVisible(true);
+                await PlayMenuTransitionAnimationAsync();
+                TransitionPresentationVisible(false);
+            });
+
+        this.Events().PointerReleased
+            .Where(e => e.OriginalSource.Equals(MenuBorder) || e.OriginalSource.Equals(BackgroundLayer))
+            .SubscribeAwait(async (_, _) =>
+            {
+                TransitionPresentationVisible(true);
+                await PlayMenuTransitionAnimationAsync(false);
+                TransitionPresentationVisible(false);
+                Visibility = Visibility.Collapsed;
+            });
+
+        ObservableRegionResetRequested = this.Events().SizeChanged.AsUnitObservable();
+    }
+
+    /// <summary>
+    /// 控制动画过渡层显隐，仅在动画前后调用。
+    /// </summary>
+    private void TransitionPresentationVisible(bool isVisible)
+    {
+        this.IsHitTestVisible = !isVisible;
+        MenuBorder.Opacity = isVisible ? 0 : 1;
+        TransitionShellHost.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
+        TransitionItemsHost.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
+    }
+}
