@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
 using R3;
+using System.Diagnostics;
 using TouchChanX.Win32;
 using TouchChanX.Win32.Interop;
 using Windows.ApplicationModel;
@@ -14,31 +15,40 @@ public static class WinUIApplication
     {
         ComWrappersSupport.InitializeComWrappers();
 
-        // 使用 MSIX 动态依赖包 API，强行修改静态包图的依赖顺序
-        var dependencyPackageList = Package.Current.Dependencies;
-        var packageDependencyProcessorArchitectures =
-            Package.Current.Id.Architecture switch
-            {
-                ProcessorArchitecture.Arm64 => PackageDependencyProcessorArchitectures.Arm64,
-                ProcessorArchitecture.X64 => PackageDependencyProcessorArchitectures.X64,
-                _ => throw new NotSupportedException("Unsupported architecture")
-            };
-
-        foreach (Package dependencyPackage in dependencyPackageList)
+        try
         {
-            if (!dependencyPackage.DisplayName.Contains("WindowsAppRuntime"))
-                continue;
+            // 使用 MSIX 动态依赖包 API，强行修改静态包图的依赖顺序
+            var dependencyPackageList = Package.Current.Dependencies;
+            var packageDependencyProcessorArchitectures =
+                Package.Current.Id.Architecture switch
+                {
+                    ProcessorArchitecture.Arm64 => PackageDependencyProcessorArchitectures.Arm64,
+                    ProcessorArchitecture.X64 => PackageDependencyProcessorArchitectures.X64,
+                    _ => throw new NotSupportedException("Unsupported architecture")
+                };
 
-            if (OsPlatformApi.TryRegisterDependency(
-                dependencyPackage.Id.FamilyName,
-                packageDependencyProcessorArchitectures))
+            foreach (Package dependencyPackage in dependencyPackageList)
             {
-                break;
+                if (!dependencyPackage.DisplayName.Contains("WindowsAppRuntime"))
+                    continue;
+
+                if (OsPlatformApi.TryRegisterDependency(
+                    dependencyPackage.Id.FamilyName,
+                    packageDependencyProcessorArchitectures))
+                {
+                    break;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            else
-            {
-                return false;
-            }
+        }
+        catch (InvalidOperationException ex)
+        {
+            // 临时跳过非打包项目检查用
+            Debug.WriteLine(ex);
+            return true;
         }
 
         return true;
